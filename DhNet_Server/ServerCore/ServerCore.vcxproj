@@ -127,6 +127,17 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="CoreGlobal.cpp" />
+    <ClCompile Include="NetAddress.cpp" />
+    <ClCompile Include="pch.cpp" />
+    <ClCompile Include="SocketUtils.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="CoreGlobal.h" />
+    <ClInclude Include="Macro.h" />
+    <ClInclude Include="NetAddress.h" />
+    <ClInclude Include="pch.h" />
+    <ClInclude Include="SocketUtils.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
