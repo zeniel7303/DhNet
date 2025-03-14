@@ -10,6 +10,9 @@
     <ClInclude Include="TLS.h">
       <Filter>Thread</Filter>
     </ClInclude>
+    <ClInclude Include="Types.h">
+      <Filter>Main</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ThreadManager.cpp">

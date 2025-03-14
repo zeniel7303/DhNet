@@ -14,5 +14,6 @@ using namespace std;
 #pragma comment(lib, "ws2_32.lib")
 
 #include <vector>
+#include <memory>
 
 #include "Macro.h"
