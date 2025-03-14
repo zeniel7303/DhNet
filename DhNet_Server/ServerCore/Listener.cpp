@@ -24,7 +24,7 @@ bool Listener::StartAccept(NetAddress _netAddress)
 	if (m_socket == INVALID_SOCKET)
 		return false;
 
-	if (GIocpCore->Register(this) == false)
+	if (GIocpCore->Register(shared_from_this()) == false)
 		return false;
 
 	if (SocketUtils::SetReuseAddress(m_socket, true) == false)
@@ -43,6 +43,7 @@ bool Listener::StartAccept(NetAddress _netAddress)
 	for (__int32 i = 0; i < acceptCount; i++)
 	{
 		AcceptEvent* acceptEvent = new AcceptEvent();
+		acceptEvent->m_owner = shared_from_this();
 		m_acceptEvents.push_back(acceptEvent);
 		RegisterAccept(acceptEvent);
 	}
@@ -62,7 +63,7 @@ HANDLE Listener::GetHandle()
 
 void Listener::Dispatch(IocpEvent* _iocpEvent, __int32 _numOfBytes)
 {
-	ASSERT_CRASH(_iocpEvent->GetType() == EventType::Accept);
+	ASSERT_CRASH(_iocpEvent->m_type == EventType::Accept);
 	AcceptEvent* acceptEvent = static_cast<AcceptEvent*>(_iocpEvent);
 	ProcessAccept(acceptEvent);
 }
