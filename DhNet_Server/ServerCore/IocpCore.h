@@ -7,7 +7,8 @@
 // Listener과 Session의 부모 추상 클래스
 // IOCP에서의 Session 역할 담당
 
-class IocpObject
+// https://stackoverflow.com/questions/11711034/stdshared-ptr-of-this
+class IocpObject : public enable_shared_from_this<IocpObject>
 {
 public:
 	virtual HANDLE GetHandle() abstract;
@@ -30,7 +31,7 @@ public:
 	HANDLE		GetHandle() { return m_iocpHandle; }
 
 	// IOCP에 관찰 대상으로 등록
-	bool		Register(IocpObject* _iocpObject);
+	bool		Register(shared_ptr<IocpObject> _iocpObject);
 	// WorkerThread들이 IOCP에 일거리를 찾는 함수
 	bool		Dispatch(unsigned __int32 _timeoutMs = INFINITE);
 };

@@ -11,3 +11,5 @@
 #endif
 
 #include "../ServerCore/pch.h"
+
+#include "memory.h"

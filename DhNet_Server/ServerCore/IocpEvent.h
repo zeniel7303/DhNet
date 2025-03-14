@@ -1,4 +1,5 @@
 #pragma once
+#include "IocpCore.h"
 
 class Session;
 
@@ -16,14 +17,14 @@ enum class EventType : unsigned __int8
 
 class IocpEvent : public OVERLAPPED
 {
-protected:
-	EventType	m_type;
+public:
+	EventType				m_type;
+	shared_ptr<IocpObject>	m_owner;
 
 public:
 	IocpEvent(EventType _type);
 
 	void		Init();
-	EventType	GetType() { return m_type; }
 };
 
 /*--------------
