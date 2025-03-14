@@ -130,6 +130,7 @@
     <ClInclude Include="pch.h" />
     <ClInclude Include="ThreadManager.h" />
     <ClInclude Include="TLS.h" />
+    <ClInclude Include="Types.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
