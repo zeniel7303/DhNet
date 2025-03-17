@@ -1,10 +1,12 @@
 #include "pch.h"
 #include "Lock.h"
+#include "DeadLockProfiler.h"
+#include <Windows.h>
 
 void Lock::WriteLock(const char* _name)
 {
 #if _DEBUG
-	GDeadLockProfiler.PushLock(_name);
+	GDeadLockProfiler->PushLock(_name);
 #endif
 
 	// 재귀적으로 동일한 쓰레드가 소유하고 있다면 무조건 성공
@@ -40,7 +42,7 @@ void Lock::WriteLock(const char* _name)
 void Lock::WriteUnlock(const char* _name)
 {
 #if _DEBUG
-	GDeadLockProfiler.PushLock(_name);
+	GDeadLockProfiler->PushLock(_name);
 #endif
 
 	// ReadLock 다 풀기 전에는 WriteLock 불가능
@@ -59,7 +61,7 @@ void Lock::WriteUnlock(const char* _name)
 void Lock::ReadLock(const char* _name)
 {
 #if _DEBUG
-	GDeadLockProfiler.PushLock(_name);
+	GDeadLockProfiler->PushLock(_name);
 #endif
 
 	// 동일한 쓰레드가 소유하고 있다면 무조건 성공
@@ -93,7 +95,7 @@ void Lock::ReadLock(const char* _name)
 void Lock::ReadUnlock(const char* _name)
 {
 #if _DEBUG
-	GDeadLockProfiler.PushLock(_name);
+	GDeadLockProfiler->PushLock(_name);
 #endif
 
 	if ((m_lockFlag.fetch_sub(1) & READ_COUNT_MASK) == 0)

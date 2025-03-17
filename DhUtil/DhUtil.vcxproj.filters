@@ -22,6 +22,7 @@
     <ClInclude Include="DeadLockProfiler.h">
       <Filter>Thread</Filter>
     </ClInclude>
+    <ClInclude Include="UtilGlobal.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ThreadManager.cpp">
@@ -39,6 +40,7 @@
     <ClCompile Include="DeadLockProfiler.cpp">
       <Filter>Thread</Filter>
     </ClCompile>
+    <ClCompile Include="UtilGlobal.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Thread">
