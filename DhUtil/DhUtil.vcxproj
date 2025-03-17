@@ -134,6 +134,7 @@
     <ClInclude Include="ThreadManager.h" />
     <ClInclude Include="TLS.h" />
     <ClInclude Include="Types.h" />
+    <ClInclude Include="UtilGlobal.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DeadLockProfiler.cpp" />
@@ -141,6 +142,7 @@
     <ClCompile Include="pch.cpp" />
     <ClCompile Include="ThreadManager.cpp" />
     <ClCompile Include="TLS.cpp" />
+    <ClCompile Include="UtilGlobal.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -35,6 +35,3 @@ public:
 private:
 	void DFS(int32 _here);
 };
-
-// 전역 DeadLockProfiler 인스턴스 선언
-extern DeadLockProfiler GDeadLockProfiler;
