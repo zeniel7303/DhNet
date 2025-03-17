@@ -21,7 +21,7 @@ HANDLE Session::GetHandle()
 	return reinterpret_cast<HANDLE>(m_socket);
 }
 
-void Session::Dispatch(IocpEvent* _iocpEvent, __int32 _numOfBytes)
+void Session::Dispatch(IocpEvent* _iocpEvent, int32 _numOfBytes)
 {
 	// TODO
 }

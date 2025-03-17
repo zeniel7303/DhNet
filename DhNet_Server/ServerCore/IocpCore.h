@@ -12,7 +12,7 @@ class IocpObject : public enable_shared_from_this<IocpObject>
 {
 public:
 	virtual HANDLE GetHandle() abstract;
-	virtual void Dispatch(class IocpEvent* _iocpEvent, __int32 _numOfBytes = 0) abstract;
+	virtual void Dispatch(class IocpEvent* _iocpEvent, int32 _numOfBytes = 0) abstract;
 };
 
 /*--------------
@@ -33,5 +33,5 @@ public:
 	// IOCP에 관찰 대상으로 등록
 	bool		Register(shared_ptr<IocpObject> _iocpObject);
 	// WorkerThread들이 IOCP에 일거리를 찾는 함수
-	bool		Dispatch(unsigned __int32 _timeoutMs = INFINITE);
+	bool		Dispatch(uint32 _timeoutMs = INFINITE);
 };

@@ -7,9 +7,6 @@
     <ClCompile Include="SocketUtils.cpp">
       <Filter>Network</Filter>
     </ClCompile>
-    <ClCompile Include="CoreGlobal.cpp">
-      <Filter>Main</Filter>
-    </ClCompile>
     <ClCompile Include="pch.cpp">
       <Filter>Main</Filter>
     </ClCompile>
@@ -25,6 +22,7 @@
     <ClCompile Include="Listener.cpp">
       <Filter>Network</Filter>
     </ClCompile>
+    <ClCompile Include="Service.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="NetAddress.h">
@@ -34,12 +32,6 @@
       <Filter>Network</Filter>
     </ClInclude>
     <ClInclude Include="pch.h">
-      <Filter>Main</Filter>
-    </ClInclude>
-    <ClInclude Include="CoreGlobal.h">
-      <Filter>Main</Filter>
-    </ClInclude>
-    <ClInclude Include="Macro.h">
       <Filter>Main</Filter>
     </ClInclude>
     <ClInclude Include="IocpCore.h">
@@ -54,6 +46,7 @@
     <ClInclude Include="Listener.h">
       <Filter>Network</Filter>
     </ClInclude>
+    <ClInclude Include="Service.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Network">

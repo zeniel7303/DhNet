@@ -3,6 +3,7 @@
 #include "SocketUtils.h"
 #include "IocpEvent.h"
 #include "Session.h"
+#include "Service.h"
 
 /*--------------
 	Listener
@@ -18,13 +19,17 @@ Listener::~Listener()
 	}
 }
 
-bool Listener::StartAccept(NetAddress _netAddress)
+bool Listener::StartAccept(shared_ptr<ServerService> _serverService)
 {
+	m_serverService = _serverService;
+	if (m_serverService == nullptr)
+		return false;
+
 	m_socket = SocketUtils::CreateSocket();
 	if (m_socket == INVALID_SOCKET)
 		return false;
 
-	if (GIocpCore->Register(shared_from_this()) == false)
+	if (m_serverService->GetIocpCore()->Register(shared_from_this()) == false)
 		return false;
 
 	if (SocketUtils::SetReuseAddress(m_socket, true) == false)
@@ -33,7 +38,7 @@ bool Listener::StartAccept(NetAddress _netAddress)
 	if (SocketUtils::SetLinger(m_socket, 0, 0) == false)
 		return false;
 
-	if (SocketUtils::Bind(m_socket, _netAddress) == false)
+	if (SocketUtils::Bind(m_socket, m_serverService->GetNetAddress()) == false)
 		return false;
 
 	if (SocketUtils::Listen(m_socket) == false)
@@ -48,7 +53,7 @@ bool Listener::StartAccept(NetAddress _netAddress)
 		RegisterAccept(acceptEvent);
 	}
 
-	return false;
+	return true;
 }
 
 void Listener::CloseSocket()
@@ -61,7 +66,7 @@ HANDLE Listener::GetHandle()
 	return reinterpret_cast<HANDLE>(m_socket);
 }
 
-void Listener::Dispatch(IocpEvent* _iocpEvent, __int32 _numOfBytes)
+void Listener::Dispatch(IocpEvent* _iocpEvent, int32 _numOfBytes)
 {
 	ASSERT_CRASH(_iocpEvent->m_type == EventType::Accept);
 	AcceptEvent* acceptEvent = static_cast<AcceptEvent*>(_iocpEvent);
