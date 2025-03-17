@@ -16,6 +16,12 @@
     <ClInclude Include="Macro.h">
       <Filter>Main</Filter>
     </ClInclude>
+    <ClInclude Include="Lock.h">
+      <Filter>Thread\Lock</Filter>
+    </ClInclude>
+    <ClInclude Include="DeadLockProfiler.h">
+      <Filter>Thread</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ThreadManager.cpp">
@@ -27,6 +33,12 @@
     <ClCompile Include="TLS.cpp">
       <Filter>Thread</Filter>
     </ClCompile>
+    <ClCompile Include="Lock.cpp">
+      <Filter>Thread\Lock</Filter>
+    </ClCompile>
+    <ClCompile Include="DeadLockProfiler.cpp">
+      <Filter>Thread</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Thread">
@@ -34,6 +46,9 @@
     </Filter>
     <Filter Include="Main">
       <UniqueIdentifier>{e556fd55-44a3-465f-ad43-0be96ce8a930}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Thread\Lock">
+      <UniqueIdentifier>{c0567a3e-6e1d-42d2-80a7-1ce88fab432e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
