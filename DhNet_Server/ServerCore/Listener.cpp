@@ -75,10 +75,10 @@ void Listener::Dispatch(IocpEvent* _iocpEvent, int32 _numOfBytes)
 
 void Listener::RegisterAccept(AcceptEvent* _acceptEvent)
 {
-	Session* session = new Session();
+	shared_ptr<Session> session = m_serverService->CreateSession();
 
 	_acceptEvent->Init();
-	_acceptEvent->SetSession(session);
+	_acceptEvent->m_session = session;
 
 	DWORD bytesReceived = 0;
 	if (false == SocketUtils::AcceptEx(m_socket,
@@ -96,7 +96,7 @@ void Listener::RegisterAccept(AcceptEvent* _acceptEvent)
 
 void Listener::ProcessAccept(AcceptEvent* acceptEvent)
 {
-	Session* session = acceptEvent->GetSession();
+	shared_ptr<Session> session = acceptEvent->m_session;
 
 	if (false == SocketUtils::SetUpdateAcceptSocket(session->GetSocket(), m_socket))
 	{
@@ -114,8 +114,7 @@ void Listener::ProcessAccept(AcceptEvent* acceptEvent)
 	}
 
 	session->SetNetAddress(NetAddress(sockAddress));
-
-	cout << "Client Connected!" << endl;
-
+	session->ProcessConnect();
+	
 	RegisterAccept(acceptEvent);
 }
