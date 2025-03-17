@@ -14,54 +14,65 @@ class Session : public IocpObject
 	friend class Service;
 
 private:
-	weak_ptr<Service>	m_service;
-	SOCKET				m_socket = INVALID_SOCKET;
-	NetAddress			m_netAddress = {};
-	atomic<bool>		m_connected = false;
+	USE_LOCK;
+
+	weak_ptr<Service>		m_service;
+	SOCKET					m_socket = INVALID_SOCKET;
+	NetAddress				m_netAddress = {};
+	atomic<bool>			m_connected = false;
 
 private:
-	RecvEvent			m_recvEvent;
-	SendEvent 			m_sendEvent;	
+	ConnectEvent			m_connectEvent;
+	DisconnectEvent			m_disconnectEvent;
+	RecvEvent				m_recvEvent;
+	SendEvent 				m_sendEvent;	
 
 public:
 	// TEMP
-	char m_recvBuffer[1000];
+	BYTE					m_recvBuffer[1000];
 
 public:
 	Session();
 	virtual ~Session();
 
 public:
-	shared_ptr<Service> GetService()								{ return m_service.lock(); }
-	void				SetService(shared_ptr<Service> _service)	{ m_service = _service; }
+	shared_ptr<Service>		GetService()								{ return m_service.lock(); }
+	void					SetService(shared_ptr<Service> _service)	{ m_service = _service; }
 
-	void				SetNetAddress(NetAddress _address)			{ m_netAddress = _address; }
-	NetAddress			GetAddress()								{ return m_netAddress; }
-	SOCKET				GetSocket()									{ return m_socket; }
+	void					SetNetAddress(NetAddress _address)			{ m_netAddress = _address; }
+	NetAddress				GetAddress()								{ return m_netAddress; }
+	SOCKET					GetSocket()									{ return m_socket; }
+	shared_ptr<Session>		GetSessionRef()								{ return static_pointer_cast<Session>(shared_from_this()); }
 
-	bool				IsConnected()								{ return m_connected; }
+	bool					IsConnected()								{ return m_connected; }
 
 	// 인터페이스
 public:
-	virtual HANDLE		GetHandle() override;
-	virtual void		Dispatch(class IocpEvent* _iocpEvent, int32 _numOfBytes = 0) override;
+	virtual HANDLE			GetHandle() override;
+	virtual void			Dispatch(class IocpEvent* _iocpEvent, int32 _numOfBytes = 0) override;
+
+public:
+	void					Send(BYTE* _buffer, int32 _len);
+	bool					Connect();
+	void					Disconnect(const WCHAR* _cause);
 
 private:
-	void				Disconnect(const WCHAR* _cause);
+	bool					RegisterConnect();
+	bool					RegisterDisconnect();
+	void					RegisterRecv();
+	void					RegisterSend(SendEvent* _sendEvent);
 
-	void				RegisterRecv();
-	void				RegisterSend();
+	void					ProcessConnect();
+	void					ProcessDisconnect();
+	void					ProcessRecv(int32 _numOfBytes);
+	void					ProcessSend(SendEvent* _sendEvent, int32 _numOfBytes);
 
-	void				ProcessConnect();
-	void				ProcessRecv(int32 _numOfBytes);
-	void				ProcessSend(int32 _numOfBytes);
-
-	void				HandleError(int32 _errorCode);
+	void					HandleError(int32 _errorCode);
 
 	// 오버로딩용
 protected:
-	virtual void		OnConnected() {}
-	virtual int32		OnRecv(BYTE* _buffer, int32 _len) { return _len; }
-	virtual void		OnSend(int32 _len) {}
-	virtual void		OnDisconnected() {}
+	virtual void			OnConnected() {}
+	virtual int32			OnRecv(BYTE* _buffer, int32 _len) { return _len; }
+	virtual void			OnSend(int32 _len) {}
+	virtual void			OnDisconnected() {}
 };

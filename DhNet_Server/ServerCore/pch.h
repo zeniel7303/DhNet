@@ -1,9 +1,9 @@
 #pragma once
 
 #ifdef _DEBUG
-#pragma comment(lib, "..\\x64\\Debug\\DhUtil.lib")
+#pragma comment(lib, "..\\..\\DhUtil\\x64\\Debug\\DhUtil.lib")
 #else
-#pragma comment(lib, "..\\x64\\Release\\DhUtil.lib")
+#pragma comment(lib, "..\\..\\DhUtil\\x64\\Release\\DhUtil.lib")
 #endif
 
 #include "../../DhUtil/pch.h"
