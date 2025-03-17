@@ -29,5 +29,5 @@ public:
 
 public:
 	virtual HANDLE		GetHandle() override;
-	virtual void		Dispatch(class IocpEvent* _iocpEvent, __int32 _numOfBytes = 0) override;
+	virtual void		Dispatch(class IocpEvent* _iocpEvent, int32 _numOfBytes = 0) override;
 };

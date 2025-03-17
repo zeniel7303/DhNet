@@ -18,7 +18,7 @@ bool IocpCore::Register(shared_ptr<IocpObject> _iocpObject)
 	return ::CreateIoCompletionPort(_iocpObject->GetHandle(), m_iocpHandle, /*key*/0, 0);
 }
 
-bool IocpCore::Dispatch(unsigned __int32 _timeoutMs)
+bool IocpCore::Dispatch(uint32 _timeoutMs)
 {
 	DWORD numOfBytes = 0;
 	ULONG_PTR key = 0;
