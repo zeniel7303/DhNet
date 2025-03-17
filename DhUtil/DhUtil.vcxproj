@@ -127,6 +127,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="DeadLockProfiler.h" />
+    <ClInclude Include="Lock.h" />
     <ClInclude Include="Macro.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="ThreadManager.h" />
@@ -134,6 +136,8 @@
     <ClInclude Include="Types.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="DeadLockProfiler.cpp" />
+    <ClCompile Include="Lock.cpp" />
     <ClCompile Include="pch.cpp" />
     <ClCompile Include="ThreadManager.cpp" />
     <ClCompile Include="TLS.cpp" />
