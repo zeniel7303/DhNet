@@ -134,7 +134,6 @@
     <ClCompile Include="pch.cpp" />
     <ClCompile Include="Service.cpp" />
     <ClCompile Include="Session.cpp" />
-    <ClCompile Include="SessionManager.cpp" />
     <ClCompile Include="SocketUtils.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -145,7 +144,6 @@
     <ClInclude Include="pch.h" />
     <ClInclude Include="Service.h" />
     <ClInclude Include="Session.h" />
-    <ClInclude Include="SessionManager.h" />
     <ClInclude Include="SocketUtils.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

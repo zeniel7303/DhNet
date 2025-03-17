@@ -2,8 +2,8 @@
 #include "Service.h"
 #include "SocketUtils.h"
 
-Service::Service(NetAddress _address, shared_ptr<IocpCore> _iocpCore) 
-	: m_netAddress(_address), m_iocpCore(_iocpCore)
+Service::Service(NetAddress _address, shared_ptr<IocpCore> _iocpCore, SessionFactory _sessionFactory, int32 _maxSessionCount)
+	: m_netAddress(_address), m_iocpCore(_iocpCore), m_sessionFactory(_sessionFactory), m_maxSessionCount(_maxSessionCount)
 {
 	SocketUtils::Init();
 }
@@ -15,7 +15,7 @@ Service::~Service()
 
 shared_ptr<Session> Service::CreateSession()
 {
-    shared_ptr<Session> session = make_shared<Session>();
+    shared_ptr<Session> session = m_sessionFactory();
 	session->SetService(shared_from_this());
 
 	if (m_iocpCore->Register(session) == false)
@@ -40,9 +40,10 @@ void Service::ReleaseSession(shared_ptr<Session> _session)
 	m_sessionCount--;
 }
 
-ServerService::ServerService(NetAddress _netAddress, shared_ptr<IocpCore> _iocpCore) 
-	: Service(_netAddress, _iocpCore)
+ServerService::ServerService(NetAddress _netAddress, shared_ptr<IocpCore> _iocpCore, SessionFactory _sessionFactory, int32 _maxSessionCount)
+	: Service(_netAddress, _iocpCore, _sessionFactory, _maxSessionCount)
 {
+	m_isServerService = true;
 }
 
 ServerService::~ServerService()
@@ -67,9 +68,10 @@ void ServerService::End()
 {
 }
 
-ClientService::ClientService(NetAddress _netAddress, shared_ptr<IocpCore> _iocpCore) 
-	: Service(_netAddress, _iocpCore)
+ClientService::ClientService(NetAddress _netAddress, shared_ptr<IocpCore> _iocpCore, SessionFactory _sessionFactory, int32 _maxSessionCount)
+	: Service(_netAddress, _iocpCore, _sessionFactory, _maxSessionCount)
 {
+	m_isServerService = false;
 }
 
 ClientService::~ClientService()
@@ -78,7 +80,12 @@ ClientService::~ClientService()
 
 bool ClientService::Start()
 {
-	return true;
+	for (int32 i = 0; i < m_maxSessionCount; i++)
+	{
+		shared_ptr<Session> session = CreateSession();
+		if (session->Connect() == false)
+			return false;
+	}
 }
 
 void ClientService::End()
