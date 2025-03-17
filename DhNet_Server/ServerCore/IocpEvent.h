@@ -43,14 +43,11 @@ public:
 
 class AcceptEvent : public IocpEvent
 {
-private:
-	Session* m_session = nullptr;
+public:
+	shared_ptr<Session> m_session = nullptr;
 
 public:
 	AcceptEvent() : IocpEvent(EventType::Accept) {}
-
-	void		SetSession(Session* _session) { m_session = _session; }
-	Session*	GetSession() { return m_session; }
 };
 
 /*--------------
