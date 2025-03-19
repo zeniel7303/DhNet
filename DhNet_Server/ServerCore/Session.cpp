@@ -7,7 +7,7 @@
 	Session
 ---------------*/
 
-Session::Session()
+Session::Session() : m_recvBuffer(BUFFER_SIZE)
 {
 	m_socket = SocketUtils::CreateSocket();
 }
@@ -137,8 +137,8 @@ void Session::RegisterRecv()
 	m_recvEvent.m_owner = shared_from_this();
 
 	WSABUF wsaBuf;
-	wsaBuf.buf = reinterpret_cast<char*>(m_recvBuffer);
-	wsaBuf.len = len32(m_recvBuffer);
+	wsaBuf.buf = reinterpret_cast<char*>(m_recvBuffer.WritePos());
+	wsaBuf.len = m_recvBuffer.FreeSize();
 
 	DWORD numOfBytes = 0;
 	DWORD flags = 0;
@@ -201,15 +201,27 @@ void Session::ProcessDisconnect()
 
 void Session::ProcessRecv(int32 _numOfBytes)
 {
-	m_recvEvent.m_owner = nullptr;
+	m_recvEvent.m_owner = nullptr; // RELEASE_REF
 
-	if (_numOfBytes == 0)
+	if (m_recvBuffer.OnWrite(_numOfBytes) == false)
 	{
-		Disconnect(L"Recv 0");
+		Disconnect(L"OnWrite Overflow");
 		return;
 	}
 
-	OnRecv(m_recvBuffer, _numOfBytes);
+	int32 dataSize = m_recvBuffer.DataSize();
+
+	int32 processLen = OnRecv(m_recvBuffer.ReadPos(), dataSize);
+
+	if (processLen < 0 || dataSize < processLen
+		|| m_recvBuffer.OnRead(processLen) == false)
+	{
+		Disconnect(L"OnRead Overflow");
+		return;
+	}
+
+	// 커서 정리
+	m_recvBuffer.Clean();
 
 	// 수신 등록
 	RegisterRecv();

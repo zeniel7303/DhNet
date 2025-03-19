@@ -86,6 +86,8 @@ bool ClientService::Start()
 		if (session->Connect() == false)
 			return false;
 	}
+
+	return true;
 }
 
 void ClientService::End()
