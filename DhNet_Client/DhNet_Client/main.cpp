@@ -4,7 +4,7 @@
 #include "../../DhNet_Server/ServerCore/Service.h"
 #include "../../DhNet_Server/ServerCore/Session.h"
 
-char sendbuffer[] = "Hello World";
+char sendData[] = "Hello World";
 
 ThreadManager* GThreadManager = new ThreadManager();
 
@@ -19,7 +19,9 @@ public:
 	virtual void OnConnected() override
 	{
 		cout << "Connected To Server" << endl;
-		Send((BYTE*)sendbuffer, sizeof(sendbuffer));
+		shared_ptr<SendBuffer> sendBuffer = make_shared<SendBuffer>(4096);
+		sendBuffer->CopyData(sendData, sizeof(sendData));
+		Send(sendBuffer);
 	}
 
 	virtual int32 OnRecv(BYTE* _buffer, int32 _len) override
@@ -29,8 +31,9 @@ public:
 
 		this_thread::sleep_for(1s);
 
-		//Send(_buffer, _len);
-		Send((BYTE*)sendbuffer, sizeof(sendbuffer));
+		shared_ptr<SendBuffer> sendBuffer = make_shared<SendBuffer>(4096);
+		sendBuffer->CopyData(sendData, sizeof(sendData));
+		Send(sendBuffer);
 		return _len;
 	}
 
@@ -53,7 +56,7 @@ int main()
 		NetAddress(L"127.0.0.1", 7777),
 		make_shared<IocpCore>(),
 		[]() { return make_shared<ServerSession>(); },
-		1);
+		5);
 
 	ASSERT_CRASH(clientService->Start());
 

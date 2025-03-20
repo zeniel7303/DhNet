@@ -1,4 +1,5 @@
 #pragma once
+#include "../ServerCore/SendBuffer.h"
 
 class GameSession;
 
@@ -11,7 +12,7 @@ private:
 public:
 	void Add(shared_ptr<GameSession> _session);
 	void Remove(shared_ptr<GameSession> _session);
-	void Broadcast();
+	void Broadcast(shared_ptr<SendBuffer> _sendBuffer);
 
 	shared_ptr<GameSession> CreateSession();
 };

@@ -1,5 +1,6 @@
 #pragma once
 #include "IocpCore.h"
+#include "SendBuffer.h"
 
 class Session;
 
@@ -78,8 +79,7 @@ public:
 class SendEvent : public IocpEvent
 {
 public:
-	// TEMP
-	vector<BYTE> m_buffer;
+	vector<shared_ptr<SendBuffer>> m_sendBuffers;
 
 public:
 	SendEvent() : IocpEvent(EventType::Send) {}
