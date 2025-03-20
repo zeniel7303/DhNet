@@ -16,9 +16,13 @@ void GameSessionManager::Remove(shared_ptr<GameSession> _session)
 	m_sessions.erase(_session);
 }
 
-void GameSessionManager::Broadcast()
+void GameSessionManager::Broadcast(shared_ptr<SendBuffer> _sendBuffer)
 {
 	WRITE_LOCK;
+	for (shared_ptr<GameSession> session : m_sessions)
+	{
+		session->Send(_sendBuffer);
+	}
 }
 
 shared_ptr<GameSession> GameSessionManager::CreateSession()

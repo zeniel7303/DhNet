@@ -15,7 +15,11 @@ void GameSession::OnDisconnected()
 int32 GameSession::OnRecv(BYTE* _buffer, int32 _len)
 {
 	cout << "OnRecv Len " << _len << endl;
-	Send(_buffer, _len);
+
+	shared_ptr<SendBuffer> sendBuffer = make_shared<SendBuffer>(4096);
+	sendBuffer->CopyData(_buffer, _len);
+
+	GSessionManager.Broadcast(sendBuffer);
 	return _len;
 }
 
