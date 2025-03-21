@@ -135,6 +135,7 @@
     <ClInclude Include="GameSession.h" />
     <ClInclude Include="GameSessionManager.h" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="TempPacketList.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

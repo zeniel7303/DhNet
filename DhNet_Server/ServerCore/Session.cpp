@@ -2,6 +2,7 @@
 #include "Session.h"
 #include "SocketUtils.h"
 #include "Service.h"
+#include "Sender.h"
 
 /*--------------
 	Session
@@ -45,7 +46,6 @@ void Session::Dispatch(IocpEvent* _iocpEvent, int32 _numOfBytes)
 
 void Session::Send(shared_ptr<SendBuffer> _sendBuffer)
 {
-	// 현재 RegisterSend가 걸리지 않은 생태라면, 걸어준다.
 	WRITE_LOCK;
 
 	m_sendQueue.push(_sendBuffer);
@@ -56,6 +56,18 @@ void Session::Send(shared_ptr<SendBuffer> _sendBuffer)
 		RegisterSend();
 	}*/
 
+	// 현재 RegisterSend가 걸리지 않은 생태라면, 걸어준다.
+	if (m_sendRegistered.exchange(true) == false)
+	{
+		RegisterSend();
+	}
+}
+
+void Session::Send(shared_ptr<Sender> _sender)
+{
+	WRITE_LOCK;
+
+	// 현재 RegisterSend가 걸리지 않은 생태라면, 걸어준다.
 	if (m_sendRegistered.exchange(true) == false)
 	{
 		RegisterSend();
