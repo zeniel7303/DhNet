@@ -1,39 +1,159 @@
 #pragma once
-#include "Types.h"
-#include "MemoryPool.h"
+#include "pch.h"
 
-template <typename Type>
+template<typename T>
 class ObjectPool
 {
 private:
-    static int32        s_allocSize; // 메모리 영역 크기
-    static MemoryPool   s_pool;
+	USE_LOCK;
+
+	std::queue<T*>	m_queue;
+	std::vector<T*>	m_vector;
+
+	bool			m_isAlloc;
+	int				m_usedSize;
+	int				m_poolSize;
 
 public:
-    template<typename... Args>
-    static Type* Pop(Args&&... args)
-    {
-        Type* memory = static_cast<Type*>(MemoryHeader::AttachHeader(s_pool.Pop(), s_allocSize));
-        new(memory)Type(std::forward<Args>(args)...); // placement new
-        return memory;
-    }
+	ObjectPool(int _size);
+	~ObjectPool();
 
-    static void Push(Type* obj)
-    {
-        obj->~Type();
-        s_pool.Push(MemoryHeader::DetachHeader(obj));
-    }
+	void Init();
+	void Close();
 
-    template<typename... Args>
-    static shared_ptr<Type> MakeShared(Args&&... _args)
-    {
-        shared_ptr<Type> sptr = { Pop(std::forward<Args>(_args)...), Push };
-        return sptr;
-    }
+	T* NewObject();
+	bool DeleteObject(T* _object);
+
+	int GetMaxSize();
+	int GetUsedSize();
 };
 
-template <typename Type>
-int32 ObjectPool<Type>::s_allocSize = sizeof(Type) + sizeof(MemoryHeader);
+template<typename T>
+ObjectPool<T>::ObjectPool(int _size)
+{
+	m_isAlloc = false;
+	m_usedSize = 0;
+	m_poolSize = _size;
 
-template <typename Type>
-MemoryPool ObjectPool<Type>::s_pool{ s_allocSize };
+	m_vector.reserve(_size);
+}
+
+template<typename T>
+ObjectPool<T>::~ObjectPool()
+{
+	Close();
+}
+
+template<typename T>
+void ObjectPool<T>::Init()
+{
+	ASSERT_CRASH(m_isAlloc == false);
+
+	WRITE_LOCK;
+
+	for (int i = 0; i < m_poolSize; ++i)
+	{
+		try
+		{
+			T* tObject = new T;
+			m_vector.push_back(tObject);
+			m_queue.push(tObject);
+		}
+		catch (std::exception& _exception)
+		{
+			assert(0 && "Init Failed");
+		}
+	}
+
+	m_usedSize = 0;
+	m_isAlloc = true;
+}
+
+template<typename T>
+void ObjectPool<T>::Close()
+{
+	WRITE_LOCK;
+
+	if (m_isAlloc == false) return;
+
+	while (m_queue.empty() == false)
+	{
+		m_queue.pop();
+	}
+
+	for (auto& _object : m_vector)
+	{
+		static_assert(std::is_pointer<T*>::value);
+
+		delete[] _object;
+		_object = nullptr;
+	}
+
+	m_usedSize = 0;
+	m_isAlloc = false;
+}
+
+template<typename T>
+T* ObjectPool<T>::NewObject()
+{
+	ASSERT_CRASH(m_isAlloc == true);
+
+	T* object = nullptr;
+
+	{
+		WRITE_LOCK;
+
+		if (m_usedSize >= GetMaxSize()) return object;
+
+		object = m_queue.front();
+		m_queue.pop();
+		m_usedSize++;
+	}
+
+	ASSERT_CRASH(object != nullptr);
+
+	return object;
+}
+
+template<typename T>
+bool ObjectPool<T>::DeleteObject(T* _object)
+{
+	ASSERT_CRASH(m_isAlloc == true);
+	ASSERT_CRASH(_object != nullptr);
+
+	bool flag = false;
+	for (const auto& _auto : m_vector)
+	{
+		if (_auto == _object)
+		{
+			flag = true;
+			break;
+		}
+	}
+
+	if (flag == false)
+	{
+		return false;
+	}
+
+	{
+		WRITE_LOCK;
+
+		m_queue.push(_object);
+		m_usedSize--;
+	}
+
+	return true;
+}
+
+template<typename T>
+int ObjectPool<T>::GetMaxSize()
+{
+	return m_poolSize;
+}
+
+template<typename T>
+int ObjectPool<T>::GetUsedSize()
+{
+	return m_usedSize;
+}
