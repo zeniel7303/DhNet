@@ -26,10 +26,7 @@
       <Filter>Main</Filter>
     </ClInclude>
     <ClInclude Include="ObjectPool.h">
-      <Filter>MemoryPool</Filter>
-    </ClInclude>
-    <ClInclude Include="MemoryPool.h">
-      <Filter>MemoryPool</Filter>
+      <Filter>ObjectPool</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -51,9 +48,6 @@
     <ClCompile Include="UtilGlobal.cpp">
       <Filter>Main</Filter>
     </ClCompile>
-    <ClCompile Include="MemoryPool.cpp">
-      <Filter>MemoryPool</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Thread">
@@ -65,7 +59,7 @@
     <Filter Include="Thread\Lock">
       <UniqueIdentifier>{c0567a3e-6e1d-42d2-80a7-1ce88fab432e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="MemoryPool">
+    <Filter Include="ObjectPool">
       <UniqueIdentifier>{b33117f8-3b0e-4681-9876-83b68ade5205}</UniqueIdentifier>
     </Filter>
   </ItemGroup>

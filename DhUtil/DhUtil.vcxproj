@@ -133,7 +133,6 @@
     <ClInclude Include="DeadLockProfiler.h" />
     <ClInclude Include="Lock.h" />
     <ClInclude Include="Macro.h" />
-    <ClInclude Include="MemoryPool.h" />
     <ClInclude Include="ObjectPool.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="ThreadManager.h" />
@@ -144,7 +143,6 @@
   <ItemGroup>
     <ClCompile Include="DeadLockProfiler.cpp" />
     <ClCompile Include="Lock.cpp" />
-    <ClCompile Include="MemoryPool.cpp" />
     <ClCompile Include="pch.cpp" />
     <ClCompile Include="ThreadManager.cpp" />
     <ClCompile Include="TLS.cpp" />
