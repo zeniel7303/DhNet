@@ -56,7 +56,7 @@ int main()
 		NetAddress(L"127.0.0.1", 7777),
 		make_shared<IocpCore>(),
 		[]() { return make_shared<ServerSession>(); },
-		5);
+		1);
 
 	ASSERT_CRASH(clientService->Start());
 

@@ -1,5 +1,6 @@
 #pragma once
 
+// TODO : Á¦°Å
 using namespace std;
 
 #include "Types.h"

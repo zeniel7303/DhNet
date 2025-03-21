@@ -40,6 +40,7 @@ private:
 	RecvBuffer						m_recvBuffer;
 
 	queue<shared_ptr<SendBuffer>>	m_sendQueue;
+	queue<shared_ptr<Sender>>		m_senderQueue;
 	atomic<bool>					m_sendRegistered = false;	
 
 public:
@@ -73,6 +74,7 @@ private:
 	bool							RegisterDisconnect();
 	void							RegisterRecv();
 	void							RegisterSend();
+	void							RegisterSend_Old();
 
 	void							ProcessConnect();
 	void							ProcessDisconnect();
