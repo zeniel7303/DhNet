@@ -134,6 +134,8 @@
     <ClCompile Include="pch.cpp" />
     <ClCompile Include="RecvBuffer.cpp" />
     <ClCompile Include="SendBuffer.cpp" />
+    <ClCompile Include="Sender.cpp" />
+    <ClCompile Include="SendPool.cpp" />
     <ClCompile Include="Service.cpp" />
     <ClCompile Include="Session.cpp" />
     <ClCompile Include="SocketUtils.cpp" />
@@ -143,9 +145,12 @@
     <ClInclude Include="IocpEvent.h" />
     <ClInclude Include="Listener.h" />
     <ClInclude Include="NetAddress.h" />
+    <ClInclude Include="PacketHeader.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="RecvBuffer.h" />
     <ClInclude Include="SendBuffer.h" />
+    <ClInclude Include="Sender.h" />
+    <ClInclude Include="SendPool.h" />
     <ClInclude Include="Service.h" />
     <ClInclude Include="Session.h" />
     <ClInclude Include="SocketUtils.h" />

@@ -31,6 +31,12 @@
     <ClCompile Include="SendBuffer.cpp">
       <Filter>Network\Buffer</Filter>
     </ClCompile>
+    <ClCompile Include="Sender.cpp">
+      <Filter>Network\Send</Filter>
+    </ClCompile>
+    <ClCompile Include="SendPool.cpp">
+      <Filter>Network\Send</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="NetAddress.h">
@@ -63,6 +69,15 @@
     <ClInclude Include="SendBuffer.h">
       <Filter>Network\Buffer</Filter>
     </ClInclude>
+    <ClInclude Include="Sender.h">
+      <Filter>Network\Send</Filter>
+    </ClInclude>
+    <ClInclude Include="SendPool.h">
+      <Filter>Network\Send</Filter>
+    </ClInclude>
+    <ClInclude Include="PacketHeader.h">
+      <Filter>Network</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Network">
@@ -73,6 +88,9 @@
     </Filter>
     <Filter Include="Network\Buffer">
       <UniqueIdentifier>{bab73c24-9b6c-4aa2-b6fc-18732077277d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Network\Send">
+      <UniqueIdentifier>{95a9b259-f720-4de4-8108-d9ae0ef5f42a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

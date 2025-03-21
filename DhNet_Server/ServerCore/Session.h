@@ -9,6 +9,8 @@
 	 Session
 ---------------*/
 
+class Sender;
+
 class Session : public IocpObject
 {
 	friend class Listener;
@@ -62,6 +64,7 @@ public:
 
 public:
 	void							Send(shared_ptr<SendBuffer> _sendBuffer);
+	void							Send(shared_ptr<Sender> _sender);
 	bool							Connect();
 	void							Disconnect(const WCHAR* _cause);
 

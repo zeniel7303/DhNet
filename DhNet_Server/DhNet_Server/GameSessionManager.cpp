@@ -25,6 +25,15 @@ void GameSessionManager::Broadcast(shared_ptr<SendBuffer> _sendBuffer)
 	}
 }
 
+void GameSessionManager::Broadcast(shared_ptr<Sender> _sender)
+{
+	WRITE_LOCK;
+	for (shared_ptr<GameSession> session : m_sessions)
+	{
+		session->Send(_sender);
+	}
+}
+
 shared_ptr<GameSession> GameSessionManager::CreateSession()
 {
 	return make_shared<GameSession>();
