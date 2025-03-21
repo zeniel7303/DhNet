@@ -11,6 +11,7 @@
 Session::Session() : m_recvBuffer(BUFFER_SIZE)
 {
 	m_socket = SocketUtils::CreateSocket();
+	Sender::Init(1024);
 }
 
 Session::~Session()
@@ -59,13 +60,15 @@ void Session::Send(shared_ptr<SendBuffer> _sendBuffer)
 	// 현재 RegisterSend가 걸리지 않은 생태라면, 걸어준다.
 	if (m_sendRegistered.exchange(true) == false)
 	{
-		RegisterSend();
+		RegisterSend_Old();
 	}
 }
 
 void Session::Send(shared_ptr<Sender> _sender)
 {
 	WRITE_LOCK;
+
+	m_senderQueue.push(_sender);
 
 	// 현재 RegisterSend가 걸리지 않은 생태라면, 걸어준다.
 	if (m_sendRegistered.exchange(true) == false)
@@ -170,6 +173,57 @@ void Session::RegisterRecv()
 }
 
 void Session::RegisterSend()
+{
+	if (IsConnected() == false)
+		return;
+
+	m_sendEvent.Init();
+	m_sendEvent.m_owner = shared_from_this();
+
+	// 보낼 데이터를 sendEvent에 등록
+	{
+		WRITE_LOCK;
+
+		int32 writeSize = 0;
+		while (m_senderQueue.empty() == false)
+		{
+			shared_ptr<Sender> sender = m_senderQueue.front();
+
+			writeSize += sender->GetSendSize();
+			// TODO : 예외 체크
+
+			m_sendQueue.pop();
+			m_sendEvent.m_senders.push_back(sender);
+		}
+	}
+
+	// Scatter-Gather (흩어져 있는 데이터들을 모아서 한 방에 보낸다.)
+	vector<WSABUF> wsaBufs;
+	wsaBufs.reserve(m_sendEvent.m_sendBuffers.size());
+	for (shared_ptr<Sender> sender : m_sendEvent.m_senders)
+	{
+		WSABUF wsaBuf;
+		wsaBuf.buf = reinterpret_cast<char*>(sender->GetSendPointer());
+		wsaBuf.len = static_cast<LONG>(sender->GetSendSize());
+		wsaBufs.emplace_back(wsaBuf);
+	}
+
+	DWORD numOfBytes = 0;
+	if (SOCKET_ERROR == ::WSASend(m_socket, wsaBufs.data(),
+		static_cast<DWORD>(wsaBufs.size()), OUT & numOfBytes, 0, &m_sendEvent, nullptr))
+	{
+		int32 errorCode = ::WSAGetLastError();
+		if (errorCode != WSA_IO_PENDING)
+		{
+			HandleError(errorCode);
+			m_sendEvent.m_owner = nullptr; // RELEASE_REF
+			m_sendEvent.m_senders.clear(); // RELEASE_REF
+			m_sendRegistered.store(false);
+		}
+	}
+}
+
+void Session::RegisterSend_Old()
 {
 	if (IsConnected() == false)
 		return;
