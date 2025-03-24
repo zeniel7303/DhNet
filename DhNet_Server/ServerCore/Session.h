@@ -39,7 +39,6 @@ private:
 private:
 	RecvBuffer						m_recvBuffer;
 
-	queue<shared_ptr<SendBuffer>>	m_sendQueue;
 	queue<shared_ptr<Sender>>		m_senderQueue;
 	atomic<bool>					m_sendRegistered = false;	
 
@@ -64,7 +63,6 @@ public:
 	virtual void					Dispatch(class IocpEvent* _iocpEvent, int32 _numOfBytes = 0) override;
 
 public:
-	void							Send(shared_ptr<SendBuffer> _sendBuffer);
 	void							Send(shared_ptr<Sender> _sender);
 	bool							Connect();
 	void							Disconnect(const WCHAR* _cause);
@@ -74,7 +72,6 @@ private:
 	bool							RegisterDisconnect();
 	void							RegisterRecv();
 	void							RegisterSend();
-	void							RegisterSend_Old();
 
 	void							ProcessConnect();
 	void							ProcessDisconnect();
@@ -86,7 +83,7 @@ private:
 	// 오버로딩용
 protected:
 	virtual void					OnConnected() {}
-	virtual int32					OnRecv(BYTE* _buffer, int32 _len) { return _len; }
+	virtual bool					OnRecv(PacketHeader* _packet) { return true; }
 	virtual void					OnSend(int32 _len) {}
 	virtual void					OnDisconnected() {}
 };

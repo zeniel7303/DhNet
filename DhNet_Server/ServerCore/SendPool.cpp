@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "SendPool.h"
 #include "Sender.h"
+#include <cassert>
 
 SendPool::SendPool() : m_chunk(nullptr), m_chunkCount(0),
 m_flag(), m_senderList(), m_useSize(0)

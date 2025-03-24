@@ -59,6 +59,8 @@ bool ServerService::Start()
     if (m_listener->StartAccept(static_pointer_cast<ServerService>(shared_from_this())) == false)
 		return false;
 
+	Sender::Init(30000);
+
 	cout << "Server Start!" << endl;
 
 	return true;

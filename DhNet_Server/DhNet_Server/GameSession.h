@@ -14,6 +14,6 @@ public:
 
 	virtual void OnConnected() override;
 	virtual void OnDisconnected() override;
-	virtual int32 OnRecv(BYTE* _buffer, int32 _len) override;
+	virtual bool OnRecv(PacketHeader* _packet) override;
 	virtual void OnSend(int32 _len) override;
 };

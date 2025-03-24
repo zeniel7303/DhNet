@@ -1,6 +1,5 @@
 #include "pch.h"
 #include "Sender.h"
-#include "PacketHeader.h"
 
 SendPool Sender::m_sendPool;
 
