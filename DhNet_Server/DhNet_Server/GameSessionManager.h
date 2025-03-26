@@ -1,5 +1,4 @@
 #pragma once
-#include "../ServerCore/SendBuffer.h"
 #include "../ServerCore/Sender.h"
 
 class GameSession;

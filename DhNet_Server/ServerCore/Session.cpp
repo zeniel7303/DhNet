@@ -243,8 +243,12 @@ void Session::ProcessRecv(int32 _numOfBytes)
 		{
 			// 컨텐츠 코드에서 재정의
 			auto result = OnRecv(packet);
-			if (result == false || 
-				m_recvBuffer.OnRead(packet->m_dataSize) == false)
+			if (result == false)
+			{
+				Disconnect(L"OnRead Error");
+			}
+
+			if (m_recvBuffer.OnRead(packet->m_dataSize) == false)
 			{
 				Disconnect(L"OnRead Overflow");
 				return;
@@ -253,18 +257,6 @@ void Session::ProcessRecv(int32 _numOfBytes)
 
 		break;
 	}
-
-	/*int32 dataSize = m_recvBuffer.DataSize();
-
-	// 컨텐츠 코드에서 재정의
-	int32 processLen = OnRecv(m_recvBuffer.ReadPos(), dataSize);
-
-	if (processLen < 0 || dataSize < processLen
-		|| m_recvBuffer.OnRead(processLen) == false)
-	{
-		Disconnect(L"OnRead Overflow");
-		return;
-	}*/
 
 	// 커서 정리
 	m_recvBuffer.Clean();

@@ -1,11 +1,19 @@
 #include "stdafx.h"
+
 #include "../../DhUtil/ThreadManager.h"
 #include "../ServerCore/Service.h"
+
+#include "ServerPacketHandler.h"
 #include "GameSession.h"
 
 ThreadManager* GThreadManager = new ThreadManager();
 
-int main()
+void PacketRegister()
+{
+    PacketHandler::Instance().Register(PacketEnum::Test, &HandleTestPacket);
+}
+
+void StartServer()
 {
     shared_ptr<ServerService> serverService = make_shared<ServerService>(
         NetAddress(L"127.0.0.1", 7777),
@@ -28,4 +36,11 @@ int main()
     }
 
     GThreadManager->Join();
+}
+
+int main()
+{
+    PacketRegister();
+
+    StartServer();
 }

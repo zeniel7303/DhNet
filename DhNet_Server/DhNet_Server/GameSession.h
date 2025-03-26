@@ -3,9 +3,6 @@
 
 class GameSession : public Session
 {
-private:
-
-
 public:
 	~GameSession()
 	{

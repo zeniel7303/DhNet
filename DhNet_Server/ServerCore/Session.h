@@ -3,7 +3,6 @@
 #include "IocpEvent.h"
 #include "NetAddress.h"
 #include "RecvBuffer.h"
-#include "SendBuffer.h"
 
 /*--------------
 	 Session
