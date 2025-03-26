@@ -28,14 +28,14 @@
     <ClCompile Include="RecvBuffer.cpp">
       <Filter>Network\Buffer</Filter>
     </ClCompile>
-    <ClCompile Include="SendBuffer.cpp">
-      <Filter>Network\Buffer</Filter>
-    </ClCompile>
     <ClCompile Include="Sender.cpp">
       <Filter>Network\Send</Filter>
     </ClCompile>
     <ClCompile Include="SendPool.cpp">
       <Filter>Network\Send</Filter>
+    </ClCompile>
+    <ClCompile Include="PacketHandler.cpp">
+      <Filter>Network\Handler</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -66,17 +66,20 @@
     <ClInclude Include="RecvBuffer.h">
       <Filter>Network\Buffer</Filter>
     </ClInclude>
-    <ClInclude Include="SendBuffer.h">
-      <Filter>Network\Buffer</Filter>
-    </ClInclude>
     <ClInclude Include="Sender.h">
       <Filter>Network\Send</Filter>
     </ClInclude>
     <ClInclude Include="SendPool.h">
       <Filter>Network\Send</Filter>
     </ClInclude>
+    <ClInclude Include="Handler.h">
+      <Filter>Network\Handler</Filter>
+    </ClInclude>
+    <ClInclude Include="PacketHandler.h">
+      <Filter>Network\Handler</Filter>
+    </ClInclude>
     <ClInclude Include="PacketHeader.h">
-      <Filter>Network</Filter>
+      <Filter>Network\Handler</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -91,6 +94,9 @@
     </Filter>
     <Filter Include="Network\Send">
       <UniqueIdentifier>{95a9b259-f720-4de4-8108-d9ae0ef5f42a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Network\Handler">
+      <UniqueIdentifier>{636fc81f-ca67-4b69-8ce6-449f8cf720b5}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

@@ -1,5 +1,6 @@
 #pragma once
 #include "../ServerCore/PacketHeader.h"
+#include "PacketEnum.h"
 
 #pragma pack(push, 1)
 

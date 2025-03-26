@@ -21,8 +21,8 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{e4c0bc38-e7f5-474c-af5c-fd815270fba4}</ProjectGuid>
-    <RootNamespace>ServerCore</RootNamespace>
+    <ProjectGuid>{3c45edd2-8035-4384-a437-3e2dfa5da401}</ProjectGuid>
+    <RootNamespace>DhNetProtocol</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -127,34 +127,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="IocpCore.cpp" />
-    <ClCompile Include="IocpEvent.cpp" />
-    <ClCompile Include="Listener.cpp" />
-    <ClCompile Include="NetAddress.cpp" />
-    <ClCompile Include="PacketHandler.cpp" />
-    <ClCompile Include="pch.cpp" />
-    <ClCompile Include="RecvBuffer.cpp" />
-    <ClCompile Include="Sender.cpp" />
-    <ClCompile Include="SendPool.cpp" />
-    <ClCompile Include="Service.cpp" />
-    <ClCompile Include="Session.cpp" />
-    <ClCompile Include="SocketUtils.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="Handler.h" />
-    <ClInclude Include="IocpCore.h" />
-    <ClInclude Include="IocpEvent.h" />
-    <ClInclude Include="Listener.h" />
-    <ClInclude Include="NetAddress.h" />
-    <ClInclude Include="PacketHandler.h" />
-    <ClInclude Include="PacketHeader.h" />
-    <ClInclude Include="pch.h" />
-    <ClInclude Include="RecvBuffer.h" />
-    <ClInclude Include="Sender.h" />
-    <ClInclude Include="SendPool.h" />
-    <ClInclude Include="Service.h" />
-    <ClInclude Include="Session.h" />
-    <ClInclude Include="SocketUtils.h" />
+    <ClInclude Include="ErrorCode.h" />
+    <ClInclude Include="PacketEnum.h" />
+    <ClInclude Include="PacketList.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

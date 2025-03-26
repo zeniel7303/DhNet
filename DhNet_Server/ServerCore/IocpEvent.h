@@ -1,6 +1,5 @@
 #pragma once
 #include "IocpCore.h"
-#include "SendBuffer.h"
 #include "Sender.h"
 
 class Session;
