@@ -127,14 +127,22 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="GameServer.cpp" />
     <ClCompile Include="GameSession.cpp" />
     <ClCompile Include="GameSessionManager.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="ServerGlobal.cpp" />
+    <ClCompile Include="ServerSetting.cpp" />
+    <ClCompile Include="SessionSystem.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="GameServer.h" />
     <ClInclude Include="GameSession.h" />
     <ClInclude Include="GameSessionManager.h" />
+    <ClInclude Include="ServerGlobal.h" />
     <ClInclude Include="ServerPacketHandler.h" />
+    <ClInclude Include="ServerSetting.h" />
+    <ClInclude Include="SessionSystem.h" />
     <ClInclude Include="stdafx.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

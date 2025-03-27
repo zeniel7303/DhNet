@@ -1,46 +1,27 @@
 #include "stdafx.h"
+#include "ServerSetting.h"
+#include "GameServer.h"
 
-#include "../../DhUtil/ThreadManager.h"
-#include "../ServerCore/Service.h"
-
-#include "ServerPacketHandler.h"
-#include "GameSession.h"
-
-ThreadManager* GThreadManager = new ThreadManager();
-
-void PacketRegister()
+static void CheckAllEnv(char** envp)
 {
-    PacketHandler::Instance().Register(PacketEnum::Test, &HandleTestPacket);
+#if _DEBUG
+	for (char** env = envp; *env != 0; env++)
+	{
+		char* thisEnv = *env;
+		printf("%s\n", thisEnv);
+	}
+#endif
 }
 
-void StartServer()
+int main(int argc, char** argv, char** envp)
 {
-    shared_ptr<ServerService> serverService = make_shared<ServerService>(
-        NetAddress(L"127.0.0.1", 7777),
-        make_shared<IocpCore>(),
-        []() { return make_shared<GameSession>(); },
-        1000);
+	// CheckAllEnv(envp);
 
-    ASSERT_CRASH(serverService->Start());
+	shared_ptr<ServerSetting> serverSetting = make_shared<ServerSetting>();
 
-    for (int32 i = 0; i < 5; i++)
-    {
-        GThreadManager->Launch([=]()
-            {
-                while (true)
-                {
-                    // 자동으로 Listener의 Dispatch도 들어간다.(가상함수이므로)
-                    serverService->GetIocpCore()->Dispatch();
-                }
-            });
-    }
+	shared_ptr<GameServer> gameServer = make_shared<GameServer>(serverSetting);
 
-    GThreadManager->Join();
-}
+	gameServer->StartServer();
 
-int main()
-{
-    PacketRegister();
-
-    StartServer();
+	return 0;
 }
