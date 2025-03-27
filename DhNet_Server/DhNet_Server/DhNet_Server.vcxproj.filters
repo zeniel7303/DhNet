@@ -7,7 +7,13 @@
     <Filter Include="Main">
       <UniqueIdentifier>{57b67583-1ab6-4dd1-86ad-1bc53dc2a608}</UniqueIdentifier>
     </Filter>
-    <Filter Include="PacketHandler">
+    <Filter Include="System">
+      <UniqueIdentifier>{21b2dcdf-4c25-4250-ab8b-0f2332c5e850}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Main\ServerSetting">
+      <UniqueIdentifier>{92f40493-76ee-4994-bbff-cd971902ddf3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Main\PacketHandler">
       <UniqueIdentifier>{be5f096f-ad8a-41cf-9af5-a04e1d7c288a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -21,6 +27,18 @@
     <ClCompile Include="GameSessionManager.cpp">
       <Filter>GameSession</Filter>
     </ClCompile>
+    <ClCompile Include="SessionSystem.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="GameServer.cpp">
+      <Filter>Main</Filter>
+    </ClCompile>
+    <ClCompile Include="ServerGlobal.cpp">
+      <Filter>Main</Filter>
+    </ClCompile>
+    <ClCompile Include="ServerSetting.cpp">
+      <Filter>Main\ServerSetting</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameSession.h">
@@ -29,11 +47,21 @@
     <ClInclude Include="GameSessionManager.h">
       <Filter>GameSession</Filter>
     </ClInclude>
-    <ClInclude Include="stdafx.h">
+    <ClInclude Include="ServerPacketHandler.h">
+      <Filter>Main\PacketHandler</Filter>
+    </ClInclude>
+    <ClInclude Include="SessionSystem.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="GameServer.h">
       <Filter>Main</Filter>
     </ClInclude>
-    <ClInclude Include="ServerPacketHandler.h">
-      <Filter>PacketHandler</Filter>
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="ServerGlobal.h">
+      <Filter>Main</Filter>
+    </ClInclude>
+    <ClInclude Include="ServerSetting.h">
+      <Filter>Main\ServerSetting</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -9,7 +9,7 @@ NetAddress::NetAddress(SOCKADDR_IN _sockAddr) : m_sockAddr(_sockAddr)
 {
 }
 
-NetAddress::NetAddress(wstring _ip, unsigned __int16 _port)
+NetAddress::NetAddress(wstring _ip, uint16 _port)
 {
 	::memset(&m_sockAddr, 0, sizeof(m_sockAddr));
 	m_sockAddr.sin_family = AF_INET;

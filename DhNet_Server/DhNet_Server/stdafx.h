@@ -10,4 +10,9 @@
 
 #include "../ServerCore/pch.h"
 
+#include "ServerGlobal.h"
+
 #include "memory.h"
+
+#include <cstdlib>
+#include <string>
