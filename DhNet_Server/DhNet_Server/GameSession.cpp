@@ -1,7 +1,7 @@
 #include "stdafx.h"
+#include "../ServerCore/PacketHandler.h"
 #include "GameSession.h"
 #include "GameSessionManager.h"
-#include "../ServerCore/PacketHandler.h"
 
 void GameSession::OnConnected()
 {

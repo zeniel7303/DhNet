@@ -1,19 +1,22 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="GameSession">
-      <UniqueIdentifier>{54e910ae-d161-4fd1-8bae-08576dd51b7e}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Main">
       <UniqueIdentifier>{57b67583-1ab6-4dd1-86ad-1bc53dc2a608}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="System">
-      <UniqueIdentifier>{21b2dcdf-4c25-4250-ab8b-0f2332c5e850}</UniqueIdentifier>
     </Filter>
     <Filter Include="Main\ServerSetting">
       <UniqueIdentifier>{92f40493-76ee-4994-bbff-cd971902ddf3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Main\PacketHandler">
+    <Filter Include="Player">
+      <UniqueIdentifier>{2cff3f5c-7803-4d8f-b07f-aea193e2ef68}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Player\GameSession">
+      <UniqueIdentifier>{54e910ae-d161-4fd1-8bae-08576dd51b7e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Room">
+      <UniqueIdentifier>{09f3a66d-c6ac-48e6-b522-7ec4019e5b33}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Main\Controller">
       <UniqueIdentifier>{be5f096f-ad8a-41cf-9af5-a04e1d7c288a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -22,13 +25,10 @@
       <Filter>Main</Filter>
     </ClCompile>
     <ClCompile Include="GameSession.cpp">
-      <Filter>GameSession</Filter>
+      <Filter>Player\GameSession</Filter>
     </ClCompile>
     <ClCompile Include="GameSessionManager.cpp">
-      <Filter>GameSession</Filter>
-    </ClCompile>
-    <ClCompile Include="SessionSystem.cpp">
-      <Filter>System</Filter>
+      <Filter>Player\GameSession</Filter>
     </ClCompile>
     <ClCompile Include="GameServer.cpp">
       <Filter>Main</Filter>
@@ -39,19 +39,19 @@
     <ClCompile Include="ServerSetting.cpp">
       <Filter>Main\ServerSetting</Filter>
     </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Room.cpp">
+      <Filter>Room</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameSession.h">
-      <Filter>GameSession</Filter>
+      <Filter>Player\GameSession</Filter>
     </ClInclude>
     <ClInclude Include="GameSessionManager.h">
-      <Filter>GameSession</Filter>
-    </ClInclude>
-    <ClInclude Include="ServerPacketHandler.h">
-      <Filter>Main\PacketHandler</Filter>
-    </ClInclude>
-    <ClInclude Include="SessionSystem.h">
-      <Filter>System</Filter>
+      <Filter>Player\GameSession</Filter>
     </ClInclude>
     <ClInclude Include="GameServer.h">
       <Filter>Main</Filter>
@@ -62,6 +62,21 @@
     </ClInclude>
     <ClInclude Include="ServerSetting.h">
       <Filter>Main\ServerSetting</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Room.h">
+      <Filter>Room</Filter>
+    </ClInclude>
+    <ClInclude Include="RoomController.h">
+      <Filter>Main\Controller</Filter>
+    </ClInclude>
+    <ClInclude Include="TestController.h">
+      <Filter>Main\Controller</Filter>
+    </ClInclude>
+    <ClInclude Include="LoginController.h">
+      <Filter>Main\Controller</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

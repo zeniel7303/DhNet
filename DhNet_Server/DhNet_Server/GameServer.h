@@ -5,7 +5,7 @@
 class GameServer
 {
 private:
-	shared_ptr<ServerService> serverService;
+	shared_ptr<ServerService> m_serverService;
 
 private:
 	void RegisterPacket();
