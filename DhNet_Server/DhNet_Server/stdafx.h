@@ -16,3 +16,5 @@
 
 #include <cstdlib>
 #include <string>
+
+static atomic<uint64> idGenerator = 1;
