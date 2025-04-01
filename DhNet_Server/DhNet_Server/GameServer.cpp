@@ -33,6 +33,8 @@ void GameServer::RegisterPacket()
     PacketHandler::Instance().Register(PacketEnum::Test, &HandleTestPacket);
     PacketHandler::Instance().Register(PacketEnum::Req_RoomEnter, &HandleReqRoomEnterPacket);
     PacketHandler::Instance().Register(PacketEnum::Req_Login, &HandleReqLoginPacket);
+    PacketHandler::Instance().Register(PacketEnum::Req_RoomChat, &HandleReqRoomChatPacket);
+    PacketHandler::Instance().Register(PacketEnum::Req_RoomExit, &HandleReqRoomExitPacket);
 }
 
 void GameServer::StartServer()

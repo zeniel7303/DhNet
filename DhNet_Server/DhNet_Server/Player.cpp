@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "Player.h"
+#include "../DhNet_Protocol/PacketList.h"
 #include "GameSession.h"
+#include "Room.h"
 
 Player::Player(uint64 _id, string _name, shared_ptr<GameSession> _session)
 {
@@ -11,4 +13,15 @@ Player::Player(uint64 _id, string _name, shared_ptr<GameSession> _session)
 
 Player::~Player()
 {
+}
+
+void Player::LeaveRoom()
+{
+    cout << m_name << "³ª°¨" << endl;
+
+    GRoom.Leave(shared_from_this());
+
+    auto senderAndPacket = Sender::GetSenderAndPacket<NotiRoomExit>();
+    senderAndPacket.first->Init(m_playerId, m_name);
+    GRoom.Broadcast(senderAndPacket.second);
 }

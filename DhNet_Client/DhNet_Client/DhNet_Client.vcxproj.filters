@@ -8,11 +8,11 @@
     <Filter Include="Main">
       <UniqueIdentifier>{bcdc38e1-4ae0-48fa-9671-b2433b7e7dd6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="PacketHandler">
-      <UniqueIdentifier>{a10bf979-b4f0-4383-ad7d-203f033e2ca5}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ServerSession">
       <UniqueIdentifier>{9f889069-f921-4638-a3c2-361c6664d371}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Controller">
+      <UniqueIdentifier>{a3e30fd5-3f20-4132-a450-9d2b7cbd4430}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -22,16 +22,28 @@
     <ClCompile Include="ServerSession.cpp">
       <Filter>ServerSession</Filter>
     </ClCompile>
+    <ClCompile Include="RoomController.h">
+      <Filter>Controller</Filter>
+    </ClCompile>
+    <ClCompile Include="RoomController.cpp">
+      <Filter>Controller</Filter>
+    </ClCompile>
+    <ClCompile Include="LoginController.cpp">
+      <Filter>Controller</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
       <Filter>Main</Filter>
     </ClInclude>
-    <ClInclude Include="ClientPacketHandler.h">
-      <Filter>PacketHandler</Filter>
-    </ClInclude>
     <ClInclude Include="ServerSession.h">
       <Filter>ServerSession</Filter>
+    </ClInclude>
+    <ClInclude Include="TestController.h">
+      <Filter>Controller</Filter>
+    </ClInclude>
+    <ClInclude Include="LoginController.h">
+      <Filter>Controller</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

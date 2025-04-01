@@ -8,6 +8,10 @@
 class ServerSession : public Session
 {
 public:
+	uint64 m_playerId;
+	string m_playerName;
+
+public:
 	~ServerSession()
 	{
 		cout << "~ServerSession()" << endl;

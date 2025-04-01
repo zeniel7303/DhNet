@@ -8,9 +8,14 @@ void GameSession::OnConnected()
 	GSessionManager.Add(static_pointer_cast<GameSession>(shared_from_this()));
 }
 
-void GameSession::OnDisconnected()
-{
-	GSessionManager.Remove(static_pointer_cast<GameSession>(shared_from_this()));
+void GameSession::OnDisconnected()  
+{  
+   if (m_player)  
+   {  
+       m_player->LeaveRoom();  
+   }  
+
+   GSessionManager.Remove(static_pointer_cast<GameSession>(shared_from_this()));  
 }
 
 bool GameSession::OnRecv(PacketHeader* _packet)

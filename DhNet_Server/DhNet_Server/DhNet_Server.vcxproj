@@ -130,9 +130,11 @@
     <ClCompile Include="GameServer.cpp" />
     <ClCompile Include="GameSession.cpp" />
     <ClCompile Include="GameSessionManager.cpp" />
+    <ClCompile Include="LoginController.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Room.cpp" />
+    <ClCompile Include="RoomController.cpp" />
     <ClCompile Include="ServerGlobal.cpp" />
     <ClCompile Include="ServerSetting.cpp" />
   </ItemGroup>
