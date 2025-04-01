@@ -19,6 +19,9 @@
     <Filter Include="Main\Controller">
       <UniqueIdentifier>{be5f096f-ad8a-41cf-9af5-a04e1d7c288a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Job">
+      <UniqueIdentifier>{a28bc6b5-b447-49ff-a59d-ae2ea8a92a41}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -50,6 +53,9 @@
     </ClCompile>
     <ClCompile Include="RoomController.cpp">
       <Filter>Main\Controller</Filter>
+    </ClCompile>
+    <ClCompile Include="Job.cpp">
+      <Filter>Job</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -83,6 +89,9 @@
     </ClInclude>
     <ClInclude Include="LoginController.h">
       <Filter>Main\Controller</Filter>
+    </ClInclude>
+    <ClInclude Include="Job.h">
+      <Filter>Job</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

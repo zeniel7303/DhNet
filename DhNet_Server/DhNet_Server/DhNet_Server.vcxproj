@@ -130,6 +130,7 @@
     <ClCompile Include="GameServer.cpp" />
     <ClCompile Include="GameSession.cpp" />
     <ClCompile Include="GameSessionManager.cpp" />
+    <ClCompile Include="Job.cpp" />
     <ClCompile Include="LoginController.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Player.cpp" />
@@ -142,6 +143,7 @@
     <ClInclude Include="GameServer.h" />
     <ClInclude Include="GameSession.h" />
     <ClInclude Include="GameSessionManager.h" />
+    <ClInclude Include="Job.h" />
     <ClInclude Include="LoginController.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Room.h" />

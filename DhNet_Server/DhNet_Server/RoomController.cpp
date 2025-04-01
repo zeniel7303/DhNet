@@ -7,11 +7,11 @@ bool HandleReqRoomEnterPacket(PacketHeader* _header, std::shared_ptr<Session>& _
 	auto reqRoomEnter = reinterpret_cast<ReqRoomEnter*>(_header);
 	auto gameSession = static_pointer_cast<GameSession>(_session);
 	auto player = gameSession->GetPlayer();
-	GRoom.Enter(player);
+	GRoom.PushJob(make_shared<EnterJob>(GRoom, player));
 
 	auto senderAndPacket = Sender::GetSenderAndPacket<NotiRoomEnter>();
 	senderAndPacket.first->Init(player->GetPlayerId(), player->GetPlayerName());
-	GRoom.Broadcast(senderAndPacket.second);
+	GRoom.PushJob(make_shared<BroadcastJob>(GRoom, senderAndPacket.second));
 
 	return true;
 }
@@ -24,7 +24,7 @@ bool HandleReqRoomChatPacket(PacketHeader* _header, std::shared_ptr<Session>& _s
 
 	auto senderAndPacket = Sender::GetSenderAndPacket<NotiRoomChat>();
 	senderAndPacket.first->Init(player->GetPlayerId(), player->GetPlayerName(), reqRoomChat->m_message);
-	GRoom.Broadcast(senderAndPacket.second);
+	GRoom.PushJob(make_shared<BroadcastJob>(GRoom, senderAndPacket.second));
 
 	return true;
 }
@@ -34,11 +34,11 @@ bool HandleReqRoomExitPacket(PacketHeader* _header, std::shared_ptr<Session>& _s
 	auto reqRoomExit = reinterpret_cast<ReqRoomExit*>(_header);
 	auto gameSession = static_pointer_cast<GameSession>(_session);
 	auto player = gameSession->GetPlayer();
-	GRoom.Leave(player);
+	GRoom.PushJob(make_shared<LeaveJob>(GRoom, player));
 
 	auto senderAndPacket = Sender::GetSenderAndPacket<NotiRoomExit>();
 	senderAndPacket.first->Init(player->GetPlayerId(), player->GetPlayerName());
-	GRoom.Broadcast(senderAndPacket.second);
+	GRoom.PushJob(make_shared<BroadcastJob>(GRoom, senderAndPacket.second));
 
 	return true;
 }
