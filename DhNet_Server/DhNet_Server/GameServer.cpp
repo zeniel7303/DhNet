@@ -8,6 +8,8 @@
 #include "RoomController.h"
 #include "LoginController.h"
 
+#include "Room.h"
+
 GameServer::GameServer(shared_ptr<ServerSetting> _setting)
 {
     RegisterPacket();
@@ -51,6 +53,12 @@ void GameServer::StartServer()
                     m_serverService->GetIocpCore()->Dispatch();
                 }
             });
+    }
+
+    while (true)
+    {
+        GRoom.FlushJob();
+        this_thread::sleep_for(10ms);
     }
 
     GThreadManager->Join();
