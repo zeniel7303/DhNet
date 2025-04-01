@@ -13,6 +13,7 @@ Player::Player(uint64 _id, string _name, shared_ptr<GameSession> _session)
 
 Player::~Player()
 {
+    cout << "~Player" << endl;
 }
 
 void Player::LeaveRoom()
