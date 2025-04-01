@@ -37,6 +37,9 @@ bool IocpCore::Dispatch(uint32 _timeoutMs)
 		{
 		case WAIT_TIMEOUT:
 			return false;
+		case ERROR_CONNECTION_REFUSED:
+			cout << "원격 컴퓨터가 네트워크 연결을 거부했습니다." << endl;
+			return false;
 		default:
 			shared_ptr<IocpObject> iocpObject = iocpEvent->m_owner;
 			iocpObject->Dispatch(iocpEvent, numOfBytes);

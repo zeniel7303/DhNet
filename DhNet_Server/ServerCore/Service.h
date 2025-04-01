@@ -35,6 +35,7 @@ public:
 	shared_ptr<Session> CreateSession();
 	void AddSession(shared_ptr<Session> _session);
 	void ReleaseSession(shared_ptr<Session> _session);
+	void BroadCast(shared_ptr<Sender> _sender);
 
 	NetAddress& GetNetAddress() { return m_netAddress; }
 	shared_ptr<IocpCore> GetIocpCore() { return m_iocpCore; }

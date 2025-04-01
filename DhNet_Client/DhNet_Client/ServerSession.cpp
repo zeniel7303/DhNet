@@ -5,11 +5,9 @@ void ServerSession::OnConnected()
 {
 	cout << "Connected To Server" << endl;
 
-	auto sender = Sender::Alloc<TestPacket>();
-	auto packet = sender->GetWritePointer<TestPacket>();
-	packet->Init(PacketEnum::Test, sizeof(TestPacket));
-	strcpy_s(packet->m_test, "Connect");
-	Send(sender);
+	auto senderAndPacket = Sender::GetSenderAndPacket<ReqLogin>();
+	senderAndPacket.first->Init(PacketEnum::Req_Login, sizeof(ReqLogin));
+	Send(senderAndPacket.second);
 }
 
 bool ServerSession::OnRecv(PacketHeader* _packet)

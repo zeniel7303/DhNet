@@ -30,6 +30,9 @@ public:
 	T* GetWritePointer();
 	void* GetSendPointer();
 	unsigned short GetSendSize();
+
+	template<typename T>
+	static pair<T*, shared_ptr<Sender>> GetSenderAndPacket();
 };
 
 template<typename T>
@@ -54,4 +57,12 @@ inline T* Sender::GetWritePointer()
 	auto ptr = reinterpret_cast<char*>(m_tempChunk);
 
 	return reinterpret_cast<T*>(ptr);
+}
+
+template<typename T>
+inline static pair<T*, shared_ptr<Sender>> Sender::GetSenderAndPacket()
+{
+	auto sender = Alloc<T>();
+	auto packet = sender->GetWritePointer<T>();
+	return make_pair(packet, sender);
 }

@@ -127,13 +127,17 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="LoginController.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="RoomController.cpp" />
+    <ClCompile Include="RoomController.h" />
     <ClCompile Include="ServerSession.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ClientPacketHandler.h" />
+    <ClInclude Include="LoginController.h" />
     <ClInclude Include="ServerSession.h" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="TestController.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

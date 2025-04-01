@@ -12,7 +12,11 @@ void Room::Enter(shared_ptr<Player> _player)
 void Room::Leave(shared_ptr<Player> _player)
 {
 	WRITE_LOCK;
-	m_players.erase(_player->GetPlayerId());
+	auto it = m_players.find(_player->GetPlayerId());
+	if (it != m_players.end())
+	{
+		m_players.erase(it);
+	}
 }
 
 void Room::Broadcast(shared_ptr<Sender> _sender)
