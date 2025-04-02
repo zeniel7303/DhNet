@@ -20,9 +20,9 @@ void Player::LeaveRoom()
 {
     cout << m_name << "³ª°¨" << endl;
 
-    GRoom.PushJob(make_shared<LeaveJob>(GRoom, shared_from_this()));
+    GRoom.PushJob(&Room::Leave, shared_from_this());
 
     auto senderAndPacket = Sender::GetSenderAndPacket<NotiRoomExit>();
     senderAndPacket.first->Init(m_playerId, m_name);
-    GRoom.PushJob(make_shared<BroadcastJob>(GRoom, senderAndPacket.second));
+    GRoom.PushJob(&Room::Broadcast, senderAndPacket.second);
 }
