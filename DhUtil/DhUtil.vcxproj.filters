@@ -28,6 +28,9 @@
     <ClInclude Include="ObjectPool.h">
       <Filter>ObjectPool</Filter>
     </ClInclude>
+    <ClInclude Include="Job.h">
+      <Filter>Job</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ThreadManager.cpp">
@@ -48,6 +51,9 @@
     <ClCompile Include="UtilGlobal.cpp">
       <Filter>Main</Filter>
     </ClCompile>
+    <ClCompile Include="Job.cpp">
+      <Filter>Job</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Thread">
@@ -61,6 +67,9 @@
     </Filter>
     <Filter Include="ObjectPool">
       <UniqueIdentifier>{b33117f8-3b0e-4681-9876-83b68ade5205}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Job">
+      <UniqueIdentifier>{6caae510-c2d7-45e2-b982-ddf3f0ba5973}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
