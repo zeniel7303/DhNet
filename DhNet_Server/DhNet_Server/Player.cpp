@@ -4,7 +4,7 @@
 #include "GameSession.h"
 #include "Room.h"
 
-Player::Player(uint64 _id, string _name, shared_ptr<GameSession> _session)
+Player::Player(uint64 _id, std::string _name, std::shared_ptr<GameSession> _session)
 {
 	m_playerId = _id;
 	m_name = _name;
@@ -13,12 +13,12 @@ Player::Player(uint64 _id, string _name, shared_ptr<GameSession> _session)
 
 Player::~Player()
 {
-    cout << "~Player" << endl;
+    std::cout << "~Player" << std::endl;
 }
 
 void Player::LeaveRoom()
 {
-    cout << m_name << "나감" << endl;
+    std::cout << m_name << "나감" << std::endl;
 
     GRoom.PushJob(&Room::Leave, shared_from_this());
 

@@ -5,7 +5,7 @@
 bool HandleReqRoomEnterPacket(PacketHeader* _header, std::shared_ptr<Session>& _session)
 {
 	auto reqRoomEnter = reinterpret_cast<ReqRoomEnter*>(_header);
-	auto gameSession = static_pointer_cast<GameSession>(_session);
+	auto gameSession = std::static_pointer_cast<GameSession>(_session);
 	auto player = gameSession->GetPlayer();
 	GRoom.PushJob(&Room::Enter, player);
 
@@ -19,7 +19,7 @@ bool HandleReqRoomEnterPacket(PacketHeader* _header, std::shared_ptr<Session>& _
 bool HandleReqRoomChatPacket(PacketHeader* _header, std::shared_ptr<Session>& _session)
 {
 	auto reqRoomChat = reinterpret_cast<ReqRoomChat*>(_header);
-	auto gameSession = static_pointer_cast<GameSession>(_session);
+	auto gameSession = std::static_pointer_cast<GameSession>(_session);
 	auto player = gameSession->GetPlayer();
 
 	auto senderAndPacket = Sender::GetSenderAndPacket<NotiRoomChat>();
@@ -32,7 +32,7 @@ bool HandleReqRoomChatPacket(PacketHeader* _header, std::shared_ptr<Session>& _s
 bool HandleReqRoomExitPacket(PacketHeader* _header, std::shared_ptr<Session>& _session)
 {
 	auto reqRoomExit = reinterpret_cast<ReqRoomExit*>(_header);
-	auto gameSession = static_pointer_cast<GameSession>(_session);
+	auto gameSession = std::static_pointer_cast<GameSession>(_session);
 	auto player = gameSession->GetPlayer();
 	GRoom.PushJob(&Room::Leave, player);
 

@@ -4,22 +4,22 @@
 
 GameSessionManager GSessionManager;
 
-void GameSessionManager::Add(shared_ptr<GameSession> _session)
+void GameSessionManager::Add(std::shared_ptr<GameSession> _session)
 {
 	WRITE_LOCK;
 	m_sessions.insert(_session);
 }
 
-void GameSessionManager::Remove(shared_ptr<GameSession> _session)
+void GameSessionManager::Remove(std::shared_ptr<GameSession> _session)
 {
 	WRITE_LOCK;
 	m_sessions.erase(_session);
 }
 
-void GameSessionManager::Broadcast(shared_ptr<Sender> _sender)
+void GameSessionManager::Broadcast(std::shared_ptr<Sender> _sender)
 {
 	WRITE_LOCK;
-	for (shared_ptr<GameSession> session : m_sessions)
+	for (std::shared_ptr<GameSession> session : m_sessions)
 	{
 		session->Send(_sender);
 	}

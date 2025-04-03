@@ -6,9 +6,9 @@ bool RecvTestPacket(PacketHeader* _header, std::shared_ptr<Session>& _session)
 {
 	auto temp = reinterpret_cast<TestPacket*>(_header);
 
-	cout << "OnRecv Len " << temp->m_dataSize << " / " << temp->m_test << endl;
+	std::cout << "OnRecv Len " << temp->m_dataSize << " / " << temp->m_test << std::endl;
 
-	this_thread::sleep_for(1s);
+	std::this_thread::sleep_for(std::chrono::seconds(1));
 
 	auto sender = Sender::Alloc<TestPacket>();
 	auto packet = sender->GetWritePointer<TestPacket>();

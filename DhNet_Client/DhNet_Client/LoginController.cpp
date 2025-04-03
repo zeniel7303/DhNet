@@ -4,7 +4,7 @@
 bool HandleResLoginPacket(PacketHeader* _header, std::shared_ptr<Session>& _session)
 {
 	auto resLogin = reinterpret_cast<ResLogin*>(_header);
-	auto serverSession = static_pointer_cast<ServerSession>(_session);
+	auto serverSession = std::static_pointer_cast<ServerSession>(_session);
 	serverSession->m_playerId = resLogin->m_playerId;
 	serverSession->m_playerName = resLogin->m_playerName;
 

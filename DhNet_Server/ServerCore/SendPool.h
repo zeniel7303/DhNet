@@ -13,8 +13,8 @@ private:
 	USE_LOCK;
 
 	DataChunk*				m_chunk;
-	vector<Sender>			m_senderList;
-	vector<bool>			m_flag;
+	std::vector<Sender>		m_senderList;
+	std::vector<bool>		m_flag;
 	unsigned short			m_chunkCount;
 	unsigned short			m_useSize;
 
@@ -23,7 +23,7 @@ public:
 	~SendPool();
 
 	int Init(unsigned short _count);
-	shared_ptr<Sender> Alloc(unsigned short _sendSize);
+	SenderRef Alloc(unsigned short _sendSize);
 	bool DeAlloc(int _index, unsigned short _count);
 
 	int GetIndex(unsigned short _count);

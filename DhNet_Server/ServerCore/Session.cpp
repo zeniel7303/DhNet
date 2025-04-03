@@ -44,7 +44,7 @@ void Session::Dispatch(IocpEvent* _iocpEvent, int32 _numOfBytes)
 	}
 }
 
-void Session::Send(shared_ptr<Sender> _sender)
+void Session::Send(SenderRef _sender)
 {
 	WRITE_LOCK;
 
@@ -68,7 +68,7 @@ void Session::Disconnect(const WCHAR* _cause)
 		return;
 
 	// TEMP
-	wcout << "Disconnect : " << _cause << endl;
+	std::cout << "Disconnect : " << _cause << std::endl;
 
 	OnDisconnected(); // 컨텐츠 코드에서 재정의
 	GetService()->ReleaseSession(GetSessionRef());
@@ -166,7 +166,7 @@ void Session::RegisterSend()
 
 		while (m_senderQueue.empty() == false)
 		{
-			shared_ptr<Sender> sender = m_senderQueue.front();
+			SenderRef sender = m_senderQueue.front();
 
 			m_senderQueue.pop();
 			m_sendEvent.m_senders.push_back(sender);
@@ -174,9 +174,9 @@ void Session::RegisterSend()
 	}
 
 	// Scatter-Gather (흩어져 있는 데이터들을 모아서 한 방에 보낸다.)
-	vector<WSABUF> wsaBufs;
+	std::vector<WSABUF> wsaBufs;
 	wsaBufs.reserve(m_sendEvent.m_senders.size());
-	for (shared_ptr<Sender> sender : m_sendEvent.m_senders)
+	for (SenderRef sender : m_sendEvent.m_senders)
 	{
 		WSABUF wsaBuf;
 		wsaBuf.buf = reinterpret_cast<char*>(sender->GetSendPointer());
@@ -301,7 +301,7 @@ void Session::HandleError(int32 _errorCode)
 		break;
 	default:
 		// TODO : Log
-		cout << "Handle Error : " << _errorCode << endl;
+		std::cout << "Handle Error : " << _errorCode << std::endl;
 		break;
 	}
 }

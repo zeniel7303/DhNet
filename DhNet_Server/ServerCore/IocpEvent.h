@@ -20,8 +20,8 @@ enum class EventType : unsigned __int8
 class IocpEvent : public OVERLAPPED
 {
 public:
-	EventType				m_type;
-	shared_ptr<IocpObject>	m_owner;
+	EventType			m_type;
+	IocpObjectRef		m_owner;
 
 public:
 	IocpEvent(EventType _type);
@@ -56,7 +56,7 @@ public:
 class AcceptEvent : public IocpEvent
 {
 public:
-	shared_ptr<Session> m_session = nullptr;
+	SessionRef m_session = nullptr;
 
 public:
 	AcceptEvent() : IocpEvent(EventType::Accept) {}
@@ -79,7 +79,7 @@ public:
 class SendEvent : public IocpEvent
 {
 public:
-	vector<shared_ptr<Sender>>		m_senders;
+	std::vector<SenderRef>		m_senders;
 
 public:
 	SendEvent() : IocpEvent(EventType::Send) {}

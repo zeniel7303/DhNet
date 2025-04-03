@@ -3,7 +3,7 @@
 
 void ServerSession::OnConnected()
 {
-	cout << "Connected To Server" << endl;
+	std::cout << "Connected To Server" << std::endl;
 
 	auto senderAndPacket = Sender::GetSenderAndPacket<ReqLogin>();
 	senderAndPacket.first->Init(PacketEnum::Req_Login, sizeof(ReqLogin));
@@ -12,15 +12,15 @@ void ServerSession::OnConnected()
 
 bool ServerSession::OnRecv(PacketHeader* _packet)
 {
-	return PacketHandler::Instance().Process(_packet->m_packetNum, _packet, static_pointer_cast<Session>(shared_from_this()));
+	return PacketHandler::Instance().Process(_packet->m_packetNum, _packet, std::static_pointer_cast<Session>(shared_from_this()));
 }
 
 void ServerSession::OnSend(int32 _len)
 {
-	// cout << "OnSend Len = " << _len << endl;
+	// std::cout << "OnSend Len = " << _len << std::endl;
 }
 
 void ServerSession::OnDisconnected()
 {
-	cout << "Disconnected" << endl;
+	std::cout << "Disconnected" << std::endl;
 }

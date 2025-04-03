@@ -5,7 +5,7 @@ ServerSetting::ServerSetting()
 {
     char buffer[256] = {0};
     GetEnvVarUsingWinAPI("DhNet_IP", buffer, sizeof(buffer), "127.0.0.1");
-    m_ip = wstring(buffer, buffer + strlen(buffer)); // Convert char* to wstring
+    m_ip = std::wstring(buffer, buffer + strlen(buffer)); // Convert char* to wstring
 
     GetEnvVarUsingWinAPI("DhNet_PORT", buffer, sizeof(buffer), "7777");
     m_port = static_cast<uint16>(std::stoi(buffer));

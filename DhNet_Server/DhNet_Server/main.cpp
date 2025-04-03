@@ -17,9 +17,9 @@ int main(int argc, char** argv, char** envp)
 {
 	// CheckAllEnv(envp);
 
-	shared_ptr<ServerSetting> serverSetting = make_shared<ServerSetting>();
+	std::shared_ptr<ServerSetting> serverSetting = std::make_shared<ServerSetting>();
 
-	shared_ptr<GameServer> gameServer = make_shared<GameServer>(serverSetting);
+	std::shared_ptr<GameServer> gameServer = std::make_shared<GameServer>(serverSetting);
 
 	gameServer->StartServer();
 

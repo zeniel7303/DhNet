@@ -6,7 +6,7 @@
 
 class Session;
 
-using handleType = function<int(PacketHeader*, std::shared_ptr<Session>&)>;
+using handleType = std::function<int(PacketHeader*, SessionRef&)>;
 
 class PacketHandler : public Handler<handleType>
 {

@@ -5,12 +5,12 @@
 class GameSession : public Session
 {
 private:
-	shared_ptr<Player> m_player;
+	std::shared_ptr<Player> m_player;
 
 public:
 	~GameSession()
 	{
-		cout << "~GameSession" << endl;
+		std::cout << "~GameSession" << std::endl;
 	}
 
 	virtual void OnConnected() override;
@@ -18,6 +18,6 @@ public:
 	virtual bool OnRecv(PacketHeader* _packet) override;
 	virtual void OnSend(int32 _len) override;
 
-	void SetPlayer(shared_ptr<Player> _player) { m_player = _player; }
-	shared_ptr<Player> GetPlayer() { return m_player; }
+	void SetPlayer(std::shared_ptr<Player> _player) { m_player = _player; }
+	std::shared_ptr<Player> GetPlayer() { return m_player; }
 };

@@ -29,7 +29,7 @@ class Lock
 	};
 
 private:
-	atomic<uint32> m_lockFlag = EMPTY_FLAG;
+	std::atomic<uint32> m_lockFlag = EMPTY_FLAG;
 	uint16 m_writeCount = 0;
 
 public:

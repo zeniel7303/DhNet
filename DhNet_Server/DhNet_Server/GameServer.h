@@ -5,13 +5,13 @@
 class GameServer
 {
 private:
-	shared_ptr<ServerService> m_serverService;
+	ServerServiceRef m_serverService;
 
 private:
 	void RegisterPacket();
 
 public:
-	GameServer(shared_ptr<ServerSetting> _setting);
+	GameServer(std::shared_ptr<ServerSetting> _setting);
 	~GameServer();
 
 	void StartServer();

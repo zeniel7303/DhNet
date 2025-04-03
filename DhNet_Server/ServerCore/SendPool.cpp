@@ -42,7 +42,7 @@ int SendPool::Init(unsigned short _count)
 	return 0;
 }
 
-std::shared_ptr<Sender> SendPool::Alloc(unsigned short _sendSize)
+SenderRef SendPool::Alloc(unsigned short _sendSize)
 {
 	int index = 0;
 	unsigned short count = (_sendSize / sizeof(DataChunk)) + 1;
@@ -72,7 +72,7 @@ std::shared_ptr<Sender> SendPool::Alloc(unsigned short _sendSize)
 
 	//c++ shared_ptr delete lambda
 	//https://stackoverflow.com/questions/13633737/using-a-custom-deleter-for-stdshared-ptr-on-a-direct3d11-object
-	return std::shared_ptr<Sender>(sender, [this](Sender* _sender)
+	return SenderRef(sender, [this](Sender* _sender)
 		{
 			// ½ÇÆÐ½Ã ÆÄ±«
 			_sender->DeAlloc();

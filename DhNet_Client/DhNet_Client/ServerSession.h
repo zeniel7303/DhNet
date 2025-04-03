@@ -8,13 +8,13 @@
 class ServerSession : public Session
 {
 public:
-	uint64 m_playerId;
-	string m_playerName;
+	uint64			m_playerId;
+	std::string		m_playerName;
 
 public:
 	~ServerSession()
 	{
-		cout << "~ServerSession()" << endl;
+		std::cout << "~ServerSession()" << std::endl;
 	}
 
 	virtual void OnConnected() override;

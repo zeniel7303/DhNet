@@ -21,7 +21,7 @@ public:
 	static int Init(unsigned short _sendCount);
 
 	template<typename T>
-	static shared_ptr<Sender> Alloc();
+	static SenderRef Alloc();
 	int DeAlloc();
 
 	void SetSendDataChunk(DataChunk* _chunk, int _chunkIndex, unsigned short _chunkCount);
@@ -32,11 +32,11 @@ public:
 	unsigned short GetSendSize();
 
 	template<typename T>
-	static pair<T*, shared_ptr<Sender>> GetSenderAndPacket();
+	static std::pair<T*, SenderRef> GetSenderAndPacket();
 };
 
 template<typename T>
-inline shared_ptr<Sender> Sender::Alloc()
+inline SenderRef Sender::Alloc()
 {
 	int size = sizeof(T);
 
@@ -60,7 +60,7 @@ inline T* Sender::GetWritePointer()
 }
 
 template<typename T>
-inline static pair<T*, shared_ptr<Sender>> Sender::GetSenderAndPacket()
+inline static std::pair<T*, SenderRef> Sender::GetSenderAndPacket()
 {
 	auto sender = Alloc<T>();
 	auto packet = sender->GetWritePointer<T>();

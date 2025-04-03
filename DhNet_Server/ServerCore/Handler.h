@@ -5,7 +5,7 @@ template<typename T>
 class Handler
 {
 public:
-	map<int, T> m_packetList;
+	std::map<int, T> m_packetList;
 
 public:
 	Handler() {}
