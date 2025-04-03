@@ -26,7 +26,7 @@ public:
 	ResLogin() = default;
 	~ResLogin() = default;
 
-    void Init(uint64 _playerId, string _name)
+    void Init(uint64 _playerId, std::string _name)
     {
 		PacketHeader::Init(PacketEnum::Res_Login, sizeof(this));
 		m_playerId = _playerId;
@@ -56,7 +56,7 @@ public:
 	NotiRoomEnter() = default;
 	~NotiRoomEnter() = default;
 
-	void Init(uint64 _playerId, string _name)
+	void Init(uint64 _playerId, std::string _name)
 	{
 		PacketHeader::Init(PacketEnum::Noti_RoomEnter, sizeof(*this));
 		m_playerId = _playerId;
@@ -83,7 +83,7 @@ public:
 	NotiRoomChat() = default;
 	~NotiRoomChat() = default;
 
-    void Init(uint64 _playerId, string _name, const char* _message)
+    void Init(uint64 _playerId, std::string _name, const char* _message)
     {
 		PacketHeader::Init(PacketEnum::Noti_RoomChat, sizeof(*this));
 		m_playerId = _playerId;
@@ -111,7 +111,7 @@ public:
 	NotiRoomExit() = default;
 	~NotiRoomExit() = default;
 
-	void Init(uint64 _playerId, string _name)
+	void Init(uint64 _playerId, std::string _name)
 	{
 		PacketHeader::Init(PacketEnum::Noti_RoomExit, sizeof(*this));
 		m_playerId = _playerId;

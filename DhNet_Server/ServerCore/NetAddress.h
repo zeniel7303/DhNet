@@ -12,10 +12,10 @@ class NetAddress
 public:
 	NetAddress() = default;
 	NetAddress(SOCKADDR_IN _sockAddr);
-	NetAddress(wstring _ip, uint16 _port);
+	NetAddress(std::wstring _ip, uint16 _port);
 
 	SOCKADDR_IN&		GetSockAddr() { return m_sockAddr; }
-	wstring				GetIpAddress();
+	std::wstring		GetIpAddress();
 	uint16				GetPort() { return ::ntohs(m_sockAddr.sin_port); }
 
 public:

@@ -9,46 +9,46 @@
 	 Service
 ---------------*/
 
-using SessionFactory = function<shared_ptr<Session>(void)>;
+using SessionFactory = std::function<SessionRef(void)>;
 
-class Service : public enable_shared_from_this<Service>
+class Service : public std::enable_shared_from_this<Service>
 {
 protected:
 	USE_LOCK;
 
 	NetAddress					m_netAddress;
-	shared_ptr<IocpCore>		m_iocpCore;
+	IocpCoreRef		m_iocpCore;
 
-	set<shared_ptr<Session>>	m_sessions;
+	std::set<SessionRef>	m_sessions;
 	int32						m_sessionCount = 0;
 	int32						m_maxSessionCount = 0;
 	SessionFactory				m_sessionFactory;
 	bool						m_isServerService;
 
 public:
-	Service(NetAddress _netAddress, shared_ptr<IocpCore> _iocpCore, SessionFactory _sessionFactory, int32 _maxSessionCount = 1);
+	Service(NetAddress _netAddress, IocpCoreRef _iocpCore, SessionFactory _sessionFactory, int32 _maxSessionCount = 1);
 	virtual ~Service();
 
 	virtual bool Start() abstract;
 	virtual void End() abstract;
 
-	shared_ptr<Session> CreateSession();
-	void AddSession(shared_ptr<Session> _session);
-	void ReleaseSession(shared_ptr<Session> _session);
-	void BroadCast(shared_ptr<Sender> _sender);
+	SessionRef CreateSession();
+	void AddSession(SessionRef _session);
+	void ReleaseSession(SessionRef _session);
+	void BroadCast(SenderRef _sender);
 
 	NetAddress& GetNetAddress() { return m_netAddress; }
-	shared_ptr<IocpCore> GetIocpCore() { return m_iocpCore; }
+	IocpCoreRef GetIocpCore() { return m_iocpCore; }
 	bool IsServerService() { return m_isServerService; }
 };
 
 class ServerService : public Service
 {
 private:
-	shared_ptr<Listener> m_listener;
+	ListenerRef m_listener;
 
 public:
-	ServerService(NetAddress _netAddress, shared_ptr<IocpCore> _iocpCore, SessionFactory _sessionFactory, int32 _maxSessionCount = 1);
+	ServerService(NetAddress _netAddress, IocpCoreRef _iocpCore, SessionFactory _sessionFactory, int32 _maxSessionCount = 1);
 	~ServerService();
 
 	virtual bool Start() override;
@@ -60,7 +60,7 @@ class ClientService : public Service
 private:
 
 public:
-	ClientService(NetAddress _netAddress, shared_ptr<IocpCore> _iocpCore, SessionFactory _sessionFactory, int32 _maxSessionCount = 1);
+	ClientService(NetAddress _netAddress, IocpCoreRef _iocpCore, SessionFactory _sessionFactory, int32 _maxSessionCount = 1);
 	~ClientService();
 
 	virtual bool Start() override;

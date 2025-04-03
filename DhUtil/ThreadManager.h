@@ -11,15 +11,15 @@
 class ThreadManager
 {
 private:
-	mutex			m_lock;
-	vector<thread>	m_threads;
+	std::mutex					m_lock;
+	std::vector<std::thread>	m_threads;
 
 public:
 	ThreadManager();
 	~ThreadManager();
 
-	void	Launch(function<void(void)> _callback);
-	void	Join();
+	void Launch(std::function<void(void)> _callback);
+	void Join();
 
 	static void InitTLS();
 	static void DestroyTLS();

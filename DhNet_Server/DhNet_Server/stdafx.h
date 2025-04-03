@@ -12,9 +12,4 @@
 
 #include "ServerGlobal.h"
 
-#include "memory.h"
-
-#include <cstdlib>
-#include <string>
-
-static atomic<uint64> idGenerator = 1;
+static std::atomic<uint64> idGenerator = 1;

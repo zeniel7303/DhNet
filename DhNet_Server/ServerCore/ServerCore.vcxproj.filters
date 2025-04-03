@@ -81,6 +81,9 @@
     <ClInclude Include="PacketHeader.h">
       <Filter>Network\Handler</Filter>
     </ClInclude>
+    <ClInclude Include="Types.h">
+      <Filter>Main</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Network">

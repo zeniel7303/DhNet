@@ -17,11 +17,11 @@ ThreadManager::~ThreadManager()
 	Join();
 }
 
-void ThreadManager::Launch(function<void(void)> _callback)
+void ThreadManager::Launch(std::function<void(void)> _callback)
 {
-	lock_guard<std::mutex> guard(m_lock);
+	std::lock_guard<std::mutex> guard(m_lock);
 
-	m_threads.push_back(thread([=]()
+	m_threads.push_back(std::thread([=]()
 		{
 			InitTLS();
 			_callback();
@@ -31,7 +31,7 @@ void ThreadManager::Launch(function<void(void)> _callback)
 
 void ThreadManager::Join()
 {
-	for (thread& t : m_threads)
+	for (std::thread& t : m_threads)
 	{
 		if (t.joinable())
 			t.join();
@@ -41,7 +41,7 @@ void ThreadManager::Join()
 
 void ThreadManager::InitTLS()
 {
-	static atomic<unsigned __int32> SThreadId = 1;
+	static std::atomic<unsigned __int32> SThreadId = 1;
 	LThreadId = SThreadId.fetch_add(1);
 }
 

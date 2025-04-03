@@ -7,7 +7,7 @@
 
 void DeadLockProfiler::PushLock(const char* _name)
 {
-	lock_guard<std::mutex> guard(m_lock);
+	std::lock_guard<std::mutex> guard(m_lock);
 
 	// 아이디를 찾거나 발급한다.
 	int32 lockId = 0;
@@ -31,7 +31,7 @@ void DeadLockProfiler::PushLock(const char* _name)
 		const int32 prevId = LLockStack.top();
 		if (lockId != prevId)
 		{
-			set<int32>& history = m_lockHistory[prevId];
+			std::set<int32>& history = m_lockHistory[prevId];
 			if (history.find(lockId) == history.end())
 			{
 				history.insert(lockId);
@@ -45,7 +45,7 @@ void DeadLockProfiler::PushLock(const char* _name)
 
 void DeadLockProfiler::PopLock(const char* _name)
 {
-	lock_guard<std::mutex> guard(m_lock);
+	std::lock_guard<std::mutex> guard(m_lock);
 
 	// 굳이 없어도 되는 버그 예방차원 코드들
 	{
@@ -61,10 +61,10 @@ void DeadLockProfiler::PopLock(const char* _name)
 void DeadLockProfiler::CheckCycle()
 {
 	const int32 lockCount = static_cast<int32>(m_nameToId.size());
-	m_discoveredOrder = vector<int32>(lockCount, -1);
+	m_discoveredOrder = std::vector<int32>(lockCount, -1);
 	m_discoveredCount = 0;
-	m_finished = vector<bool>(lockCount, false);
-	m_parent = vector<int32>(lockCount, -1);
+	m_finished = std::vector<bool>(lockCount, false);
+	m_parent = std::vector<int32>(lockCount, -1);
 
 	for (int32 lockId = 0; lockId < lockCount; lockId++)
 		DFS(lockId);
@@ -90,7 +90,7 @@ void DeadLockProfiler::DFS(int32 _here)
 		return;
 	}
 
-	set<int32>& nextSet = findIt->second;
+	std::set<int32>& nextSet = findIt->second;
 	for (int32 there : nextSet)
 	{
 		// 아직 방문한 적이 없다면 방문한다.

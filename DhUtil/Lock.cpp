@@ -35,7 +35,7 @@ void Lock::WriteLock(const char* _name)
 		if (::GetTickCount64() - beginTick >= ACQUIRE_TIMEOUT_TICK)
 			CRASH("LOCK_TIMEOUT");
 
-		this_thread::yield();
+		std::this_thread::yield();
 	}
 }
 
@@ -88,7 +88,7 @@ void Lock::ReadLock(const char* _name)
 		if (::GetTickCount64() - beginTick >= ACQUIRE_TIMEOUT_TICK)
 			CRASH("LOCK_TIMEOUT");
 
-		this_thread::yield();
+		std::this_thread::yield();
 	}
 }
 

@@ -5,7 +5,7 @@ bool HandleNotiRoomEnterPacket(PacketHeader* _header, std::shared_ptr<Session>& 
 {
 	auto notiRoomEnter = reinterpret_cast<NotiRoomEnter*>(_header);
 
-	cout << notiRoomEnter->m_playerName << " ÀÔÀå " << endl;
+	std::cout << notiRoomEnter->m_playerName << " ÀÔÀå " << std::endl;
 
 	return true;
 }
@@ -14,7 +14,7 @@ bool HandleNotiRoomChatPacket(PacketHeader* _header, std::shared_ptr<Session>& _
 {
 	auto notiRoomChat = reinterpret_cast<NotiRoomChat*>(_header);
 
-	cout << notiRoomChat->m_playerName << " : " << notiRoomChat->m_message << endl;
+	std::cout << notiRoomChat->m_playerName << " : " << notiRoomChat->m_message << std::endl;
 
 	return true;
 }
@@ -23,7 +23,7 @@ bool HandleNotiRoomExitPacket(PacketHeader* _header, std::shared_ptr<Session>& _
 {
 	auto notiRoomExit = reinterpret_cast<NotiRoomExit*>(_header);
 
-	cout << notiRoomExit->m_playerName << " ÅðÀå " << endl;
+	std::cout << notiRoomExit->m_playerName << " ÅðÀå " << std::endl;
 
 	return true;
 }

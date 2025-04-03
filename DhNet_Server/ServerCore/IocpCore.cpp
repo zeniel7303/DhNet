@@ -13,7 +13,7 @@ IocpCore::~IocpCore()
 	::CloseHandle(m_iocpHandle);
 }
 
-bool IocpCore::Register(shared_ptr<IocpObject> _iocpObject)
+bool IocpCore::Register(IocpObjectRef _iocpObject)
 {
 	return ::CreateIoCompletionPort(_iocpObject->GetHandle(), m_iocpHandle, /*key*/0, 0);
 }
@@ -27,7 +27,7 @@ bool IocpCore::Dispatch(uint32 _timeoutMs)
 	if (::GetQueuedCompletionStatus(m_iocpHandle, OUT &numOfBytes,OUT &key,
 		OUT reinterpret_cast<LPOVERLAPPED*>(&iocpEvent), _timeoutMs))
 	{
-		shared_ptr<IocpObject> iocpObject = iocpEvent->m_owner;
+		IocpObjectRef iocpObject = iocpEvent->m_owner;
 		iocpObject->Dispatch(iocpEvent, numOfBytes);
 	}
 	else
@@ -38,10 +38,10 @@ bool IocpCore::Dispatch(uint32 _timeoutMs)
 		case WAIT_TIMEOUT:
 			return false;
 		case ERROR_CONNECTION_REFUSED:
-			cout << "원격 컴퓨터가 네트워크 연결을 거부했습니다." << endl;
+			std::cout << "원격 컴퓨터가 네트워크 연결을 거부했습니다." << std::endl;
 			return false;
 		default:
-			shared_ptr<IocpObject> iocpObject = iocpEvent->m_owner;
+			IocpObjectRef iocpObject = iocpEvent->m_owner;
 			iocpObject->Dispatch(iocpEvent, numOfBytes);
 			break;
 		}

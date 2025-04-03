@@ -3,12 +3,12 @@
 
 Room GRoom;
 
-void Room::Enter(shared_ptr<Player> _player)
+void Room::Enter(std::shared_ptr<Player> _player)
 {
 	m_players[_player->GetPlayerId()] = _player;
 }
 
-void Room::Leave(shared_ptr<Player> _player)
+void Room::Leave(std::shared_ptr<Player> _player)
 {
 	auto it = m_players.find(_player->GetPlayerId());
 	if (it != m_players.end())
@@ -17,7 +17,7 @@ void Room::Leave(shared_ptr<Player> _player)
 	}
 }
 
-void Room::Broadcast(shared_ptr<Sender> _sender)
+void Room::Broadcast(std::shared_ptr<Sender> _sender)
 {
 	for (auto& p : m_players)
 	{
@@ -29,7 +29,7 @@ void Room::FlushJob()
 {
 	while (true)
 	{
-		shared_ptr<Job> job = m_jobs.Pop();
+		JobRef job = m_jobs.Pop();
 		if (job == nullptr)
 			break;
 

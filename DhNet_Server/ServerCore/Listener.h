@@ -13,15 +13,15 @@ class Listener : public IocpObject
 {
 protected:
 	SOCKET m_socket = INVALID_SOCKET;
-	vector<AcceptEvent*> m_acceptEvents;
-	shared_ptr<ServerService> m_serverService;
+	std::vector<AcceptEvent*> m_acceptEvents;
+	ServerServiceRef m_serverService;
 
 public:
 	Listener() = default;
 	~Listener();
 
 public:
-	bool StartAccept(shared_ptr<ServerService> _serverService);
+	bool StartAccept(ServerServiceRef _serverService);
 	void CloseSocket();
 
 public:

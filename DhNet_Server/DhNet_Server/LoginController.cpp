@@ -7,10 +7,10 @@
 bool HandleReqLoginPacket(PacketHeader* _header, std::shared_ptr<Session>& _session)
 {
 	auto reqLogin = reinterpret_cast<ReqLogin*>(_header);
-	auto gameSession = static_pointer_cast<GameSession>(_session);
+	auto gameSession = std::static_pointer_cast<GameSession>(_session);
 
 	auto num = idGenerator++;
-	auto player = make_shared<Player>(num, "TempUser" + to_string(num), gameSession);
+	auto player = std::make_shared<Player>(num, "TempUser" + std::to_string(num), gameSession);
 	gameSession->SetPlayer(player);
 
 	auto senderAndPacket = Sender::GetSenderAndPacket<ResLogin>();

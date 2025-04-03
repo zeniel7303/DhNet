@@ -14,7 +14,7 @@ ThreadManager* GThreadManager = new ThreadManager();
 
 int main()
 {
-	this_thread::sleep_for(2s);
+	std::this_thread::sleep_for(std::chrono::seconds(2));
 
 	Sender::Init(1024);
 
@@ -24,11 +24,11 @@ int main()
 	PacketHandler::Instance().Register(PacketEnum::Noti_RoomChat, &HandleNotiRoomChatPacket);
 	PacketHandler::Instance().Register(PacketEnum::Noti_RoomExit, &HandleNotiRoomExitPacket);
 
-	shared_ptr<ClientService> clientService = make_shared<ClientService>(
+	ClientServiceRef clientService = std::make_shared<ClientService>(
 		NetAddress(L"127.0.0.1", 7777),
-		make_shared<IocpCore>(),
-		[]() { return make_shared<ServerSession>(); },
-		10);
+		std::make_shared<IocpCore>(),
+		[]() { return std::make_shared<ServerSession>(); },
+		1);
 
 	ASSERT_CRASH(clientService->Start());
 
@@ -49,8 +49,8 @@ int main()
 
 	while (1)
 	{
-		// clientService->BroadCast(senderAndPacket.second);
-		this_thread::sleep_for(1s);
+		clientService->BroadCast(senderAndPacket.second);
+		std::this_thread::sleep_for(std::chrono::seconds(1));
 	}
 
 	GThreadManager->Join();

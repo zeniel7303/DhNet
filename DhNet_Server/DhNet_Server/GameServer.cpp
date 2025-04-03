@@ -10,7 +10,7 @@
 
 #include "Room.h"
 
-GameServer::GameServer(shared_ptr<ServerSetting> _setting)
+GameServer::GameServer(std::shared_ptr<ServerSetting> _setting)
 {
     RegisterPacket();
 
@@ -18,10 +18,10 @@ GameServer::GameServer(shared_ptr<ServerSetting> _setting)
 	auto port = _setting->GetPort();
 	auto maxSessionCount = _setting->GetMaxSessionCount();
 
-    m_serverService = make_shared<ServerService>(
+    m_serverService = std::make_shared<ServerService>(
         NetAddress(ip, port),
-        make_shared<IocpCore>(),
-        []() { return make_shared<GameSession>(); },
+        std::make_shared<IocpCore>(),
+        []() { return std::make_shared<GameSession>(); },
         maxSessionCount);
 }
 
@@ -38,6 +38,9 @@ void GameServer::RegisterPacket()
     PacketHandler::Instance().Register(PacketEnum::Req_RoomChat, &HandleReqRoomChatPacket);
     PacketHandler::Instance().Register(PacketEnum::Req_RoomExit, &HandleReqRoomExitPacket);
 }
+
+#include <chrono>
+#include <thread>
 
 void GameServer::StartServer()
 {
@@ -58,7 +61,7 @@ void GameServer::StartServer()
     while (true)
     {
         GRoom.FlushJob();
-        this_thread::sleep_for(10ms);
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
     }
 
     GThreadManager->Join();
