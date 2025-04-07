@@ -10,7 +10,7 @@ private:
 	std::shared_ptr<GameSession>	m_ownerSession; // 순환참조 주의
 
 public:
-	Player(uint64 _id, std::string _name, std::shared_ptr<GameSession> _session);
+	Player(std::shared_ptr<GameSession> _session);
 	~Player();
 
 	void LeaveRoom();

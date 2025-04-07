@@ -12,4 +12,8 @@
 
 #include "ServerGlobal.h"
 
-static std::atomic<uint64> idGenerator = 1;
+#include <chrono>
+#include <thread>
+
+#include <concurrent_unordered_map.h>
+#include <concurrent_unordered_set.h>
