@@ -1,23 +1,23 @@
 #include "stdafx.h"
 #include "../ServerCore/PacketHandler.h"
+#include "GameServer.h"
 #include "GameSession.h"
-#include "GameSessionManager.h"
 
 void GameSession::OnConnected()
 {
-	GSessionManager.Add(std::static_pointer_cast<GameSession>(shared_from_this()));
+	GameServer::Instance().GetSystem<GameSessionSystem>()->Add(std::static_pointer_cast<GameSession>(shared_from_this()));
 }
 
 void GameSession::OnDisconnected()  
 {  
-   GSessionManager.Remove(std::static_pointer_cast<GameSession>(shared_from_this()));
+	if (m_player)
+	{
+		m_player->LeaveRoom();
+	}
 
-   if (m_player)
-   {
-	   m_player->LeaveRoom();
-   }
+	m_player.reset();
 
-   m_player.reset();
+	GameServer::Instance().GetSystem<GameSessionSystem>()->Remove(std::static_pointer_cast<GameSession>(shared_from_this()));
 }
 
 bool GameSession::OnRecv(PacketHeader* _packet)

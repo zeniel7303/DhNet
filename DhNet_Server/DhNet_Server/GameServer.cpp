@@ -1,33 +1,34 @@
 #include "stdafx.h"
 #include "../../DhUtil/ThreadManager.h"
+#include "Controllers.h"
 
 #include "GameServer.h"
 #include "GameSession.h"
 
-#include "TestController.h"
-#include "RoomController.h"
-#include "LoginController.h"
-
 #include "Room.h"
 
-GameServer::GameServer(std::shared_ptr<ServerSetting> _setting)
+GameServer GameServer::m_singleton;
+
+GameServer::GameServer()
 {
-    RegisterPacket();
 
-	auto ip = _setting->GetIp();
-	auto port = _setting->GetPort();
-	auto maxSessionCount = _setting->GetMaxSessionCount();
-
-    m_serverService = std::make_shared<ServerService>(
-        NetAddress(ip, port),
-        std::make_shared<IocpCore>(),
-        []() { return std::make_shared<GameSession>(); },
-        maxSessionCount);
 }
 
 GameServer::~GameServer()
 {
 	
+}
+
+GameServer& GameServer::Instance()
+{
+    return m_singleton;
+}
+
+void GameServer::AddSetting(std::shared_ptr<ServerSetting> _setting)
+{
+    m_ip = _setting->GetIp();
+    m_port = _setting->GetPort();
+    m_maxSessionCount = _setting->GetMaxSessionCount();
 }
 
 void GameServer::RegisterPacket()
@@ -39,11 +40,25 @@ void GameServer::RegisterPacket()
     PacketHandler::Instance().Register(PacketEnum::Req_RoomExit, &HandleReqRoomExitPacket);
 }
 
-#include <chrono>
-#include <thread>
+void GameServer::AddSystem()
+{
+	m_uniqueIdGenerationSystem = new UniqueIdGenerationSystem();
+	m_gameSessionSystem = new GameSessionSystem();
+	m_playerSystem = new PlayerSystem();
+}
 
 void GameServer::StartServer()
 {
+    RegisterPacket();
+
+    AddSystem();
+
+    m_serverService = std::make_shared<ServerService>(
+        NetAddress(m_ip, m_port),
+        std::make_shared<IocpCore>(),
+        []() { return std::make_shared<GameSession>(); },
+        m_maxSessionCount);
+
     ASSERT_CRASH(m_serverService->Start());
 
     for (int32 i = 0; i < 5; i++)

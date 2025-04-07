@@ -19,15 +19,15 @@
     <Filter Include="Main\Controller">
       <UniqueIdentifier>{be5f096f-ad8a-41cf-9af5-a04e1d7c288a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="System">
+      <UniqueIdentifier>{de62352d-f081-456e-8e5b-b21c269629fd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
       <Filter>Main</Filter>
     </ClCompile>
     <ClCompile Include="GameSession.cpp">
-      <Filter>Player\GameSession</Filter>
-    </ClCompile>
-    <ClCompile Include="GameSessionManager.cpp">
       <Filter>Player\GameSession</Filter>
     </ClCompile>
     <ClCompile Include="GameServer.cpp">
@@ -51,12 +51,21 @@
     <ClCompile Include="RoomController.cpp">
       <Filter>Main\Controller</Filter>
     </ClCompile>
+    <ClCompile Include="UniqueIdGenerationSystem.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerSystem.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="GameSessionSystem.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="TestController.cpp">
+      <Filter>Main\Controller</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameSession.h">
-      <Filter>Player\GameSession</Filter>
-    </ClInclude>
-    <ClInclude Include="GameSessionManager.h">
       <Filter>Player\GameSession</Filter>
     </ClInclude>
     <ClInclude Include="GameServer.h">
@@ -78,10 +87,25 @@
     <ClInclude Include="RoomController.h">
       <Filter>Main\Controller</Filter>
     </ClInclude>
-    <ClInclude Include="TestController.h">
+    <ClInclude Include="LoginController.h">
       <Filter>Main\Controller</Filter>
     </ClInclude>
-    <ClInclude Include="LoginController.h">
+    <ClInclude Include="UniqueIdGenerationSystem.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="Controllers.h">
+      <Filter>Main</Filter>
+    </ClInclude>
+    <ClInclude Include="GameServer.hpp">
+      <Filter>Main</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerSystem.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="GameSessionSystem.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="TestController.h">
       <Filter>Main\Controller</Filter>
     </ClInclude>
   </ItemGroup>

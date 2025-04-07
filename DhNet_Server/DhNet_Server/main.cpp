@@ -19,9 +19,8 @@ int main(int argc, char** argv, char** envp)
 
 	std::shared_ptr<ServerSetting> serverSetting = std::make_shared<ServerSetting>();
 
-	std::shared_ptr<GameServer> gameServer = std::make_shared<GameServer>(serverSetting);
-
-	gameServer->StartServer();
+	GameServer::Instance().AddSetting(serverSetting);
+	GameServer::Instance().StartServer();
 
 	return 0;
 }
