@@ -24,3 +24,9 @@ inline PlayerSystem* GameServer::GetSystem<PlayerSystem>()
 {
     return m_playerSystem;
 }
+
+template<>
+inline RoomSystem* GameServer::GetSystem<RoomSystem>()
+{
+	return m_roomSystem;
+}

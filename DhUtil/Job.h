@@ -1,79 +1,48 @@
 #pragma once
+#include <functional>
+#include <iostream>
+
+using CallbackType = std::function<void()>;
+
+/*--------------
+	  Job
+---------------*/
 
 class Job
 {
-public:
-	virtual void Execute() {}
-};
-
-template<typename Ret, typename... Args>
-class FuncJob : public Job
-{
-	using FuncType = Ret(*)(Args...);
-
 private:
-	FuncType m_func;
-	std::tuple<Args...> m_tuple;
+	CallbackType m_callback;
 
 public:
-	FuncJob(FuncType _func, Args... _args) : m_func(_func), m_tuple(_args...)
-	{
-
+	Job() 
+	{ 
+		// std::cout << "Constructor 1" << std::endl; 
 	}
 
-	virtual void Execute() override
-	{
-		apply([this](auto&&... args) {
-			std::invoke(m_func, std::forward<decltype(args)>(args)...);
-			}, m_tuple);
-	}
-};
-
-template<typename T, typename Ret, typename... Args>
-class MemberJob : public Job
-{
-	using FuncType = Ret(T::*)(Args...);
-
-private:
-	T* m_obj;
-	FuncType	m_func;
-	std::tuple<Args...> m_tuple;
-
-public:
-	MemberJob(T* _obj, FuncType _func, Args... _args) : m_obj(_obj), m_func(_func), m_tuple(_args...)
-	{
-
+	template<typename... Args>
+	Job(Args&&... args) 
+	{ 
+		// std::cout << "Constructor 2" << std::endl; 
 	}
 
-	virtual void Execute() override
-	{
-		apply([this](auto&&... args) {
-			std::invoke(m_func, m_obj, std::forward<decltype(args)>(args)...);
-			}, m_tuple);
-	}
-};
-
-class JobQueue
-{
-private:
-	USE_LOCK;
-	std::queue<JobRef> m_jobs;
-
-public:
-	void Push(JobRef _job)
-	{
-		WRITE_LOCK;
-		m_jobs.push(_job);
+	Job(CallbackType&& _callback) : m_callback(std::move(_callback)) 
+	{ 
+		// std::cout << "Constructor 3" << std::endl; 
 	}
 
-	JobRef Pop()
+	template<typename T, typename Ret, typename... Args>
+	Job(std::shared_ptr<T> _owner, Ret(T::* _memFunc)(Args...), Args&&... _args)
 	{
-		WRITE_LOCK;
-		if (m_jobs.empty())
-			return nullptr;
+		m_callback = [_owner, _memFunc, _args...]()
+			{
+				(_owner.get()->*_memFunc)(_args...);
+			};
 
-		JobRef ret = m_jobs.front();
-		m_jobs.pop();
-		return ret;
+		// std::cout << "Constructor 4" << std::endl;
+	}
+
+	void Execute()
+	{
+		m_callback();
 	}
 };

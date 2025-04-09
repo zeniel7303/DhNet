@@ -1,4 +1,5 @@
 #pragma once
+#include "stdafx.h"
 #include "../DhNet_Protocol/PacketList.h"
 #include "../ServerCore/PacketHandler.h"
 

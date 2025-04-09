@@ -31,6 +31,12 @@
     <ClInclude Include="Job.h">
       <Filter>Job</Filter>
     </ClInclude>
+    <ClInclude Include="JobQueue.h">
+      <Filter>Job</Filter>
+    </ClInclude>
+    <ClInclude Include="JobSerializer.h">
+      <Filter>Job</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ThreadManager.cpp">
@@ -52,6 +58,12 @@
       <Filter>Main</Filter>
     </ClCompile>
     <ClCompile Include="Job.cpp">
+      <Filter>Job</Filter>
+    </ClCompile>
+    <ClCompile Include="JobQueue.cpp">
+      <Filter>Job</Filter>
+    </ClCompile>
+    <ClCompile Include="JobSerializer.cpp">
       <Filter>Job</Filter>
     </ClCompile>
   </ItemGroup>

@@ -3,6 +3,16 @@
 #include "GameServer.h"
 #include "GameSession.h"
 
+GameSession::GameSession()
+{
+	
+}
+
+GameSession::~GameSession()
+{
+	std::cout << "~GameSession" << std::endl;
+}
+
 void GameSession::OnConnected()
 {
 	GameServer::Instance().GetSystem<GameSessionSystem>()->Add(std::static_pointer_cast<GameSession>(shared_from_this()));
@@ -27,5 +37,5 @@ bool GameSession::OnRecv(PacketHeader* _packet)
 
 void GameSession::OnSend(int32 _len)
 {
-	std::cout << "OnSend Len " << _len << std::endl;
+	// std::cout << "OnSend Len " << _len << std::endl;
 }

@@ -63,6 +63,9 @@
     <ClCompile Include="TestController.cpp">
       <Filter>Main\Controller</Filter>
     </ClCompile>
+    <ClCompile Include="RoomSystem.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameSession.h">
@@ -107,6 +110,9 @@
     </ClInclude>
     <ClInclude Include="TestController.h">
       <Filter>Main\Controller</Filter>
+    </ClInclude>
+    <ClInclude Include="RoomSystem.h">
+      <Filter>System</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
