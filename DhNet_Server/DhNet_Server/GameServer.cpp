@@ -11,7 +11,13 @@ GameServer GameServer::m_singleton;
 
 GameServer::GameServer()
 {
+	m_maxSessionCount = 0;
+	m_port = 0;
 
+	m_uniqueIdGenerationSystem = nullptr;
+	m_gameSessionSystem = nullptr;
+	m_playerSystem = nullptr;
+	m_roomSystem = nullptr;
 }
 
 GameServer::~GameServer()
@@ -45,6 +51,7 @@ void GameServer::AddSystem()
 	m_uniqueIdGenerationSystem = new UniqueIdGenerationSystem();
 	m_gameSessionSystem = new GameSessionSystem();
 	m_playerSystem = new PlayerSystem();
+    m_roomSystem = new RoomSystem();
 }
 
 void GameServer::StartServer()
@@ -56,7 +63,8 @@ void GameServer::StartServer()
     m_serverService = std::make_shared<ServerService>(
         NetAddress(m_ip, m_port),
         std::make_shared<IocpCore>(),
-        []() { return std::make_shared<GameSession>(); },
+        []() { return ObjectPool<GameSession>::MakeShared(); },
+        // []() { return std::make_shared<GameSession>(); },
         m_maxSessionCount);
 
     ASSERT_CRASH(m_serverService->Start());
@@ -75,7 +83,7 @@ void GameServer::StartServer()
 
     while (true)
     {
-        GRoom.FlushJob();
+		GameServer::Instance().GetSystem<RoomSystem>()->FlushJob();
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
     }
 

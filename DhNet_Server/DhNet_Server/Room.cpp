@@ -1,8 +1,6 @@
 #include "stdafx.h"
 #include "Room.h"
 
-Room GRoom;
-
 void Room::Enter(std::shared_ptr<Player> _player)
 {
 	m_players[_player->GetPlayerId()] = _player;
@@ -29,7 +27,7 @@ void Room::FlushJob()
 {
 	while (true)
 	{
-		JobRef job = m_jobs.Pop();
+		JobRef job = m_jobQueue.Pop();
 		if (job == nullptr)
 			break;
 

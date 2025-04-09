@@ -136,6 +136,7 @@
     <ClCompile Include="PlayerSystem.cpp" />
     <ClCompile Include="Room.cpp" />
     <ClCompile Include="RoomController.cpp" />
+    <ClCompile Include="RoomSystem.cpp" />
     <ClCompile Include="ServerGlobal.cpp" />
     <ClCompile Include="ServerSetting.cpp" />
     <ClCompile Include="GameSessionSystem.cpp" />
@@ -152,6 +153,7 @@
     <ClInclude Include="PlayerSystem.h" />
     <ClInclude Include="Room.h" />
     <ClInclude Include="RoomController.h" />
+    <ClInclude Include="RoomSystem.h" />
     <ClInclude Include="ServerGlobal.h" />
     <ClInclude Include="ServerSetting.h" />
     <ClInclude Include="GameSessionSystem.h" />

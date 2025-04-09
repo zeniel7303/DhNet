@@ -107,6 +107,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -132,6 +133,8 @@
   <ItemGroup>
     <ClInclude Include="DeadLockProfiler.h" />
     <ClInclude Include="Job.h" />
+    <ClInclude Include="JobQueue.h" />
+    <ClInclude Include="JobSerializer.h" />
     <ClInclude Include="Lock.h" />
     <ClInclude Include="Macro.h" />
     <ClInclude Include="ObjectPool.h" />
@@ -144,6 +147,8 @@
   <ItemGroup>
     <ClCompile Include="DeadLockProfiler.cpp" />
     <ClCompile Include="Job.cpp" />
+    <ClCompile Include="JobQueue.cpp" />
+    <ClCompile Include="JobSerializer.cpp" />
     <ClCompile Include="Lock.cpp" />
     <ClCompile Include="pch.cpp" />
     <ClCompile Include="ThreadManager.cpp" />
