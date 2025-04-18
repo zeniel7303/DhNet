@@ -1,10 +1,6 @@
 #include "pch.h"
 #include "RecvBuffer.h"
 
-/*--------------
-	RecvBuffer
----------------*/
-
 RecvBuffer::RecvBuffer(int32 _bufferSize) : m_bufferSize(_bufferSize)
 {
 	m_capacity = _bufferSize * BUFFER_COUNT;

@@ -5,10 +5,6 @@
 #include "Session.h"
 #include <functional>
 
-/*--------------
-	 Service
----------------*/
-
 using SessionFactory = std::function<SessionRef(void)>;
 
 class Service : public std::enable_shared_from_this<Service>

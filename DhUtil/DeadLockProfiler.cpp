@@ -1,10 +1,6 @@
 #include "pch.h"
 #include "DeadLockProfiler.h"
 
-/*----------------------------
-		DeadLockProfiler
-------------------------------*/
-
 void DeadLockProfiler::PushLock(const char* _name)
 {
 	std::lock_guard<std::mutex> guard(m_lock);

@@ -13,10 +13,6 @@ enum class EventType : unsigned __int8
 	Send
 };
 
-/*--------------
-	IocpEvent
----------------*/
-
 class IocpEvent : public OVERLAPPED
 {
 public:
@@ -29,29 +25,17 @@ public:
 	void		Init();
 };
 
-/*--------------
-   ConnectEvent
----------------*/
-
 class ConnectEvent : public IocpEvent
 {
 public:
 	ConnectEvent() : IocpEvent(EventType::Connect) {}
 };
 
-/*--------------
- DisconnectEvent
----------------*/
-
 class DisconnectEvent : public IocpEvent
 {
 public:
 	DisconnectEvent() : IocpEvent(EventType::Disconnect) {}
 };
-
-/*--------------
-   AcceptEvent
----------------*/
 
 class AcceptEvent : public IocpEvent
 {
@@ -62,19 +46,11 @@ public:
 	AcceptEvent() : IocpEvent(EventType::Accept) {}
 };
 
-/*--------------
-	RecvEvent
----------------*/
-
 class RecvEvent : public IocpEvent
 {
 public:
 	RecvEvent() : IocpEvent(EventType::Recv) {}
 };
-
-/*--------------
-	SendEvent
----------------*/
 
 class SendEvent : public IocpEvent
 {

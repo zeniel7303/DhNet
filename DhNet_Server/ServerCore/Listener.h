@@ -5,10 +5,6 @@
 class AcceptEvent;
 class ServerService;
 
-/*--------------
-    Listener
----------------*/
-
 class Listener : public IocpObject
 {
 protected:

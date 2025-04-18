@@ -2,10 +2,6 @@
 #include "ThreadManager.h"
 #include "TLS.h"
 
-/*--------------
-  ThreadManager
----------------*/
-
 ThreadManager::ThreadManager()
 {
 	// Main Thread

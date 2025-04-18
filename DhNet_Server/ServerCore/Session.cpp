@@ -4,10 +4,6 @@
 #include "Service.h"
 #include "Sender.h"
 
-/*--------------
-	Session
----------------*/
-
 Session::Session() : m_recvBuffer(BUFFER_SIZE)
 {
 	m_socket = SocketUtils::CreateSocket();

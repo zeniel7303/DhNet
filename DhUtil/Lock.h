@@ -39,10 +39,6 @@ public:
 	void ReadUnlock(const char* _name);
 };
 
-/*----------------------------
-		  LockGuards
-------------------------------*/
-
 // RAII
 class ReadLockGuard
 {
