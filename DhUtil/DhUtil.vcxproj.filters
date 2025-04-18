@@ -34,8 +34,8 @@
     <ClInclude Include="JobQueue.h">
       <Filter>Job</Filter>
     </ClInclude>
-    <ClInclude Include="JobSerializer.h">
-      <Filter>Job</Filter>
+    <ClInclude Include="LockQueue.h">
+      <Filter>LockQueue</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -63,8 +63,8 @@
     <ClCompile Include="JobQueue.cpp">
       <Filter>Job</Filter>
     </ClCompile>
-    <ClCompile Include="JobSerializer.cpp">
-      <Filter>Job</Filter>
+    <ClCompile Include="LockQueue.cpp">
+      <Filter>LockQueue</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -82,6 +82,9 @@
     </Filter>
     <Filter Include="Job">
       <UniqueIdentifier>{6caae510-c2d7-45e2-b982-ddf3f0ba5973}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LockQueue">
+      <UniqueIdentifier>{3f174cf4-da38-43e6-bf0e-915a0e64f064}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

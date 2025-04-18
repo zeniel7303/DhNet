@@ -81,11 +81,5 @@ void GameServer::StartServer()
             });
     }
 
-    while (true)
-    {
-		GameServer::Instance().GetSystem<RoomSystem>()->FlushJob();
-        std::this_thread::sleep_for(std::chrono::milliseconds(10));
-    }
-
     GThreadManager->Join();
 }
