@@ -4,10 +4,6 @@
 
 using CallbackType = std::function<void()>;
 
-/*--------------
-	  Job
----------------*/
-
 class Job
 {
 private:
@@ -37,6 +33,20 @@ public:
 
 	void Execute()
 	{
-		m_callback();
+		try
+		{
+			if (m_callback)
+				m_callback();
+		}
+		catch (const std::exception& e)
+		{
+			// 예외 처리 로직 (로그 출력 등)
+			std::cerr << "Job execution failed: " << e.what() << std::endl;
+		}
+		catch (...)
+		{
+			// 알 수 없는 예외 처리
+			std::cerr << "Job execution failed: Unknown error" << std::endl;
+		}
 	}
 };
