@@ -19,4 +19,6 @@ public:
 
 	static void InitTLS();
 	static void DestroyTLS();
+
+	static void DoGlobalQueueWork();
 };

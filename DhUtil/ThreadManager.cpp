@@ -45,3 +45,15 @@ void ThreadManager::DestroyTLS()
 {
 
 }
+
+void ThreadManager::DoGlobalQueueWork()
+{
+	while (true)
+	{
+		uint64 now = ::GetTickCount64();
+		if (now > LEndTickCount)
+			break;
+
+		// TODO : job exeute
+	}
+}

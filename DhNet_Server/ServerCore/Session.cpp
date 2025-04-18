@@ -58,15 +58,15 @@ bool Session::Connect()
 	return RegisterConnect();
 }
 
-void Session::Disconnect(const WCHAR* _cause)
-{
-	if (m_connected.exchange(false) == false)
-		return;
+void Session::Disconnect(const WCHAR* _cause)  
+{  
+if (m_connected.exchange(false) == false)  
+	return;  
 
-	// TEMP
-	std::cout << "Disconnect : " << _cause << std::endl;
+	// TEMP  
+	std::wcout << L"Disconnect : " << std::wstring(_cause) << std::endl;
 
-	OnDisconnected(); // ÄÁÅÙÃ÷ ÄÚµå¿¡¼­ ÀçÁ¤ÀÇ
+	OnDisconnected(); // ÄÁÅÙÃ÷ ÄÚµå¿¡¼­ ÀçÁ¤ÀÇ  
 	GetService()->ReleaseSession(GetSessionRef());
 
 	RegisterDisconnect();

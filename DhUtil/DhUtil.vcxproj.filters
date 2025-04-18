@@ -37,6 +37,9 @@
     <ClInclude Include="LockQueue.h">
       <Filter>LockQueue</Filter>
     </ClInclude>
+    <ClInclude Include="GlobalQueue.h">
+      <Filter>GlobalQueue</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ThreadManager.cpp">
@@ -66,6 +69,9 @@
     <ClCompile Include="LockQueue.cpp">
       <Filter>LockQueue</Filter>
     </ClCompile>
+    <ClCompile Include="GlobalQueue.cpp">
+      <Filter>GlobalQueue</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Thread">
@@ -85,6 +91,9 @@
     </Filter>
     <Filter Include="LockQueue">
       <UniqueIdentifier>{3f174cf4-da38-43e6-bf0e-915a0e64f064}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GlobalQueue">
+      <UniqueIdentifier>{f532bea4-f485-4d34-94c8-991aa1b82251}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

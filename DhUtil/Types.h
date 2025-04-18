@@ -15,4 +15,6 @@ using uint64 = unsigned __int64;
 #define len16(arr)	static_cast<__int16>(sizeof(arr)/sizeof(arr[0]))
 #define len32(arr)	static_cast<__int32>(sizeof(arr)/sizeof(arr[0]))
 
-using JobRef = std::shared_ptr<class Job>;
+#define USING_SHARED_PTR(name)	using name##Ref = std::shared_ptr<class name>;
+USING_SHARED_PTR(Job);
+USING_SHARED_PTR(JobQueue);
