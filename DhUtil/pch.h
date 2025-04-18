@@ -5,6 +5,7 @@
 #include <queue>
 #include <vector>
 #include <cassert>
+#include <Windows.h>
 
 #include "Types.h"
 #include "Macro.h"

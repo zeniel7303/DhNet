@@ -19,7 +19,7 @@ public:
 	void SetPlayer(std::shared_ptr<Player> _player) 
 	{ 
 		m_player = _player; 
-		std::cout << "GameSession::SetPlayer() : " << m_player->GetPlayerId() << std::endl;
+		// std::cout << "GameSession::SetPlayer() : " << m_player->GetPlayerId() << std::endl;
 	}
 
 	std::shared_ptr<Player> GetPlayer() { return m_player; }
