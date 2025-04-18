@@ -22,15 +22,3 @@ void Room::Broadcast(std::shared_ptr<Sender> _sender)
 		p.second->GetOwnerSession()->Send(_sender);
 	}
 }
-
-void Room::FlushJob()
-{
-	while (true)
-	{
-		JobRef job = m_jobQueue.Pop();
-		if (job == nullptr)
-			break;
-
-		job->Execute();
-	}
-}

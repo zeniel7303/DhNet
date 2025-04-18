@@ -1,38 +1,34 @@
 #pragma once
 #include "ObjectPool.h"
+#include "LockQueue.h"
 #include "Job.h"
 
 /*--------------
 	JobQueue
 ---------------*/
 
-class JobQueue
+class JobQueue : public std::enable_shared_from_this<JobQueue>
 {
 private:
-	USE_LOCK;
+	LockQueue<JobRef>		m_jobs;
+	std::atomic<int32>		m_jobCount;
 
-	std::queue<JobRef> m_jobs;
+private:
+	void Push(JobRef&& _job);
+	void Execute();
 
 public:
-	JobRef MakeJob(CallbackType&& _callback)
+	void DoAsync(CallbackType&& _callback)
 	{
-		return nullptr;
+		Push(ObjectPool<Job>::MakeShared(std::move(_callback)));
 	}
 
-	void Push(JobRef _job)
+	template<typename T, typename Ret, typename... Args>
+	void DoAsync(Ret(T::* _memFunc)(Args...), Args... _args)
 	{
-		WRITE_LOCK;
-		m_jobs.push(_job);
+		std::shared_ptr<T> owner = std::static_pointer_cast<T>(shared_from_this());
+		Push(ObjectPool<Job>::MakeShared(owner, _memFunc, std::forward<Args>(_args)...));
 	}
 
-	JobRef Pop()
-	{
-		WRITE_LOCK;
-		if (m_jobs.empty())
-			return nullptr;
-
-		JobRef ret = m_jobs.front();
-		m_jobs.pop();
-		return ret;
-	}
+	void ClearJobs() { m_jobs.Clear(); }
 };

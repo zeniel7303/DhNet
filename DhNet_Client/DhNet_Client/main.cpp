@@ -28,7 +28,7 @@ int main()
 		NetAddress(L"127.0.0.1", 7777),
 		std::make_shared<IocpCore>(),
 		[]() { return std::make_shared<ServerSession>(); },
-		1);
+		2);
 
 	ASSERT_CRASH(clientService->Start());
 

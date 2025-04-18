@@ -30,11 +30,11 @@ void Player::LeaveRoom()
 {
     // std::cout << m_name << "나감" << std::endl;
 
-    GameServer::Instance().GetSystem<RoomSystem>()->GetRoom()->PushJob(&Room::Leave, shared_from_this());
+    GameServer::Instance().GetSystem<RoomSystem>()->GetRoom()->DoAsync(&Room::Leave, shared_from_this());
 
     auto senderAndPacket = Sender::GetSenderAndPacket<NotiRoomExit>();
     senderAndPacket.first->Init(m_playerId, m_name);
-    GameServer::Instance().GetSystem<RoomSystem>()->GetRoom()->PushJob(&Room::Broadcast, senderAndPacket.second);
+    GameServer::Instance().GetSystem<RoomSystem>()->GetRoom()->DoAsync(&Room::Broadcast, senderAndPacket.second);
 
     // 지금은 방 나갔다는건 겜 끈거와 같다.
     GameServer::Instance().GetSystem<PlayerSystem>()->Remove(std::static_pointer_cast<Player>(shared_from_this()));

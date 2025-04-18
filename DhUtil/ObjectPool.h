@@ -55,8 +55,8 @@ private:
 		new(memory)Type(std::forward<Args>(args)...);
 
 #if _DEBUG
-		std::cout << "ObjectPool::GetMemory() : " << typeid(Type).name() << " - poolSize : " << m_poolSize << std::endl;
-		std::cout << "ObjectPool::GetMemory() : " << typeid(Type).name() << " - usedSize : " << m_usedSize << std::endl;
+		// std::cout << "ObjectPool::GetMemory() : " << typeid(Type).name() << " - poolSize : " << m_poolSize << std::endl;
+		// std::cout << "ObjectPool::GetMemory() : " << typeid(Type).name() << " - usedSize : " << m_usedSize << std::endl;
 #endif
 
 		return memory;
@@ -74,7 +74,7 @@ private:
 		}
 
 #if _DEBUG
-		std::cout << "ObjectPool::Push() : " << typeid(Type).name() << " - usedSize : " << m_usedSize << std::endl;
+		// std::cout << "ObjectPool::Push() : " << typeid(Type).name() << " - usedSize : " << m_usedSize << std::endl;
 #endif
 	}
 };

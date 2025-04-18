@@ -11,7 +11,6 @@ public:
 	RoomSystem();
 	~RoomSystem();
 
-	void FlushJob();
 	std::shared_ptr<Room> MakeRoom();
 	std::shared_ptr<Room> GetRoom(int32 roomIndex = 0);
 };

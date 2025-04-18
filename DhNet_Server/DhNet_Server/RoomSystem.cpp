@@ -10,14 +10,6 @@ RoomSystem::~RoomSystem()
 {
 }
 
-void RoomSystem::FlushJob()
-{
-	for (auto& roomPair : m_rooms)
-	{
-		roomPair.second->FlushJob();
-	}
-}
-
 std::shared_ptr<Room> RoomSystem::MakeRoom()
 {
 	// Temp (무조건 방 1개만)

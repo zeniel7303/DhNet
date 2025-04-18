@@ -15,19 +15,13 @@ private:
 
 public:
 	Job() 
-	{ 
+	{
 		// std::cout << "Constructor 1" << std::endl; 
 	}
 
-	template<typename... Args>
-	Job(Args&&... args) 
-	{ 
-		// std::cout << "Constructor 2" << std::endl; 
-	}
-
 	Job(CallbackType&& _callback) : m_callback(std::move(_callback)) 
-	{ 
-		// std::cout << "Constructor 3" << std::endl; 
+	{
+		// std::cout << "Constructor 2" << std::endl;
 	}
 
 	template<typename T, typename Ret, typename... Args>
@@ -38,7 +32,7 @@ public:
 				(_owner.get()->*_memFunc)(_args...);
 			};
 
-		// std::cout << "Constructor 4" << std::endl;
+		// std::cout << "Constructor 3" << std::endl;
 	}
 
 	void Execute()
