@@ -20,19 +20,32 @@ void JobQueue::Push(JobRef&& _job)
 //    절대 끝나지 않는 상황 (일감이 한 쓰레드한테 몰리는 상황)
 void JobQueue::Execute()
 {
-	while (true)
-	{
-		std::vector<JobRef> jobs;
-		m_jobs.PopAll(OUT jobs);
+    while (true)
+    {
+        std::vector<JobRef> jobs;
+        m_jobs.PopAll(OUT jobs);
 
-		const int32 jobCount = static_cast<int32>(jobs.size());
-		for (int32 i = 0; i < jobCount; i++)
-			jobs[i]->Execute();
+        const int32 jobCount = static_cast<int32>(jobs.size());
+        for (int32 i = 0; i < jobCount; i++)
+        {
+            try
+            {
+                jobs[i]->Execute();
+            }
+            catch (const std::exception& e)
+            {
+                // 작업 실행 중 예외 처리
+                std::cerr << "Job execution failed: " << e.what() << std::endl;
+            }
+        }
 
-		// 남은 일감이 0개라면 종료
-		if (m_jobCount.fetch_sub(jobCount) == jobCount)
-		{
-			return;
-		}
-	}
+        // 일감이 더 이상 없으면 중단
+        if (m_jobCount.fetch_sub(jobCount) == jobCount)
+        {
+            return;
+        }
+
+        // 처리 후 잠시 대기 (CPU 과부하 방지)
+        // std::this_thread::yield();
+    }
 }
