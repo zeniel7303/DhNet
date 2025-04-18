@@ -5,10 +5,6 @@
 #include "Session.h"
 #include "Service.h"
 
-/*--------------
-	Listener
----------------*/
-
 Listener::~Listener()
 {
 	SocketUtils::Close(m_socket);

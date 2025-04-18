@@ -1,10 +1,6 @@
 #pragma once
 #include "NetAddress.h"
 
-/*----------------
-	SocketUtils
------------------*/
-
 // 소켓 관련 유틸리티 메소드를 제공 및 각종 소켓 옵션 설정 클래스
 
 class SocketUtils

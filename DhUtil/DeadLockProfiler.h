@@ -5,10 +5,6 @@
 #include <set>
 #include <unordered_map>
 
-/*----------------------------
-		DeadLockProfiler
-------------------------------*/
-
 class DeadLockProfiler
 {
 private:

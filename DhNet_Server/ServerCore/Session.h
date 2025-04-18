@@ -4,10 +4,6 @@
 #include "NetAddress.h"
 #include "RecvBuffer.h"
 
-/*--------------
-	 Session
----------------*/
-
 class Sender;
 
 class Session : public IocpObject

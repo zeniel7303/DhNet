@@ -3,10 +3,6 @@
 #include "LockQueue.h"
 #include "Job.h"
 
-/*--------------
-	JobQueue
----------------*/
-
 class JobQueue : public std::enable_shared_from_this<JobQueue>
 {
 private:

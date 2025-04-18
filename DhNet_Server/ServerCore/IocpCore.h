@@ -1,9 +1,5 @@
 #pragma once
 
-/*--------------
-   IocpObject
----------------*/
-
 // Listener과 Session의 부모 추상 클래스
 // IOCP에서의 Session 역할 담당
 
@@ -14,10 +10,6 @@ public:
 	virtual HANDLE GetHandle() abstract;
 	virtual void Dispatch(class IocpEvent* _iocpEvent, int32 _numOfBytes = 0) abstract;
 };
-
-/*--------------
-	IocpCore
----------------*/
 
 class IocpCore
 {
