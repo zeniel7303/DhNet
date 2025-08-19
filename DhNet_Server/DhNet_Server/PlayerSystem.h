@@ -1,5 +1,5 @@
 #pragma once
-#include <unordered_map>
+#include <concurrent_unordered_map.h>
 
 class Player;
 
@@ -7,7 +7,7 @@ class PlayerSystem
 {
 private:
 	USE_LOCK;
-	std::unordered_map<uint64, std::shared_ptr<Player>> m_players;
+	concurrency::concurrent_unordered_map<uint64, std::shared_ptr<Player>> m_players;
 
 public:
 	PlayerSystem() = default;

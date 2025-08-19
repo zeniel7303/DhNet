@@ -46,3 +46,4 @@ sysinfo.txt
 # Ignore any files in /bin and /obj Folders
 **/bin/*
 **/obj/*
+DhNet_Server/.idea

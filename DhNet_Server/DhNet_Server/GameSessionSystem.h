@@ -1,6 +1,6 @@
 #pragma once
 #include "../ServerCore/Sender.h"
-#include <unordered_set>
+#include <concurrent_unordered_set.h>
 
 class GameSession;
 
@@ -8,7 +8,7 @@ class GameSessionSystem
 {
 private:
 	USE_LOCK;
-	std::unordered_set<std::shared_ptr<GameSession>> m_sessions;
+	concurrency::concurrent_unordered_set<std::shared_ptr<GameSession>> m_sessions;
 
 public:
 	GameSessionSystem() = default;
