@@ -23,15 +23,18 @@ int Sender::DeAlloc()
 	if (m_tempChunk == nullptr) return 0;
 
 	ASSERT_CRASH(m_index >= 0);
-	ASSERT_CRASH(m_count >= 0);
+	ASSERT_CRASH(m_count > 0);
 
-	bool result = m_sendPool.DeAlloc(m_index, m_count);
-
-	ASSERT_CRASH(result && "SendPool DeAlloc fail");
+	const int index = m_index;
+	const short count = m_count;
 
 	m_tempChunk = nullptr;
 	m_index = -1;
 	m_count = 0;
+
+	bool result = m_sendPool.DeAlloc(index, count);
+
+	ASSERT_CRASH(result && "SendPool DeAlloc fail");
 
 	return 0;
 }
@@ -41,6 +44,7 @@ void Sender::SetSendDataChunk(DataChunk* _chunk, int _chunkIndex, unsigned short
 	ASSERT_CRASH(_chunk != nullptr);
 	ASSERT_CRASH(_chunkIndex >= 0);
 	ASSERT_CRASH(_chunkCount > 0);
+	ASSERT_CRASH(m_tempChunk == nullptr);
 
 	m_tempChunk = _chunk;
 	m_index = _chunkIndex;

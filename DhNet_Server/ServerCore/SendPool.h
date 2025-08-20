@@ -14,7 +14,7 @@ private:
 
 	DataChunk*				m_chunk;
 	std::vector<Sender>		m_senderList;
-	std::vector<bool>		m_flag;
+	std::vector<bool>		m_useFlag;
 	unsigned short			m_chunkCount;
 	unsigned short			m_useSize;
 
@@ -26,6 +26,6 @@ public:
 	SenderRef Alloc(unsigned short _sendSize);
 	bool DeAlloc(int _index, unsigned short _count);
 
-	int GetIndex(unsigned short _count);
+	int GetAllocIndex(unsigned short _count);
 	unsigned short GetUsableSize();
 };

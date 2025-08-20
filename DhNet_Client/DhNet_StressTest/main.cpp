@@ -34,7 +34,7 @@ struct StressConfig
     uint16_t port = 7777;
     int services = 10;
     int sessionsPerService = 100;
-    int msgPerSecond = 1;
+    int msgPerSecond = 2;
     int churnIntervalSec = 30;
 };
 
@@ -132,7 +132,10 @@ int wmain(int argc, wchar_t* argv[])
             int toRecycle = max(1, (int)(services.size() / 10));
             for (int i = 0; i < toRecycle && !services.empty(); ++i)
             {
-                // 하나의 서비스를 제거(shared_ptr 소멸자를 통해 소켓 정리)
+                // 하나의 서비스를 종료 후 제거하여 소켓/세션을 명시적으로 정리
+                auto svc = services.front();
+                if (svc)
+                    svc->End();
                 services.erase(services.begin());
             }
             // 동일한 개수만큼 다시 생성
