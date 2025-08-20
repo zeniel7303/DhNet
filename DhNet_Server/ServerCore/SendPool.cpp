@@ -60,7 +60,7 @@ SenderRef SendPool::Alloc(unsigned short _sendSize)
 		sender = &(m_senderList[index]);
 		sendChunk = &(m_chunk[index]);
 
-		for (int i = 0; i < (index + count); ++i)
+ 	for (int i = index; i < (index + count); ++i)
 		{
 			m_flag[i] = true;
 		}
@@ -98,6 +98,40 @@ bool SendPool::DeAlloc(int _index, unsigned short _count)
 	}
 
 	return true;
+}
+
+int SendPool::DeAllocSender(Sender* _sender)
+{
+	if (_sender == nullptr)
+		return 0;
+
+	WRITE_LOCK;
+
+	// Snapshot and validate
+	DataChunk* chunk = _sender->m_tempChunk;
+	int index = _sender->m_index;
+	unsigned short count = _sender->m_count;
+
+	if (chunk == nullptr)
+		return 0;
+
+	ASSERT_CRASH(index >= 0);
+	ASSERT_CRASH(count > 0);
+	ASSERT_CRASH(index + count <= m_chunkCount);
+
+	for (int i = index; i < (index + count); ++i)
+	{
+		ASSERT_CRASH(m_flag[i] == true);
+		m_flag[i] = false;
+		m_useSize -= sizeof(DataChunk);
+	}
+
+	// Clear sender state atomically under the pool lock to avoid races
+	_sender->m_tempChunk = nullptr;
+	_sender->m_index = -1;
+	_sender->m_count = 0;
+
+	return 0;
 }
 
 int SendPool::GetIndex(unsigned short _count)

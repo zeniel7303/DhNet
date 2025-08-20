@@ -20,20 +20,8 @@ int Sender::Init(unsigned short _sendCount)
 
 int Sender::DeAlloc()
 {
-	if (m_tempChunk == nullptr) return 0;
-
-	ASSERT_CRASH(m_index >= 0);
-	ASSERT_CRASH(m_count >= 0);
-
-	bool result = m_sendPool.DeAlloc(m_index, m_count);
-
-	ASSERT_CRASH(result && "SendPool DeAlloc fail");
-
-	m_tempChunk = nullptr;
-	m_index = -1;
-	m_count = 0;
-
-	return 0;
+	// Delegate to SendPool to perform atomic deallocation under its lock
+	return m_sendPool.DeAllocSender(this);
 }
 
 void Sender::SetSendDataChunk(DataChunk* _chunk, int _chunkIndex, unsigned short _chunkCount)
