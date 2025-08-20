@@ -14,8 +14,6 @@ private:
 
 	static SendPool		m_sendPool;
 
-	friend class SendPool; // Allow SendPool to atomically access and clear Sender state
-
 public:
 	Sender();
 	~Sender();
@@ -62,7 +60,7 @@ inline T* Sender::GetWritePointer()
 }
 
 template<typename T>
-inline std::pair<T*, SenderRef> Sender::GetSenderAndPacket()
+inline static std::pair<T*, SenderRef> Sender::GetSenderAndPacket()
 {
 	auto sender = Alloc<T>();
 	auto packet = sender->GetWritePointer<T>();

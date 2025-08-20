@@ -25,7 +25,6 @@ public:
 	int Init(unsigned short _count);
 	SenderRef Alloc(unsigned short _sendSize);
 	bool DeAlloc(int _index, unsigned short _count);
-	int DeAllocSender(Sender* _sender);
 
 	int GetIndex(unsigned short _count);
 	unsigned short GetUsableSize();
