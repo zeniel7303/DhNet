@@ -103,4 +103,16 @@ bool ClientService::Start()
 
 void ClientService::End()
 {
+	// Gracefully disconnect all client sessions
+	std::vector<SessionRef> sessions;
+	{
+		WRITE_LOCK;
+		for (auto& s : m_sessions)
+			sessions.push_back(s);
+	}
+	for (auto& s : sessions)
+	{
+		if (s && s->IsConnected())
+			s->Disconnect(L"ClientService::End");
+	}
 }

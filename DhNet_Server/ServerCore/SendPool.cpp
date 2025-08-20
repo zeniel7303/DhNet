@@ -4,7 +4,7 @@
 #include <cassert>
 
 SendPool::SendPool() : m_chunk(nullptr), m_chunkCount(0),
-m_flag(), m_senderList(), m_useSize(0)
+m_useFlag(), m_senderList(), m_useSize(0)
 {
 
 }
@@ -22,20 +22,17 @@ int SendPool::Init(unsigned short _count)
 	try
 	{
 		m_chunk = new DataChunk[_count];
-
-		m_chunkCount = _count;
-
-		m_flag.reserve(_count);
-		m_senderList.reserve(_count);
 	}
 	catch (...)
 	{
 		ASSERT_CRASH(0);
 	}
 
+	m_chunkCount = _count;
+
 	for (int i = 0; i < _count; ++i)
 	{
-		m_flag.emplace_back(false);
+		m_useFlag.emplace_back(false);
 		m_senderList.emplace_back(Sender());
 	}
 
@@ -53,16 +50,16 @@ SenderRef SendPool::Alloc(unsigned short _sendSize)
 	{
 		WRITE_LOCK;
 
-		index = GetIndex(count);
+		index = GetAllocIndex(count);
 
 		if (index == -1) return nullptr;
 
-		sender = &(m_senderList[index]);
-		sendChunk = &(m_chunk[index]);
+		sender = &m_senderList[index];
+		sendChunk = &m_chunk[index];
 
-		for (int i = 0; i < (index + count); ++i)
+		for (int i = index; i < (index + count); ++i)
 		{
-			m_flag[i] = true;
+			m_useFlag[i] = true;
 		}
 
 		m_useSize += (count * sizeof(DataChunk));
@@ -81,18 +78,18 @@ SenderRef SendPool::Alloc(unsigned short _sendSize)
 
 bool SendPool::DeAlloc(int _index, unsigned short _count)
 {
-	ASSERT_CRASH(_index <= m_chunkCount);
-	ASSERT_CRASH(_count < m_chunkCount);
+	ASSERT_CRASH(_count <= m_chunkCount);
+	ASSERT_CRASH(_index < m_chunkCount);
 
 	{
 		WRITE_LOCK;
 
 		for (int i = _index; i < (_index + _count); ++i)
 		{
-			if (m_flag[i] == false)
+			if (m_useFlag[i] == false)
 				return false;
 
-			m_flag[i] = false;
+			m_useFlag[i] = false;
 			m_useSize -= sizeof(DataChunk);
 		}
 	}
@@ -100,27 +97,35 @@ bool SendPool::DeAlloc(int _index, unsigned short _count)
 	return true;
 }
 
-int SendPool::GetIndex(unsigned short _count)
+int SendPool::GetAllocIndex(unsigned short _count)
 {
-	int filledCount = 0;
+	int maxCount = 0;
 	int allocIndex = -1;
 	int flagIndex = 0;
 
-	for (const auto& flag : m_flag)
+	for (const auto& flag : m_useFlag)
 	{
 		if (!flag)
 		{
-			allocIndex = flagIndex;
+			++maxCount;
 
-			++filledCount;
+			if (allocIndex == -1) allocIndex = flagIndex;
 
-			if (filledCount == _count) break;
+			if (maxCount == _count) break;
+		}
+		else
+		{
+			maxCount = 0;
+			allocIndex = -1;
 		}
 
 		++flagIndex;
 	}
 
-	if (filledCount != _count) allocIndex = -1;
+	if (allocIndex != -1 && maxCount != _count)
+	{
+		allocIndex = -1;
+	}
 
 	return allocIndex;
 }
@@ -128,6 +133,5 @@ int SendPool::GetIndex(unsigned short _count)
 unsigned short SendPool::GetUsableSize()
 {
 	READ_LOCK;
-
 	return m_useSize;
 }

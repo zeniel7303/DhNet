@@ -23,7 +23,7 @@ Player::Player(std::shared_ptr<GameSession> _session)
 
 Player::~Player()
 {
-    std::cout << "~Player" << std::endl;
+    // std::cout << "~Player" << std::endl;
 }
 
 void Player::LeaveRoom()

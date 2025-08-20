@@ -5,7 +5,7 @@ bool HandleNotiRoomEnterPacket(PacketHeader* _header, std::shared_ptr<Session>& 
 {
 	auto notiRoomEnter = reinterpret_cast<NotiRoomEnter*>(_header);
 
-	// std::cout << notiRoomEnter->m_playerName << " Enter " << std::endl;
+	std::cout << notiRoomEnter->m_playerName << " Enter " << std::endl;
 
 	return true;
 }
