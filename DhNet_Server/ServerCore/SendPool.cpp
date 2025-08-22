@@ -48,7 +48,7 @@ SenderRef SendPool::Alloc(unsigned short _sendSize)
 	DataChunk* sendChunk = nullptr;
 
 	{
-		WRITE_LOCK;
+		WRITE_LOCK
 
 		index = GetAllocIndex(count);
 
@@ -71,7 +71,7 @@ SenderRef SendPool::Alloc(unsigned short _sendSize)
 	//https://stackoverflow.com/questions/13633737/using-a-custom-deleter-for-stdshared-ptr-on-a-direct3d11-object
 	return SenderRef(sender, [this](Sender* _sender)
 		{
-			// ½ÇÆÐ½Ã ÆÄ±«
+			// ï¿½ï¿½ï¿½Ð½ï¿½ ï¿½Ä±ï¿½
 			_sender->DeAlloc();
 		});
 }
@@ -82,7 +82,7 @@ bool SendPool::DeAlloc(int _index, unsigned short _count)
 	ASSERT_CRASH(_index < m_chunkCount);
 
 	{
-		WRITE_LOCK;
+		WRITE_LOCK
 
 		for (int i = _index; i < (_index + _count); ++i)
 		{
@@ -132,6 +132,6 @@ int SendPool::GetAllocIndex(unsigned short _count)
 
 unsigned short SendPool::GetUsableSize()
 {
-	READ_LOCK;
+	READ_LOCK
 	return m_useSize;
 }

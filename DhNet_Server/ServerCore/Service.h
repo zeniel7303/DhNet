@@ -10,12 +10,12 @@ using SessionFactory = std::function<SessionRef(void)>;
 class Service : public std::enable_shared_from_this<Service>
 {
 protected:
-	USE_LOCK;
+	USE_LOCK
 
 	NetAddress					m_netAddress;
-	IocpCoreRef		m_iocpCore;
+	IocpCoreRef					m_iocpCore;
 
-	std::set<SessionRef>	m_sessions;
+	std::set<SessionRef>		m_sessions;
 	int32						m_sessionCount = 0;
 	int32						m_maxSessionCount = 0;
 	SessionFactory				m_sessionFactory;

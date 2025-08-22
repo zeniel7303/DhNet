@@ -19,7 +19,7 @@ void GameSessionSystem::Add(std::shared_ptr<GameSession> _session)
 
 void GameSessionSystem::Remove(std::shared_ptr<GameSession> _session)
 {
-	WRITE_LOCK;
+	WRITE_LOCK
 	m_sessions.unsafe_erase(_session);
 }
 
@@ -27,7 +27,7 @@ void GameSessionSystem::Broadcast(std::shared_ptr<Sender> _sender)
 {
 	std::vector<std::shared_ptr<GameSession>> snapshot;
 	{
-		WRITE_LOCK;
+		WRITE_LOCK
 		snapshot.reserve(m_sessions.size());
 		for (const auto& session : m_sessions)
 		{

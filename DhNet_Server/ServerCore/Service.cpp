@@ -26,7 +26,7 @@ SessionRef Service::CreateSession()
 
 void Service::AddSession(SessionRef _session)
 {
-	WRITE_LOCK;
+	WRITE_LOCK
 
 	m_sessionCount++;
 	m_sessions.insert(_session);
@@ -34,7 +34,7 @@ void Service::AddSession(SessionRef _session)
 
 void Service::ReleaseSession(SessionRef _session)
 {
-	WRITE_LOCK;
+	WRITE_LOCK
 
 	ASSERT_CRASH(m_sessions.erase(_session) != 0);
 	m_sessionCount--;
@@ -42,7 +42,7 @@ void Service::ReleaseSession(SessionRef _session)
 
 void Service::BroadCast(SenderRef _sender)
 {
-	WRITE_LOCK;
+	WRITE_LOCK
 	for (const auto& session : m_sessions)
 	{
 		session->Send(_sender);
@@ -106,7 +106,7 @@ void ClientService::End()
 	// Gracefully disconnect all client sessions
 	std::vector<SessionRef> sessions;
 	{
-		WRITE_LOCK;
+		WRITE_LOCK
 		for (auto& s : m_sessions)
 			sessions.push_back(s);
 	}

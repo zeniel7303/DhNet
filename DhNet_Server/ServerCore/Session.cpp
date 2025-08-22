@@ -42,11 +42,11 @@ void Session::Dispatch(IocpEvent* _iocpEvent, int32 _numOfBytes)
 
 void Session::Send(SenderRef _sender)
 {
-	WRITE_LOCK;
+	WRITE_LOCK
 
 	m_senderQueue.push(_sender);
 
-	// ÇöÀç RegisterSend°¡ °É¸®Áö ¾ÊÀº »ýÅÂ¶ó¸é, °É¾îÁØ´Ù.
+	// ï¿½ï¿½ï¿½ï¿½ RegisterSendï¿½ï¿½ ï¿½É¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Â¶ï¿½ï¿½, ï¿½É¾ï¿½ï¿½Ø´ï¿½.
 	if (m_sendRegistered.exchange(true) == false)
 	{
 		RegisterSend();
@@ -66,7 +66,7 @@ if (m_connected.exchange(false) == false)
 	// TEMP  
 	std::wcout << L"Disconnect : " << std::wstring(_cause) << std::endl;
 
-	OnDisconnected(); // ÄÁÅÙÃ÷ ÄÚµå¿¡¼­ ÀçÁ¤ÀÇ  
+	OnDisconnected(); // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Úµå¿¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½  
 	GetService()->ReleaseSession(GetSessionRef());
 
 	RegisterDisconnect();
@@ -82,7 +82,7 @@ bool Session::RegisterConnect()
 	if (SocketUtils::SetReuseAddress(m_socket, true) == false)
 		return false;
 
-	if (SocketUtils::BindAnyAddress(m_socket, 0/*³²´Â°Å*/) == false)
+	if (SocketUtils::BindAnyAddress(m_socket, 0/*ï¿½ï¿½ï¿½Â°ï¿½*/) == false)
 		return false;
 
 	m_connectEvent.Init();
@@ -156,9 +156,9 @@ void Session::RegisterSend()
 	m_sendEvent.Init();
 	m_sendEvent.m_owner = shared_from_this();
 
-	// º¸³¾ µ¥ÀÌÅÍ¸¦ sendEvent¿¡ µî·Ï
+	// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Í¸ï¿½ sendEventï¿½ï¿½ ï¿½ï¿½ï¿½
 	{
-		WRITE_LOCK;
+		WRITE_LOCK
 
 		while (m_senderQueue.empty() == false)
 		{
@@ -169,7 +169,7 @@ void Session::RegisterSend()
 		}
 	}
 
-	// Scatter-Gather (Èð¾îÁ® ÀÖ´Â µ¥ÀÌÅÍµéÀ» ¸ð¾Æ¼­ ÇÑ ¹æ¿¡ º¸³½´Ù.)
+	// Scatter-Gather (ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Íµï¿½ï¿½ï¿½ ï¿½ï¿½Æ¼ï¿½ ï¿½ï¿½ ï¿½æ¿¡ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½.)
 	std::vector<WSABUF> wsaBufs;
 	wsaBufs.reserve(m_sendEvent.m_senders.size());
 	for (SenderRef sender : m_sendEvent.m_senders)
@@ -201,13 +201,13 @@ void Session::ProcessConnect()
 
 	m_connected.store(true);
 
-	// ¼¼¼Ç µî·Ï
+	// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
 	GetService()->AddSession(GetSessionRef());
 
-	// ÄÁÅÄÃ÷ ÄÚµå¿¡¼­ ÀçÁ¤ÀÇ
+	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Úµå¿¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	OnConnected();
 
-	// ¼ö½Å µî·Ï
+	// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
 	RegisterRecv();
 }
 
@@ -237,7 +237,7 @@ void Session::ProcessRecv(int32 _numOfBytes)
 		auto packet = reinterpret_cast<PacketHeader*>(m_recvBuffer.ReadPos());
 		if (m_recvBuffer.DataSize() >= packet->m_dataSize)
 		{
-			// ÄÁÅÙÃ÷ ÄÚµå¿¡¼­ ÀçÁ¤ÀÇ
+			// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Úµå¿¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 			auto result = OnRecv(packet);
 			if (result == false)
 			{
@@ -254,10 +254,10 @@ void Session::ProcessRecv(int32 _numOfBytes)
 		break;
 	}
 
-	// Ä¿¼­ Á¤¸®
+	// Ä¿ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	m_recvBuffer.Clean();
 
-	// ¼ö½Å µî·Ï
+	// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
 	RegisterRecv();
 }
 
@@ -272,10 +272,10 @@ void Session::ProcessSend(int32 _numOfBytes)
 		return;
 	}
 
-	// ÄÁÅÙÃ÷ ÄÚµå¿¡¼­ ÀçÁ¤ÀÇ
+	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Úµå¿¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	OnSend(_numOfBytes);
 
-	WRITE_LOCK;
+	WRITE_LOCK
 
 	if (m_senderQueue.empty())
 	{
