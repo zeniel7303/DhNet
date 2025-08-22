@@ -73,13 +73,21 @@ void GameServer::StartServer()
     {
         GThreadManager->Launch([=]()
             {
-                while (true)
-                {
-                    // 자동으로 Listener의 Dispatch도 들어간다.(가상함수이므로)
-                    m_serverService->GetIocpCore()->Dispatch();
-                }
+                Job();
             });
     }
 
     GThreadManager->Join();
+}
+
+void GameServer::Job()
+{
+    while (true)
+    {
+        LEndTickCount = ::GetTickCount64() + 64;
+
+        m_serverService->GetIocpCore()->Dispatch(10);
+
+        ThreadManager::DoGlobalQueueWork();
+    }
 }

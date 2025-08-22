@@ -11,7 +11,6 @@ private:
 
 private:
 	void Push(JobRef&& _job);
-	void Execute();
 
 public:
 	void DoAsync(CallbackType&& _callback)
@@ -27,4 +26,6 @@ public:
 	}
 
 	void ClearJobs() { m_jobs.Clear(); }
+
+	void Execute();
 };
