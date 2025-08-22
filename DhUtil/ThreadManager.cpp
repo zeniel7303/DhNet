@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "ThreadManager.h"
 #include "TLS.h"
+#include "GlobalQueue.h"
+#include "JobQueue.h"
 
 ThreadManager::ThreadManager()
 {
@@ -50,10 +52,13 @@ void ThreadManager::DoGlobalQueueWork()
 {
 	while (true)
 	{
-		uint64 now = ::GetTickCount64();
-		if (now > LEndTickCount)
+		if (::GetTickCount64() > LEndTickCount)
 			break;
 
-		// TODO : job exeute
+		JobQueueRef jobQueue = GGlobalQueue->Pop();
+		if (jobQueue == nullptr)
+			break;
+
+		jobQueue->Execute();
 	}
 }

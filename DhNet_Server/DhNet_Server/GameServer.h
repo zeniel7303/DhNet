@@ -35,6 +35,7 @@ public:
 
 	void AddSetting(std::shared_ptr<ServerSetting> _setting);
 	void StartServer();
+	void Job();
 
 	template <typename T>
 	T* GetSystem();
