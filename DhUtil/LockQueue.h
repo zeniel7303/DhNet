@@ -4,19 +4,19 @@ template<typename T>
 class LockQueue
 {
 private:
-	USE_LOCK;
+	USE_LOCK
 	std::queue<T> _items;
 
 public:
 	void Push(T item)
 	{
-		WRITE_LOCK;
+		WRITE_LOCK
 		_items.push(item);
 	}
 
 	T Pop()
 	{
-		WRITE_LOCK;
+		WRITE_LOCK
 		if (_items.empty())
 			return T();
 
@@ -27,14 +27,14 @@ public:
 
 	void PopAll(OUT std::vector<T>& items)
 	{
-		WRITE_LOCK;
+		WRITE_LOCK
 		while (T item = Pop())
 			items.push_back(item);
 	}
 
 	void Clear()
 	{
-		WRITE_LOCK;
+		WRITE_LOCK
 		_items = std::queue<T>();
 	}
 };

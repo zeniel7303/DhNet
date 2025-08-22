@@ -4,7 +4,7 @@
 class RoomSystem
 {
 private:
-	USE_LOCK;
+	USE_LOCK
 	std::map<int, std::shared_ptr<Room>> m_rooms;
 
 public:

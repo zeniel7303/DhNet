@@ -18,7 +18,7 @@ class Session : public IocpObject
 	};
 
 private:
-	USE_LOCK;
+	USE_LOCK
 
 	std::weak_ptr<Service>		m_service;
 	SOCKET						m_socket = INVALID_SOCKET;
@@ -52,7 +52,7 @@ public:
 
 	bool						IsConnected()						{ return m_connected; }
 
-	// ÀÎÅÍÆäÀÌ½º
+	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ì½ï¿½
 public:
 	virtual HANDLE				GetHandle() override;
 	virtual void				Dispatch(class IocpEvent* _iocpEvent, int32 _numOfBytes = 0) override;
@@ -75,7 +75,7 @@ private:
 
 	void						HandleError(int32 _errorCode);
 
-	// ¿À¹ö·Îµù¿ë
+	// ï¿½ï¿½ï¿½ï¿½ï¿½Îµï¿½ï¿½ï¿½
 protected:
 	virtual void				OnConnected() {}
 	virtual bool				OnRecv(PacketHeader* _packet) { return true; }

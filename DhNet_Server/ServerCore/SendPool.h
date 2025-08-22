@@ -10,7 +10,7 @@ class Sender;
 class SendPool
 {
 private:
-	USE_LOCK;
+	USE_LOCK
 
 	DataChunk*				m_chunk;
 	std::vector<Sender>		m_senderList;

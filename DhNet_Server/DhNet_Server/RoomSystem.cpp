@@ -12,8 +12,8 @@ RoomSystem::~RoomSystem()
 
 std::shared_ptr<Room> RoomSystem::MakeRoom()
 {
-	// Temp (¹«Á¶°Ç ¹æ 1°³¸¸)
-	WRITE_LOCK;
+	// Temp (ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ 1ï¿½ï¿½ï¿½ï¿½)
+	WRITE_LOCK
 	auto room = ObjectPool<Room>::MakeShared();
 	room->SetRoomIndex(0);
 	m_rooms[0] = room;
@@ -23,7 +23,7 @@ std::shared_ptr<Room> RoomSystem::MakeRoom()
 std::shared_ptr<Room> RoomSystem::GetRoom(int32 roomIndex)
 {
 	{
-		READ_LOCK;
+		READ_LOCK
 		auto it = m_rooms.find(roomIndex);
 		if (it != m_rooms.end())
 		{

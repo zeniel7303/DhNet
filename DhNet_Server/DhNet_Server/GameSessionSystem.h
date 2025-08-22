@@ -7,7 +7,7 @@ class GameSession;
 class GameSessionSystem
 {
 private:
-	USE_LOCK;
+	USE_LOCK
 	concurrency::concurrent_unordered_set<std::shared_ptr<GameSession>> m_sessions;
 
 public:
