@@ -22,6 +22,9 @@
     <Filter Include="System">
       <UniqueIdentifier>{de62352d-f081-456e-8e5b-b21c269629fd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Main\Controller\Admin">
+      <UniqueIdentifier>{6203cf21-575b-4bc6-ad18-5aa1ddec5a04}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -68,6 +71,9 @@
     </ClCompile>
     <ClCompile Include="..\DhNet_Ipc\generated\dhnet.grpc.pb.cc" />
     <ClCompile Include="..\DhNet_Ipc\generated\dhnet.pb.cc" />
+    <ClCompile Include="AdminController.cpp">
+      <Filter>Main\Controller\Admin</Filter>
+    </ClCompile>
     <ClCompile Include="AdminGrpcServer.cpp">
       <Filter>Main</Filter>
     </ClCompile>
@@ -118,6 +124,9 @@
     </ClInclude>
     <ClInclude Include="RoomSystem.h">
       <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="AdminController.h">
+      <Filter>Main\Controller\Admin</Filter>
     </ClInclude>
     <ClInclude Include="AdminGrpcServer.h">
       <Filter>Main</Filter>

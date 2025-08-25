@@ -1,1 +1,2 @@
 E:\MyProject\DhNet_CPP\DhUtil\x64\Debug\DhUtil.lib
+E:\MyProject\DhNet\DhUtil\x64\Debug\DhUtil.lib
