@@ -47,3 +47,15 @@ sysinfo.txt
 **/bin/*
 **/obj/*
 DhNet_Server/.idea
+*.ilk
+*.pdb
+*.obj
+*.exe
+*.lib
+*.exp
+[Bb]in/
+[Oo]bj/
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/

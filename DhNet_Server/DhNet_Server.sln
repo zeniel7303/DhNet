@@ -22,6 +22,10 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DhNet_Protocol", "DhNet_Pro
 		{E4C0BC38-E7F5-474C-AF5C-FD815270FBA4} = {E4C0BC38-E7F5-474C-AF5C-FD815270FBA4}
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DhNet_Ipc", "DhNet_Ipc\DhNet_Ipc.csproj", "{C31BEBE3-A540-44DB-B440-B77300671815}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DhNet_Web", "DhNet_Web\DhNet_Web.csproj", "{AA6061BC-BA77-48BB-B972-3A925C782E0B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -62,8 +66,26 @@ Global
 		{3C45EDD2-8035-4384-A437-3E2DFA5DA401}.Release|x64.Build.0 = Release|x64
 		{3C45EDD2-8035-4384-A437-3E2DFA5DA401}.Release|x86.ActiveCfg = Release|Win32
 		{3C45EDD2-8035-4384-A437-3E2DFA5DA401}.Release|x86.Build.0 = Release|Win32
+		{C31BEBE3-A540-44DB-B440-B77300671815}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{C31BEBE3-A540-44DB-B440-B77300671815}.Debug|x64.Build.0 = Debug|Any CPU
+		{C31BEBE3-A540-44DB-B440-B77300671815}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{C31BEBE3-A540-44DB-B440-B77300671815}.Debug|x86.Build.0 = Debug|Any CPU
+		{C31BEBE3-A540-44DB-B440-B77300671815}.Release|x64.ActiveCfg = Release|Any CPU
+		{C31BEBE3-A540-44DB-B440-B77300671815}.Release|x64.Build.0 = Release|Any CPU
+		{C31BEBE3-A540-44DB-B440-B77300671815}.Release|x86.ActiveCfg = Release|Any CPU
+		{C31BEBE3-A540-44DB-B440-B77300671815}.Release|x86.Build.0 = Release|Any CPU
+		{AA6061BC-BA77-48BB-B972-3A925C782E0B}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{AA6061BC-BA77-48BB-B972-3A925C782E0B}.Debug|x64.Build.0 = Debug|Any CPU
+		{AA6061BC-BA77-48BB-B972-3A925C782E0B}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{AA6061BC-BA77-48BB-B972-3A925C782E0B}.Debug|x86.Build.0 = Debug|Any CPU
+		{AA6061BC-BA77-48BB-B972-3A925C782E0B}.Release|x64.ActiveCfg = Release|Any CPU
+		{AA6061BC-BA77-48BB-B972-3A925C782E0B}.Release|x64.Build.0 = Release|Any CPU
+		{AA6061BC-BA77-48BB-B972-3A925C782E0B}.Release|x86.ActiveCfg = Release|Any CPU
+		{AA6061BC-BA77-48BB-B972-3A925C782E0B}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
 	EndGlobalSection
 EndGlobal

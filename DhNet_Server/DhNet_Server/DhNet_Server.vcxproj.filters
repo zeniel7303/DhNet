@@ -66,6 +66,11 @@
     <ClCompile Include="RoomSystem.cpp">
       <Filter>System</Filter>
     </ClCompile>
+    <ClCompile Include="..\DhNet_Ipc\generated\dhnet.grpc.pb.cc" />
+    <ClCompile Include="..\DhNet_Ipc\generated\dhnet.pb.cc" />
+    <ClCompile Include="AdminGrpcServer.cpp">
+      <Filter>Main</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameSession.h">
@@ -113,6 +118,9 @@
     </ClInclude>
     <ClInclude Include="RoomSystem.h">
       <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="AdminGrpcServer.h">
+      <Filter>Main</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

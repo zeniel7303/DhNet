@@ -3,6 +3,7 @@
 #include "TLS.h"
 #include "GlobalQueue.h"
 #include "JobQueue.h"
+#include "ObjectPool.h"
 
 ThreadManager::ThreadManager()
 {
@@ -39,7 +40,7 @@ void ThreadManager::Join()
 
 void ThreadManager::InitTLS()
 {
-	static std::atomic<unsigned __int32> SThreadId = 1;
+	static std::atomic<uint32> SThreadId = 1;
 	LThreadId = SThreadId.fetch_add(1);
 }
 
@@ -61,4 +62,12 @@ void ThreadManager::DoGlobalQueueWork()
 
 		jobQueue->Execute();
 	}
+}
+
+void ThreadManager::PushGlobalQueue(std::function<void()>&& job)
+{
+	// Create a temporary JobQueue, push the job, then enqueue it into the global queue
+	JobQueueRef jobQueue = ObjectPool<JobQueue>::MakeShared();
+	jobQueue->DoAsync(std::move(job));
+	GGlobalQueue->Push(jobQueue);
 }

@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "DhNet_Web": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "http://127.0.0.1:8080/swagger/index.html"
+    }
+  }
+}

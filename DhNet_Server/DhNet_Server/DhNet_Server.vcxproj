@@ -102,9 +102,10 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;NOMINMAX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <AdditionalIncludeDirectories>..\DhNet_Ipc\generated</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -128,6 +129,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\DhNet_Ipc\generated\dhnet.grpc.pb.cc" />
+    <ClCompile Include="..\DhNet_Ipc\generated\dhnet.pb.cc" />
+    <ClCompile Include="AdminGrpcServer.cpp" />
     <ClCompile Include="GameServer.cpp" />
     <ClCompile Include="GameSession.cpp" />
     <ClCompile Include="LoginController.cpp" />
@@ -144,6 +148,7 @@
     <ClCompile Include="UniqueIdGenerationSystem.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AdminGrpcServer.h" />
     <ClInclude Include="Controllers.h" />
     <ClInclude Include="GameServer.h" />
     <ClInclude Include="GameServer.hpp" />
