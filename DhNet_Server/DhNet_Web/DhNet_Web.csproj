@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <AssemblyName>DhNet_Web</AssemblyName>
+    <RootNamespace>DhNet.Web</RootNamespace>
+    <UserSecretsId>dhnet-web-dev</UserSecretsId>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Grpc.Net.Client" Version="2.63.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.7.3" />
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.8" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DhNet_Ipc\DhNet_Ipc.csproj" />
+  </ItemGroup>
+</Project>
