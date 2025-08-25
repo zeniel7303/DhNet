@@ -1,0 +1,39 @@
+syntax = "proto3";
+
+option csharp_namespace = "DhNet.Ipc";
+package dhnet;
+
+// Health
+message HealthCheckRequest {}
+message HealthCheckResponse {
+  string status = 1; // "OK"
+}
+
+// Rooms
+message ListRoomsRequest {}
+message RoomInfo {
+  int64 id = 1;
+  string name = 2;
+  int32 playerCount = 3;
+  int32 capacity = 4;
+}
+message ListRoomsResponse {
+  repeated RoomInfo rooms = 1;
+}
+
+// Broadcast
+message BroadcastRequest {
+  int64 roomId = 1;
+  string message = 2;
+}
+message BroadcastResponse {
+  bool success = 1;
+  string detail = 2;
+}
+
+// Service
+service AdminService {
+  rpc HealthCheck(HealthCheckRequest) returns (HealthCheckResponse);
+  rpc ListRooms(ListRoomsRequest) returns (ListRoomsResponse);
+  rpc Broadcast(BroadcastRequest) returns (BroadcastResponse);
+}

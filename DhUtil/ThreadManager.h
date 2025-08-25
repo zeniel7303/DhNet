@@ -21,4 +21,7 @@ public:
 	static void DestroyTLS();
 
 	static void DoGlobalQueueWork();
+
+	// Push a one-off job to the global queue to be executed on a logic worker thread
+	static void PushGlobalQueue(std::function<void()>&& job);
 };

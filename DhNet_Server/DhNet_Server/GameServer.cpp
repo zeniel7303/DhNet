@@ -6,6 +6,7 @@
 #include "GameSession.h"
 
 #include "Room.h"
+#include "AdminGrpcServer.h"
 
 GameServer GameServer::m_singleton;
 
@@ -68,6 +69,8 @@ void GameServer::StartServer()
         m_maxSessionCount);
 
     ASSERT_CRASH(m_serverService->Start());
+
+    GrpcHost::Instance().Start("127.0.0.1:7778");
 
     for (int32 i = 0; i < 5; i++)
     {
