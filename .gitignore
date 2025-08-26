@@ -54,7 +54,6 @@ DhNet_Server/.idea
 *.exp
 [Bb]in/
 [Oo]bj/
-[Dd]ebug/
 [Rr]elease/
 x64/
 x86/
