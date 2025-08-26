@@ -1,13 +1,14 @@
 param(
-    [string]$VcpkgRoot = "..\..\..\Tools"
+    # Default to vcpkg installed tool location if available
+    [string]$VcpkgRoot = "..\..\..\external\vcpkg\installed\x64-windows\tools"
 )
 
 $ErrorActionPreference = 'Stop'
 
 # Resolve tool paths
-$Protoc               = Join-Path $VcpkgRoot 'tools\protobuf\protoc.exe'
-$GrpcCppPlugin        = Join-Path $VcpkgRoot 'tools\grpc\grpc_cpp_plugin.exe'
-<#$GrpcCsharpPlugin     = Join-Path $VcpkgRoot 'tools\grpc\grpc_csharp_plugin.exe'#>
+$Protoc               = Join-Path $VcpkgRoot 'protobuf\protoc.exe'
+$GrpcCppPlugin        = Join-Path $VcpkgRoot 'grpc\grpc_cpp_plugin.exe'
+<#$GrpcCsharpPlugin     = Join-Path $VcpkgRoot 'grpc\grpc_csharp_plugin.exe'#>
 
 # Paths
 $ScriptDir   = $PSScriptRoot
