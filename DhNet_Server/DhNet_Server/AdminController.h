@@ -11,8 +11,6 @@
 #include <grpcpp/grpcpp.h>
 #include "dhnet.grpc.pb.h"
 
-// Admin gRPC controller-style free functions mirroring other controllers
-// Return true on success; on failure, set err with a human-readable detail when applicable.
 bool AdminHealthCheck(dhnet::HealthCheckResponse* resp);
 bool AdminListRooms(const dhnet::ListRoomsRequest* req, dhnet::ListRoomsResponse* resp, std::string& err);
 bool AdminBroadcast(const dhnet::BroadcastRequest* req, dhnet::BroadcastResponse* resp, std::string& err);

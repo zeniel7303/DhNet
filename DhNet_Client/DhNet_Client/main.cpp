@@ -45,7 +45,7 @@ int main()
 
 	auto senderAndPacket = Sender::GetSenderAndPacket<ReqRoomChat>();
 	senderAndPacket.first->Init(PacketEnum::Req_RoomChat, sizeof(ReqRoomChat));
-    strcpy_s(senderAndPacket.first->m_message, "테스트용 메세지입니다.");
+    strcpy_s(senderAndPacket.first->m_message, "Test Message");
 
 	while (1)
 	{

@@ -1,24 +1,21 @@
-using System.ComponentModel.DataAnnotations;
 using DhNet.Web.Services;
 using Microsoft.AspNetCore.Mvc;
+
+#pragma warning disable CS1591 // 공개된 형식 또는 멤버에 대한 XML 주석이 없습니다.
 
 namespace DhNet.Web.Controllers;
 
 [ApiController]
 [Route("health")]
-public class HealthController : ControllerBase
+public class HealthController(IAdminClient client) : ControllerBase
 {
-    private readonly IAdminClient _client;
-
-    public HealthController(IAdminClient client) => _client = client;
-
     [HttpGet]
     [ProducesResponseType(typeof(HealthDto), 200)]
     public async Task<ActionResult<HealthDto>> Get(CancellationToken ct)
     {
         try
         {
-            var result = await _client.HealthCheckAsync(ct);
+            var result = await client.HealthCheckAsync(ct);
             return Ok(result);
         }
         catch (TimeoutException e) { return StatusCode(504, new { error = e.Message }); }
