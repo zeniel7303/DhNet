@@ -1,9 +1,8 @@
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 using DhNet.Ipc;
 using Grpc.Core;
 using Grpc.Net.Client;
+
+#pragma warning disable CS1591 // 공개된 형식 또는 멤버에 대한 XML 주석이 없습니다.
 
 namespace DhNet.Web.Services;
 
@@ -37,10 +36,7 @@ public sealed class GrpcAdminClient : IAdminClient, IDisposable
         {
             var resp = await _client.ListRoomsAsync(new ListRoomsRequest(), cancellationToken: ct);
             var list = new List<RoomDto>(resp.Rooms.Count);
-            foreach (var r in resp.Rooms)
-            {
-                list.Add(new RoomDto(r.Id, r.Name, r.PlayerCount, r.Capacity));
-            }
+            list.AddRange(resp.Rooms.Select(r => new RoomDto(r.Id, r.Name, r.PlayerCount, r.Capacity)));
             return list;
         }
         catch (RpcException ex)
@@ -54,9 +50,9 @@ public sealed class GrpcAdminClient : IAdminClient, IDisposable
         try
         {
             var resp = await _client.BroadcastAsync(new BroadcastRequest { RoomId = roomId, Message = message }, cancellationToken: ct);
-            if (!resp.Success)
-                throw new RpcException(new Status(StatusCode.Unknown, resp.Detail));
-            return true;
+            return !resp.Success 
+                ? throw new RpcException(new Status(StatusCode.Unknown, resp.Detail)) 
+                : true;
         }
         catch (RpcException ex)
         {

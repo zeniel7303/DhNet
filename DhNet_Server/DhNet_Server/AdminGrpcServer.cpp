@@ -79,7 +79,8 @@ void GrpcHost::Stop()
 #ifdef DHNET_GRPC_AVAILABLE
     if (!m_running.exchange(false)) return;
     
-    if (m_server) {
+    if (m_server)
+    {
         m_server->Shutdown();
         m_server.reset();
     }

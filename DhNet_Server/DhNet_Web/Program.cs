@@ -21,7 +21,7 @@ builder.Services.AddHttpLogging(o =>
                       HttpLoggingFields.ResponseStatusCode;
 });
 
-builder.Services.AddSingleton<IAdminClient>(sp =>
+builder.Services.AddSingleton<IAdminClient>(_ =>
     new GrpcAdminClient("http://127.0.0.1:7778"));
 
 // Controllers

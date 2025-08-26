@@ -2,23 +2,21 @@ using System.ComponentModel.DataAnnotations;
 using DhNet.Web.Services;
 using Microsoft.AspNetCore.Mvc;
 
+#pragma warning disable CS1591 // 공개된 형식 또는 멤버에 대한 XML 주석이 없습니다.
+
 namespace DhNet.Web.Controllers;
 
 [ApiController]
 [Route("rooms")]
-public class RoomsController : ControllerBase
+public class RoomsController(IAdminClient client) : ControllerBase
 {
-    private readonly IAdminClient _client;
-
-    public RoomsController(IAdminClient client) => _client = client;
-
     [HttpGet]
     [ProducesResponseType(typeof(IEnumerable<RoomDto>), 200)]
     public async Task<ActionResult<IEnumerable<RoomDto>>> Get(CancellationToken ct)
     {
         try
         {
-            var rooms = await _client.ListRoomsAsync(ct);
+            var rooms = await client.ListRoomsAsync(ct);
             return Ok(rooms);
         }
         catch (TimeoutException e) { return StatusCode(504, new { error = e.Message }); }
@@ -38,7 +36,7 @@ public class RoomsController : ControllerBase
 
         try
         {
-            await _client.BroadcastAsync(id, body.Message, ct);
+            await client.BroadcastAsync(id, body.Message, ct);
             return Ok(new { success = true });
         }
         catch (TimeoutException e) { return StatusCode(504, new { error = e.Message }); }
