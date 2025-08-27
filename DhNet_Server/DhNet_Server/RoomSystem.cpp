@@ -4,6 +4,7 @@
 
 RoomSystem::RoomSystem()
 {
+	m_roomNum = 0;
 }
 
 RoomSystem::~RoomSystem()
@@ -12,11 +13,12 @@ RoomSystem::~RoomSystem()
 
 std::shared_ptr<Room> RoomSystem::MakeRoom()
 {
-	// Temp (무조건 방 1개만)
 	WRITE_LOCK
+	
 	auto room = ObjectPool<Room>::MakeShared();
-	room->SetRoomIndex(0);
-	m_rooms[0] = room;
+	room->SetRoomIndex(m_roomNum);
+	m_rooms[m_roomNum] = room;
+	m_roomNum.fetch_add(1);
 	return room;
 }
 
@@ -30,11 +32,22 @@ std::shared_ptr<Room> RoomSystem::GetRoom(int32 roomIndex)
 		}
 	}
 
-	return MakeRoom();
+	return nullptr;
 }
 
 std::map<int, std::shared_ptr<Room>> RoomSystem::GetRooms()
 {
-	READ_LOCK;
+	READ_LOCK
 	return m_rooms; // return a copy for safe iteration outside lock
+}
+
+std::shared_ptr<Room> RoomSystem::GetEmptyRoom()
+{
+	READ_LOCK
+	for (auto& [index, room] : m_rooms)
+	{
+		if (room && room->GetPlayerCount() < MAX_ROOM_PLAYER)
+			return room;
+	}
+	return nullptr;
 }

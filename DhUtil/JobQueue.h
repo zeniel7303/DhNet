@@ -18,6 +18,14 @@ public:
 		Push(ObjectPool<Job>::MakeShared(std::move(_callback)));
 	}
 
+	// Preferred overload: pass explicit owner to avoid relying on shared_from_this of base type
+	template<typename T, typename Ret, typename... Args>
+	void DoAsync(const std::shared_ptr<T>& _owner, Ret(T::* _memFunc)(Args...), Args... _args)
+	{
+		Push(ObjectPool<Job>::MakeShared(_owner, _memFunc, std::forward<Args>(_args)...));
+	}
+
+	// Legacy overload (kept for compatibility): may be unsafe for derived classes created as shared_ptr<Derived>
 	template<typename T, typename Ret, typename... Args>
 	void DoAsync(Ret(T::* _memFunc)(Args...), Args... _args)
 	{

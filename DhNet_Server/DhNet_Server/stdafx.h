@@ -17,3 +17,5 @@
 
 #include <concurrent_unordered_map.h>
 #include <concurrent_unordered_set.h>
+
+#define MAX_ROOM_PLAYER 2
