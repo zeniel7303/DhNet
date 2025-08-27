@@ -26,9 +26,9 @@ public:
 	ResLogin() = default;
 	~ResLogin() = default;
 
-    void Init(uint64 _playerId, std::string _name)
+   	void Init(uint64 _playerId, std::string _name)
     {
-		PacketHeader::Init(PacketEnum::Res_Login, sizeof(this));
+		PacketHeader::Init(PacketEnum::Res_Login, sizeof(*this));
 		m_playerId = _playerId;
 		strncpy_s(m_playerName, _name.c_str(), sizeof(m_playerName) - 1);
 		m_playerName[sizeof(m_playerName) - 1] = '\0'; // Ensure null-termination
@@ -46,8 +46,23 @@ public:
 
 	void Init()
 	{
-		PacketHeader::Init(PacketEnum::Req_RoomEnter, sizeof(this));
+		PacketHeader::Init(PacketEnum::Req_RoomEnter, sizeof(*this));
 	}
+};
+
+class ResRoomEnter : public PacketHeader
+{
+public:
+	ResRoomEnter() = default;
+	~ResRoomEnter() = default;
+
+	void Init(bool _isSuccess)
+	{
+		PacketHeader::Init(PacketEnum::Res_RoomEnter, sizeof(*this));
+		m_isSuccess = _isSuccess;
+	}
+
+	bool m_isSuccess;
 };
 
 class NotiRoomEnter : public PacketHeader
@@ -103,6 +118,21 @@ class ReqRoomExit : public PacketHeader
 public:
 	ReqRoomExit() = default;
 	~ReqRoomExit() = default;
+};
+
+class ResRoomExit : public PacketHeader
+{
+public:
+	ResRoomExit() = default;
+	~ResRoomExit() = default;
+
+	void Init(bool _isSuccess)
+	{
+		PacketHeader::Init(PacketEnum::Res_RoomExit, sizeof(*this));
+		m_isSuccess = _isSuccess;
+	}
+
+	bool m_isSuccess;
 };
 
 class NotiRoomExit : public PacketHeader

@@ -9,11 +9,15 @@ bool HandleReqRoomEnterPacket(PacketHeader* _header, std::shared_ptr<Session>& _
 	auto reqRoomEnter = reinterpret_cast<ReqRoomEnter*>(_header);
 	auto gameSession = std::static_pointer_cast<GameSession>(_session);
 	auto player = gameSession->GetPlayer();
-	GameServer::Instance().GetSystem<RoomSystem>()->GetRoom()->DoAsync(&Room::Enter, player);
 
-	auto senderAndPacket = Sender::GetSenderAndPacket<NotiRoomEnter>();
-	senderAndPacket.first->Init(player->GetPlayerId(), player->GetPlayerName());
-	GameServer::Instance().GetSystem<RoomSystem>()->GetRoom()->DoAsync(&Room::Broadcast, senderAndPacket.second);
+	auto room = GameServer::Instance().GetSystem<RoomSystem>()->GetEmptyRoom();
+	if (!room)
+	{
+		room = GameServer::Instance().GetSystem<RoomSystem>()->MakeRoom();
+		ASSERT_CRASH(room != nullptr)
+	}
+	
+	room->DoAsync(room, &Room::Enter, player);
 
 	return true;
 }
@@ -24,9 +28,7 @@ bool HandleReqRoomChatPacket(PacketHeader* _header, std::shared_ptr<Session>& _s
 	auto gameSession = std::static_pointer_cast<GameSession>(_session);
 	auto player = gameSession->GetPlayer();
 
-	auto senderAndPacket = Sender::GetSenderAndPacket<NotiRoomChat>();
-	senderAndPacket.first->Init(player->GetPlayerId(), player->GetPlayerName(), reqRoomChat->m_message);
-	GameServer::Instance().GetSystem<RoomSystem>()->GetRoom()->DoAsync(&Room::Broadcast, senderAndPacket.second);
+	player->RoomChat(reqRoomChat->m_message);
 
 	return true;
 }
@@ -36,11 +38,8 @@ bool HandleReqRoomExitPacket(PacketHeader* _header, std::shared_ptr<Session>& _s
 	auto reqRoomExit = reinterpret_cast<ReqRoomExit*>(_header);
 	auto gameSession = std::static_pointer_cast<GameSession>(_session);
 	auto player = gameSession->GetPlayer();
-	GameServer::Instance().GetSystem<RoomSystem>()->GetRoom()->DoAsync(&Room::Leave, player);
-
-	auto senderAndPacket = Sender::GetSenderAndPacket<NotiRoomExit>();
-	senderAndPacket.first->Init(player->GetPlayerId(), player->GetPlayerName());
-	GameServer::Instance().GetSystem<RoomSystem>()->GetRoom()->DoAsync(&Room::Broadcast, senderAndPacket.second);
+	
+	player->LeaveRoom();
 
 	return true;
 }

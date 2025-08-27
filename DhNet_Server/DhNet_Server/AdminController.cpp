@@ -34,7 +34,7 @@ bool AdminListRooms(const dhnet::ListRoomsRequest* /*req*/, dhnet::ListRoomsResp
             r->set_id(id);
             r->set_name("room-" + std::to_string(id));
             r->set_playercount(room->GetPlayerCount());
-            r->set_capacity(100); // default capacity for now
+            r->set_capacity(MAX_ROOM_PLAYER);
         }
         return true;
     }, std::chrono::milliseconds(1000), err);
@@ -64,7 +64,7 @@ bool AdminBroadcast(const dhnet::BroadcastRequest* req, dhnet::BroadcastResponse
 
         auto senderAndPacket = Sender::GetSenderAndPacket<NotiRoomChat>();
         senderAndPacket.first->Init(0, "ADMIN", message.c_str());
-        room->DoAsync(&Room::Broadcast, senderAndPacket.second);
+        room->DoAsync(room, &Room::Broadcast, senderAndPacket.second);
 
         resp->set_success(true);
         resp->set_detail("OK");
