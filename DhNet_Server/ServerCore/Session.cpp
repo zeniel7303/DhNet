@@ -44,7 +44,7 @@ void Session::Send(SenderRef _sender)
 {
 	WRITE_LOCK
 
-	m_senderQueue.push(_sender);
+	m_senderQueue.push(std::move(_sender));
 
 	// 현재 RegisterSend가 걸리지 않은 생태라면, 걸어준다.
 	if (m_sendRegistered.exchange(true) == false)
