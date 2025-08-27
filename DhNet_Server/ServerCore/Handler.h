@@ -18,7 +18,7 @@ public:
 template<typename T>
 inline bool Handler<T>::Register(int _packetNum, T&& _type)
 {
-	auto result = m_packetList.emplace(_packetNum, _type);
+	auto result = m_packetList.try_emplace(_packetNum, _type);
 
 	if (result.second == NULL) return false;
 
