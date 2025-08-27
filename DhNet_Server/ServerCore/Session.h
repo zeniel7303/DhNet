@@ -52,7 +52,7 @@ public:
 
 	bool						IsConnected()						{ return m_connected; }
 
-	// �������̽�
+	// 인터페이스
 public:
 	virtual HANDLE				GetHandle() override;
 	virtual void				Dispatch(class IocpEvent* _iocpEvent, int32 _numOfBytes = 0) override;
@@ -75,7 +75,7 @@ private:
 
 	void						HandleError(int32 _errorCode);
 
-	// �����ε���
+	// 오버로딩용
 protected:
 	virtual void				OnConnected() {}
 	virtual bool				OnRecv(PacketHeader* _packet) { return true; }

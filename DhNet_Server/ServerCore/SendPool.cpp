@@ -71,7 +71,7 @@ SenderRef SendPool::Alloc(unsigned short _sendSize)
 	//https://stackoverflow.com/questions/13633737/using-a-custom-deleter-for-stdshared-ptr-on-a-direct3d11-object
 	return SenderRef(sender, [this](Sender* _sender)
 		{
-			// ���н� �ı�
+			// 실패시 파괴
 			_sender->DeAlloc();
 		});
 }

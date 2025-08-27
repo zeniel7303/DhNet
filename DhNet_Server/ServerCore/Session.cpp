@@ -46,7 +46,7 @@ void Session::Send(SenderRef _sender)
 
 	m_senderQueue.push(_sender);
 
-	// ���� RegisterSend�� �ɸ��� ���� ���¶��, �ɾ��ش�.
+	// 현재 RegisterSend가 걸리지 않은 생태라면, 걸어준다.
 	if (m_sendRegistered.exchange(true) == false)
 	{
 		RegisterSend();
@@ -66,7 +66,7 @@ if (m_connected.exchange(false) == false)
 	// TEMP  
 	std::wcout << L"Disconnect : " << std::wstring(_cause) << std::endl;
 
-	OnDisconnected(); // ������ �ڵ忡�� ������  
+	OnDisconnected(); // 컨텐츠 코드에서 재정의  
 	GetService()->ReleaseSession(GetSessionRef());
 
 	RegisterDisconnect();
@@ -82,7 +82,7 @@ bool Session::RegisterConnect()
 	if (SocketUtils::SetReuseAddress(m_socket, true) == false)
 		return false;
 
-	if (SocketUtils::BindAnyAddress(m_socket, 0/*���°�*/) == false)
+	if (SocketUtils::BindAnyAddress(m_socket, 0) == false)
 		return false;
 
 	m_connectEvent.Init();
@@ -156,7 +156,7 @@ void Session::RegisterSend()
 	m_sendEvent.Init();
 	m_sendEvent.m_owner = shared_from_this();
 
-	// ���� �����͸� sendEvent�� ���
+	// 보낼 데이터를 sendEvent에 등록
 	{
 		WRITE_LOCK
 
@@ -169,7 +169,7 @@ void Session::RegisterSend()
 		}
 	}
 
-	// Scatter-Gather (����� �ִ� �����͵��� ��Ƽ� �� �濡 ������.)
+	// Scatter-Gather (흩어져 있는 데이터들을 모아서 한 방에 보낸다.)
 	std::vector<WSABUF> wsaBufs;
 	wsaBufs.reserve(m_sendEvent.m_senders.size());
 	for (SenderRef sender : m_sendEvent.m_senders)
@@ -201,13 +201,13 @@ void Session::ProcessConnect()
 
 	m_connected.store(true);
 
-	// ���� ���
+	// 세션 등록
 	GetService()->AddSession(GetSessionRef());
 
-	// ������ �ڵ忡�� ������
+	// 컨탠츠 코드에서 재정의
 	OnConnected();
 
-	// ���� ���
+	// 수신 등록
 	RegisterRecv();
 }
 
@@ -237,7 +237,7 @@ void Session::ProcessRecv(int32 _numOfBytes)
 		auto packet = reinterpret_cast<PacketHeader*>(m_recvBuffer.ReadPos());
 		if (m_recvBuffer.DataSize() >= packet->m_dataSize)
 		{
-			// ������ �ڵ忡�� ������
+			// 컨텐츠 코드에서 재정의
 			auto result = OnRecv(packet);
 			if (result == false)
 			{
@@ -254,10 +254,10 @@ void Session::ProcessRecv(int32 _numOfBytes)
 		break;
 	}
 
-	// Ŀ�� ����
+	// 커서 정리
 	m_recvBuffer.Clean();
 
-	// ���� ���
+	// 수신 등록
 	RegisterRecv();
 }
 
@@ -272,7 +272,7 @@ void Session::ProcessSend(int32 _numOfBytes)
 		return;
 	}
 
-	// ������ �ڵ忡�� ������
+	// 컨텐츠 코드에서 재정의
 	OnSend(_numOfBytes);
 
 	WRITE_LOCK
@@ -297,7 +297,7 @@ void Session::HandleError(int32 _errorCode)
 		break;
 	default:
 		// TODO : Log
-		std::cout << "Handle Error : " << _errorCode << std::endl;
+		std::cout << "Handle Error : " << _errorCode << '\n';
 		break;
 	}
 }
