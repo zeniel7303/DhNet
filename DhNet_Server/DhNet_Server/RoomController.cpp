@@ -10,7 +10,7 @@ bool HandleReqRoomEnterPacket(PacketHeader* _header, std::shared_ptr<Session>& _
 	auto gameSession = std::static_pointer_cast<GameSession>(_session);
 	auto player = gameSession->GetPlayer();
 
-	auto room = GameServer::Instance().GetSystem<RoomSystem>()->GetEmptyRoom();
+	auto room = GameServer::Instance().GetSystem<RoomSystem>()->GetNotFullRoom();
 	if (!room)
 	{
 		room = GameServer::Instance().GetSystem<RoomSystem>()->MakeRoom();

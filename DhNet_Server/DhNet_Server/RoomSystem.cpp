@@ -2,23 +2,18 @@
 #include "RoomSystem.h"
 #include "../../DhUtil/ObjectPool.h"
 
-RoomSystem::RoomSystem()
-{
-	m_roomNum = 0;
-}
-
-RoomSystem::~RoomSystem()
-{
-}
-
 std::shared_ptr<Room> RoomSystem::MakeRoom()
 {
 	WRITE_LOCK
 	
 	auto room = ObjectPool<Room>::MakeShared();
+	ASSERT_CRASH(room != nullptr)
+	
 	room->SetRoomIndex(m_roomNum);
 	m_rooms[m_roomNum] = room;
 	m_roomNum.fetch_add(1);
+	ASSERT_CRASH(room->TryReserveSlot());
+	
 	return room;
 }
 
@@ -41,12 +36,12 @@ std::map<int, std::shared_ptr<Room>> RoomSystem::GetRooms()
 	return m_rooms; // return a copy for safe iteration outside lock
 }
 
-std::shared_ptr<Room> RoomSystem::GetEmptyRoom()
+std::shared_ptr<Room> RoomSystem::GetNotFullRoom()
 {
 	READ_LOCK
 	for (auto& [index, room] : m_rooms)
 	{
-		if (room && room->GetPlayerCount() < MAX_ROOM_PLAYER)
+		if (room && room->TryReserveSlot())
 			return room;
 	}
 	return nullptr;

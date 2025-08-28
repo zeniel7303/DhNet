@@ -9,11 +9,11 @@ private:
 	std::atomic<int> m_roomNum;
 
 public:
-	RoomSystem();
-	~RoomSystem();
+	RoomSystem() : m_roomNum(0) {}
+	~RoomSystem() = default;
 
 	std::shared_ptr<Room> MakeRoom();
 	std::shared_ptr<Room> GetRoom(int32 roomIndex = 0);
 	std::map<int, std::shared_ptr<Room>> GetRooms();
-	std::shared_ptr<Room> GetEmptyRoom();
+	std::shared_ptr<Room> GetNotFullRoom();
 };
