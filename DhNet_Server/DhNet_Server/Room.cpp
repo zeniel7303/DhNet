@@ -23,6 +23,8 @@ void Room::Enter(std::shared_ptr<Player> _player)
 	const auto self = std::static_pointer_cast<Room>(shared_from_this());
 	_player->SetCurrentRoom(self);
 	_player->EnterRoom();
+
+	std::cout << m_players.size() << std::endl;
 }
 
 void Room::Leave(std::shared_ptr<Player> _player)
@@ -33,6 +35,8 @@ void Room::Leave(std::shared_ptr<Player> _player)
 		m_players.erase(it);
 		m_availableSlots.fetch_add(1);
 	}
+
+	std::cout << m_players.size() << std::endl;
 }
 
 void Room::Broadcast(std::shared_ptr<Sender> _sender)
