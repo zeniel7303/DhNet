@@ -28,9 +28,9 @@ Player::~Player()
 
 void Player::EnterRoom()
 {
-	auto senderAndPacket = Sender::GetSenderAndPacket<ResRoomEnter>();
+	/*auto senderAndPacket = Sender::GetSenderAndPacket<ResRoomEnter>();
 	senderAndPacket.first->Init(true);
-	GetOwnerSession()->Send(senderAndPacket.second);
+	GetOwnerSession()->Send(senderAndPacket.second);*/
 	
 	if (const auto room = m_currentRoom.lock())
 	{
@@ -42,9 +42,9 @@ void Player::EnterRoom()
 
 void Player::EnterRoomFailed()
 {
-	auto senderAndPacket = Sender::GetSenderAndPacket<ResRoomEnter>();
+	/*auto senderAndPacket = Sender::GetSenderAndPacket<ResRoomEnter>();
 	senderAndPacket.first->Init(false);
-	GetOwnerSession()->Send(senderAndPacket.second);
+	GetOwnerSession()->Send(senderAndPacket.second);*/
 }
 
 void Player::LeaveRoom()
@@ -63,9 +63,9 @@ void Player::LeaveRoom()
 	// 방 정보 해제 (약한 참조 리셋)
 	m_currentRoom.reset();
 
-	auto senderAndPacket = Sender::GetSenderAndPacket<ResRoomExit>();
+	/*auto senderAndPacket = Sender::GetSenderAndPacket<ResRoomExit>();
 	senderAndPacket.first->Init(true);
-	GetOwnerSession()->Send(senderAndPacket.second);
+	GetOwnerSession()->Send(senderAndPacket.second);*/
 	
     // 지금은 방 나갔다는건 겜 끈거와 같다.
     GameServer::Instance().GetSystem<PlayerSystem>()->Remove(std::static_pointer_cast<Player>(shared_from_this()));
@@ -73,13 +73,15 @@ void Player::LeaveRoom()
 
 void Player::LeaveRoomFailed()
 {
-	auto senderAndPacket = Sender::GetSenderAndPacket<ResRoomExit>();
+	/*auto senderAndPacket = Sender::GetSenderAndPacket<ResRoomExit>();
 	senderAndPacket.first->Init(false);
-	GetOwnerSession()->Send(senderAndPacket.second);
+	GetOwnerSession()->Send(senderAndPacket.second);*/
 }
 
 void Player::RoomChat(std::string _message)
 {
+	if (m_currentRoom.expired()) return;
+	
 	if (const auto room = m_currentRoom.lock())
 	{
 		auto senderAndPacket = Sender::GetSenderAndPacket<NotiRoomChat>();
