@@ -70,7 +70,7 @@ bool ServerService::Start()
 
 	Sender::Init(30000);
 
-	std::cout << "Server Start!" << std::endl;
+	std::cout << "[ Server Start! ]" << std::endl;
 
 	return true;
 }

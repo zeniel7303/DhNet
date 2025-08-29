@@ -17,4 +17,7 @@ enum PacketEnum : unsigned __int16
 	Req_RoomExit = 8,
 	Res_RoomExit = 9,
 	Noti_RoomExit = 10,
+
+	Req_LobbyChat = 11,
+	Noti_LobbyChat = 12,
 };

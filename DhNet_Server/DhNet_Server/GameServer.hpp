@@ -26,7 +26,7 @@ inline PlayerSystem* GameServer::GetSystem<PlayerSystem>()
 }
 
 template<>
-inline RoomSystem* GameServer::GetSystem<RoomSystem>()
+inline LobbySystem* GameServer::GetSystem<LobbySystem>()
 {
-	return m_roomSystem;
+	return m_lobbySystem;
 }

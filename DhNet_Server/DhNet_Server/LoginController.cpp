@@ -13,6 +13,7 @@ bool HandleReqLoginPacket(PacketHeader* _header, std::shared_ptr<Session>& _sess
 
 	gameSession->SetPlayer(player);
 	GameServer::Instance().GetSystem<PlayerSystem>()->Add(player);
+	GameServer::Instance().GetSystem<LobbySystem>()->EnterLobbyAsync(player);
 
 	auto senderAndPacket = Sender::GetSenderAndPacket<ResLogin>();
 	senderAndPacket.first->Init(player->GetPlayerId(), player->GetPlayerName());

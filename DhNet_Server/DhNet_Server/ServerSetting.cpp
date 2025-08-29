@@ -11,7 +11,8 @@ ServerSetting::ServerSetting()
     m_port = static_cast<uint16>(std::stoi(buffer));
 
     GetEnvVarUsingWinAPI("DhNet_MAX_SESSION_COUNT", buffer, sizeof(buffer), "1000");
-    m_maxSessionCount = std::stoi(buffer);
+    // m_maxSessionCount = std::stoi(buffer);
+    m_maxSessionCount = 5000;
 
     /*
     auto ip = GetEnvVar("DhNet_IP", "127.0.0.1");

@@ -15,13 +15,9 @@ public:
 	Player(std::shared_ptr<GameSession> _session);
 	~Player();
 
-	void EnterRoom();
-	void EnterRoomFailed();
-	void LeaveRoom();
-	void LeaveRoomFailed();
-	void RoomChat(std::string _message);
+	void DisConnect();
 
-	uint64 GetPlayerId()							{ return m_playerId; }
+	uint64 GetPlayerId()							const { return m_playerId; }
 	std::string GetPlayerName()						{ return m_name; }
 	std::shared_ptr<GameSession> GetOwnerSession()	{ return m_ownerSession; }
 	std::weak_ptr<Room> GetCurrentRoom()			{ return m_currentRoom; }

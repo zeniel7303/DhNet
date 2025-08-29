@@ -16,5 +16,4 @@ public:
 
 	void Add(std::shared_ptr<GameSession> _session);
 	void Remove(std::shared_ptr<GameSession> _session);
-	void Broadcast(std::shared_ptr<Sender> _sender);
 };

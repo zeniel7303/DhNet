@@ -9,3 +9,5 @@
 #endif
 
 #include "../../DhNet_Server/ServerCore/pch.h"
+
+#define STRESS_TEST

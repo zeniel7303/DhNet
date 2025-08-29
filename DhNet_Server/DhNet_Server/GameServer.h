@@ -5,7 +5,7 @@
 #include "UniqueIdGenerationSystem.h"
 #include "GameSessionSystem.h"
 #include "PlayerSystem.h"
-#include "RoomSystem.h"
+#include "LobbySystem.h"
 
 class GameServer
 {
@@ -21,7 +21,7 @@ private:
 	UniqueIdGenerationSystem* m_uniqueIdGenerationSystem;
 	GameSessionSystem* m_gameSessionSystem;
 	PlayerSystem* m_playerSystem;
-	RoomSystem* m_roomSystem;
+	LobbySystem* m_lobbySystem;
 
 private:
 	void RegisterPacket();

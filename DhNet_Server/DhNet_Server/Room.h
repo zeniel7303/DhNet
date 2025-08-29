@@ -10,13 +10,18 @@ private:
 	std::map<uint64, std::shared_ptr<Player>> m_players;
 	std::atomic<int32> m_availableSlots{ MAX_ROOM_PLAYER };
 
+	// Broadcast는 Room 내부에서만 사용한다. 외부에서 직접 호출하지 말 것.
+	void Broadcast(std::shared_ptr<Sender> _sender);
+
 public:
 	Room() : m_roomIndex(0) {}
 	~Room() = default;
 
+	// 아래의 4개의 함수는 반드시 DoAsync를 통해서만 호출되어야 함 (동기 호출 금지)
 	void Enter(std::shared_ptr<Player> _player);
-	void Leave(std::shared_ptr<Player> _player);
-	void Broadcast(std::shared_ptr<Sender> _sender);
+	void Leave(std::shared_ptr<Player> _player, bool _isDisConnect);
+	void HandleChat(uint64 _playerId, const std::string& _message);
+	void AdminBroadcast(const std::string& _message);
 
 	// Thread-safe 하도록 room 입장 예약을 거는 함수
 	bool TryReserveSlot();

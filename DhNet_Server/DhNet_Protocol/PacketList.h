@@ -153,4 +153,35 @@ public:
 	char m_playerName[16];
 };
 
+// Lobby chat packets
+class ReqLobbyChat : public PacketHeader
+{
+public:
+	ReqLobbyChat() = default;
+	~ReqLobbyChat() = default;
+
+	char m_message[256];
+};
+
+class NotiLobbyChat : public PacketHeader
+{
+public:
+	NotiLobbyChat() = default;
+	~NotiLobbyChat() = default;
+
+	void Init(uint64 _playerId, std::string _name, const char* _message)
+	{
+		PacketHeader::Init(PacketEnum::Noti_LobbyChat, sizeof(*this));
+		m_playerId = _playerId;
+		strncpy_s(m_playerName, _name.c_str(), sizeof(m_playerName) - 1);
+		m_playerName[sizeof(m_playerName) - 1] = '\0';
+		strncpy_s(m_message, _message, sizeof(m_message) - 1);
+		m_message[sizeof(m_message) - 1] = '\0';
+	}
+
+	uint64 m_playerId;
+	char m_playerName[16];
+	char m_message[256];
+};
+
 #pragma pack(pop)

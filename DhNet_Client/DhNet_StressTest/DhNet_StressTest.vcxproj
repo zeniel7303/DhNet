@@ -131,6 +131,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\DhNet_Client\LobbyController.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="..\DhNet_Client\ServerSession.cpp" />
     <ClCompile Include="..\DhNet_Client\LoginController.cpp" />

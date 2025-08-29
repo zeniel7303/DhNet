@@ -10,7 +10,7 @@ GameSession::GameSession()
 
 GameSession::~GameSession()
 {
-	std::cout << "~GameSession" << std::endl;
+	// std::cout << "~GameSession" << std::endl;
 }
 
 void GameSession::OnConnected()
@@ -22,7 +22,8 @@ void GameSession::OnDisconnected()
 {  
 	if (m_player)
 	{
-		m_player->LeaveRoom();
+		m_player->DisConnect();
+		
 	}
 
 	m_player.reset();

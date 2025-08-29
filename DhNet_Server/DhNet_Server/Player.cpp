@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "Player.h"
-#include "../DhNet_Protocol/PacketList.h"
 #include "GameServer.h"
 #include "GameSession.h"
 #include "Room.h"
@@ -23,67 +22,20 @@ Player::Player(std::shared_ptr<GameSession> _session)
 
 Player::~Player()
 {
-    // std::cout << "~Player" << std::endl;
+	// std::cout << "~Player" << std::endl;
 }
 
-void Player::EnterRoom()
+void Player::DisConnect()
 {
-	auto senderAndPacket = Sender::GetSenderAndPacket<ResRoomEnter>();
-	senderAndPacket.first->Init(true);
-	GetOwnerSession()->Send(senderAndPacket.second);
-	
-	if (const auto room = m_currentRoom.lock())
+	if (m_currentRoom.expired())
 	{
-		auto senderAndPacket = Sender::GetSenderAndPacket<NotiRoomEnter>();
-		senderAndPacket.first->Init(m_playerId, m_name);
-		room->DoAsync(room, &Room::Broadcast, senderAndPacket.second);
+		GameServer::Instance().GetSystem<LobbySystem>()->LeaveLobby(shared_from_this());
 	}
-}
-
-void Player::EnterRoomFailed()
-{
-	auto senderAndPacket = Sender::GetSenderAndPacket<ResRoomEnter>();
-	senderAndPacket.first->Init(false);
-	GetOwnerSession()->Send(senderAndPacket.second);
-}
-
-void Player::LeaveRoom()
-{
-    // std::cout << m_name << "나감" << std::endl;
-
-	if (const auto room = m_currentRoom.lock())
+	else
 	{
-		room->DoAsync(room, &Room::Leave, shared_from_this());
-
-		auto senderAndPacket = Sender::GetSenderAndPacket<NotiRoomExit>();
-		senderAndPacket.first->Init(m_playerId, m_name);
-		room->DoAsync(room, &Room::Broadcast, senderAndPacket.second);
+		auto room = m_currentRoom.lock();
+		room->DoAsync(room, &Room::Leave, shared_from_this(), true);
 	}
 
-	// 방 정보 해제 (약한 참조 리셋)
-	m_currentRoom.reset();
-
-	auto senderAndPacket = Sender::GetSenderAndPacket<ResRoomExit>();
-	senderAndPacket.first->Init(true);
-	GetOwnerSession()->Send(senderAndPacket.second);
-	
-    // 지금은 방 나갔다는건 겜 끈거와 같다.
-    GameServer::Instance().GetSystem<PlayerSystem>()->Remove(std::static_pointer_cast<Player>(shared_from_this()));
-}
-
-void Player::LeaveRoomFailed()
-{
-	auto senderAndPacket = Sender::GetSenderAndPacket<ResRoomExit>();
-	senderAndPacket.first->Init(false);
-	GetOwnerSession()->Send(senderAndPacket.second);
-}
-
-void Player::RoomChat(std::string _message)
-{
-	if (const auto room = m_currentRoom.lock())
-	{
-		auto senderAndPacket = Sender::GetSenderAndPacket<NotiRoomChat>();
-		senderAndPacket.first->Init(m_playerId, m_name, _message.c_str());
-		room->DoAsync(room, &Room::Broadcast, senderAndPacket.second);
-	}
+	GameServer::Instance().GetSystem<PlayerSystem>()->Remove(shared_from_this());
 }

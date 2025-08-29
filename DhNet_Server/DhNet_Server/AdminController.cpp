@@ -4,7 +4,7 @@
 #ifdef DHNET_GRPC_AVAILABLE
 #include <chrono>
 #include "AdminGrpcServer.h"
-#include "RoomSystem.h"
+#include "LobbySystem.h"
 #include "GameServer.h"
 #include "../DhNet_Protocol/PacketList.h"
 #include "../ServerCore/Sender.h"
@@ -21,7 +21,7 @@ bool AdminListRooms(const dhnet::ListRoomsRequest* /*req*/, dhnet::ListRoomsResp
     return DispatchToLogicThreadWithTimeout([resp]() -> bool {
         if (!resp) return false;
 
-        auto rooms = GameServer::Instance().GetSystem<RoomSystem>()->GetRooms();
+        auto rooms = GameServer::Instance().GetSystem<LobbySystem>()->GetRooms();
         if (rooms.empty()) return false;
 
         for (const auto& kv : rooms)
@@ -54,7 +54,7 @@ bool AdminBroadcast(const dhnet::BroadcastRequest* req, dhnet::BroadcastResponse
             return true;
         }
 
-        auto room = GameServer::Instance().GetSystem<RoomSystem>()->GetRoom(static_cast<int32>(roomId));
+        auto room = GameServer::Instance().GetSystem<LobbySystem>()->GetRoom(static_cast<int32>(roomId));
         if (!room)
         {
             resp->set_success(false);
@@ -62,9 +62,10 @@ bool AdminBroadcast(const dhnet::BroadcastRequest* req, dhnet::BroadcastResponse
             return true;
         }
 
-        auto senderAndPacket = Sender::GetSenderAndPacket<NotiRoomChat>();
-        senderAndPacket.first->Init(0, "ADMIN", message.c_str());
-        room->DoAsync(room, &Room::Broadcast, senderAndPacket.second);
+      		// Room 내부 API로 위임하여 브로드캐스트 수행 (DoAsync lambda)
+      		room->DoAsync([room, msg = std::string(message)]() {
+      			room->AdminBroadcast(msg);
+      		});
 
         resp->set_success(true);
         resp->set_detail("OK");

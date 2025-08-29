@@ -5,6 +5,7 @@
 #include "../DhNet_Client/TestController.h"
 #include "../DhNet_Client/LoginController.h"
 #include "../DhNet_Client/RoomController.h"
+#include "../DhNet_Client/LobbyController.h"
 
 #include "../../DhNet_Server/ServerCore/Service.h"
 #include "../../DhUtil/ThreadManager.h"
@@ -51,9 +52,14 @@ static void RegisterHandlers()
 {
     PacketHandler::Instance().Register(PacketEnum::Test, &RecvTestPacket);
     PacketHandler::Instance().Register(PacketEnum::Res_Login, &HandleResLoginPacket);
+    
+    PacketHandler::Instance().Register(PacketEnum::Res_RoomEnter, &HandleResRoomEnterPacket);
     PacketHandler::Instance().Register(PacketEnum::Noti_RoomEnter, &HandleNotiRoomEnterPacket);
     PacketHandler::Instance().Register(PacketEnum::Noti_RoomChat, &HandleNotiRoomChatPacket);
+    PacketHandler::Instance().Register(PacketEnum::Res_RoomExit, &HandleResRoomExitPacket);
     PacketHandler::Instance().Register(PacketEnum::Noti_RoomExit, &HandleNotiRoomExitPacket);
+	
+    PacketHandler::Instance().Register(PacketEnum::Noti_LobbyChat, &HandleNotiLobbyChatPacket);
 }
 
 int wmain(int argc, wchar_t* argv[])

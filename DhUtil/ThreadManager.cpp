@@ -20,7 +20,7 @@ void ThreadManager::Launch(std::function<void(void)> _callback)
 {
 	std::lock_guard<std::mutex> guard(m_lock);
 
-	m_threads.push_back(std::thread([=]()
+	m_threads.emplace_back(std::thread([=]()
 		{
 			InitTLS();
 			_callback();
@@ -53,8 +53,7 @@ void ThreadManager::DoGlobalQueueWork()
 {
 	while (true)
 	{
-		if (::GetTickCount64() > LEndTickCount)
-			break;
+		if (::GetTickCount64() > LEndTickCount) break;
 
 		JobQueueRef jobQueue = GGlobalQueue->Pop();
 		if (jobQueue == nullptr)

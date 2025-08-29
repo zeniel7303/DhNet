@@ -10,10 +10,10 @@ bool HandleReqRoomEnterPacket(PacketHeader* _header, std::shared_ptr<Session>& _
 	auto gameSession = std::static_pointer_cast<GameSession>(_session);
 	auto player = gameSession->GetPlayer();
 
-	auto room = GameServer::Instance().GetSystem<RoomSystem>()->GetNotFullRoom();
+	auto room = GameServer::Instance().GetSystem<LobbySystem>()->GetNotFullRoom();
 	if (!room)
 	{
-		room = GameServer::Instance().GetSystem<RoomSystem>()->MakeRoom();
+		room = GameServer::Instance().GetSystem<LobbySystem>()->MakeRoom();
 		ASSERT_CRASH(room != nullptr)
 	}
 	
@@ -28,7 +28,18 @@ bool HandleReqRoomChatPacket(PacketHeader* _header, std::shared_ptr<Session>& _s
 	auto gameSession = std::static_pointer_cast<GameSession>(_session);
 	auto player = gameSession->GetPlayer();
 
-	player->RoomChat(reqRoomChat->m_message);
+	if (player == nullptr)
+	{
+		std::cout << "What?" << std::endl;
+		return true;
+	}
+
+	if (const auto room = player->GetCurrentRoom().lock())
+	{
+		room->DoAsync([room, pid = player->GetPlayerId(), msg = std::string(reqRoomChat->m_message)] {
+			room->HandleChat(pid, msg);
+		});
+	}
 
 	return true;
 }
@@ -39,7 +50,10 @@ bool HandleReqRoomExitPacket(PacketHeader* _header, std::shared_ptr<Session>& _s
 	auto gameSession = std::static_pointer_cast<GameSession>(_session);
 	auto player = gameSession->GetPlayer();
 	
-	player->LeaveRoom();
+	if (const auto room = player->GetCurrentRoom().lock())
+	{
+		room->DoAsync(room, &Room::Leave, player, false);
+	}
 
 	return true;
 }

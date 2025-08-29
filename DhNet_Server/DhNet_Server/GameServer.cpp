@@ -17,8 +17,8 @@ GameServer::GameServer()
 
 	m_uniqueIdGenerationSystem = nullptr;
 	m_gameSessionSystem = nullptr;
-	m_playerSystem = nullptr;
-	m_roomSystem = nullptr;
+    m_playerSystem = nullptr;
+    m_lobbySystem = nullptr;
 }
 
 GameServer::~GameServer()
@@ -36,6 +36,10 @@ void GameServer::AddSetting(std::shared_ptr<ServerSetting> _setting)
     m_ip = _setting->GetIp();
     m_port = _setting->GetPort();
     m_maxSessionCount = _setting->GetMaxSessionCount();
+    
+    std::wcout << "[ Server Ip : " << m_ip << " ]" << std::endl;
+    std::cout << "[ Server Port : " << m_port << " ]" << std::endl;
+    std::cout << "[ Max Session Count : " << m_maxSessionCount << " ]" << std::endl;
 }
 
 void GameServer::RegisterPacket()
@@ -45,14 +49,15 @@ void GameServer::RegisterPacket()
     PacketHandler::Instance().Register(PacketEnum::Req_Login, &HandleReqLoginPacket);
     PacketHandler::Instance().Register(PacketEnum::Req_RoomChat, &HandleReqRoomChatPacket);
     PacketHandler::Instance().Register(PacketEnum::Req_RoomExit, &HandleReqRoomExitPacket);
+    PacketHandler::Instance().Register(PacketEnum::Req_LobbyChat, &HandleReqLobbyChatPacket);
 }
 
 void GameServer::AddSystem()
 {
 	m_uniqueIdGenerationSystem = new UniqueIdGenerationSystem();
 	m_gameSessionSystem = new GameSessionSystem();
-	m_playerSystem = new PlayerSystem();
-    m_roomSystem = new RoomSystem();
+    m_playerSystem = new PlayerSystem();
+    m_lobbySystem = new LobbySystem();
 }
 
 void GameServer::StartServer()
@@ -67,12 +72,16 @@ void GameServer::StartServer()
         []() { return ObjectPool<GameSession>::MakeShared(); },
         // []() { return std::make_shared<GameSession>(); },
         m_maxSessionCount);
-
+    
     ASSERT_CRASH(m_serverService->Start());
 
     GrpcHost::Instance().Start("127.0.0.1:7778");
+    std::cout << "[ GrpcHost : " << "127.0.0.1:7778 ]" << std::endl;
 
-    for (int32 i = 0; i < 5; i++)
+    const auto threadCount = std::thread::hardware_concurrency() * 2;
+    std::cout << "[ ThreadCount : " << threadCount << " ]" << std::endl;
+    
+    for (int32 i = 0; i < threadCount; i++)
     {
         GThreadManager->Launch([=]()
             {

@@ -13,9 +13,6 @@
     <Filter Include="Player\GameSession">
       <UniqueIdentifier>{54e910ae-d161-4fd1-8bae-08576dd51b7e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Room">
-      <UniqueIdentifier>{09f3a66d-c6ac-48e6-b522-7ec4019e5b33}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Main\Controller">
       <UniqueIdentifier>{be5f096f-ad8a-41cf-9af5-a04e1d7c288a}</UniqueIdentifier>
     </Filter>
@@ -24,6 +21,12 @@
     </Filter>
     <Filter Include="Main\Controller\Admin">
       <UniqueIdentifier>{6203cf21-575b-4bc6-ad18-5aa1ddec5a04}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Lobby">
+      <UniqueIdentifier>{54b8bbb8-d4b3-4897-9b98-55227d173024}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Lobby\Room">
+      <UniqueIdentifier>{09f3a66d-c6ac-48e6-b522-7ec4019e5b33}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -46,7 +49,7 @@
       <Filter>Player</Filter>
     </ClCompile>
     <ClCompile Include="Room.cpp">
-      <Filter>Room</Filter>
+      <Filter>Lobby\Room</Filter>
     </ClCompile>
     <ClCompile Include="LoginController.cpp">
       <Filter>Main\Controller</Filter>
@@ -66,9 +69,6 @@
     <ClCompile Include="TestController.cpp">
       <Filter>Main\Controller</Filter>
     </ClCompile>
-    <ClCompile Include="RoomSystem.cpp">
-      <Filter>System</Filter>
-    </ClCompile>
     <ClCompile Include="..\DhNet_Ipc\generated\dhnet.grpc.pb.cc" />
     <ClCompile Include="..\DhNet_Ipc\generated\dhnet.pb.cc" />
     <ClCompile Include="AdminController.cpp">
@@ -76,6 +76,15 @@
     </ClCompile>
     <ClCompile Include="AdminGrpcServer.cpp">
       <Filter>Main</Filter>
+    </ClCompile>
+    <ClCompile Include="LobbyController.cpp">
+      <Filter>Main\Controller</Filter>
+    </ClCompile>
+    <ClCompile Include="LobbySystem.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="Lobby.cpp">
+      <Filter>Lobby</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -96,7 +105,7 @@
       <Filter>Player</Filter>
     </ClInclude>
     <ClInclude Include="Room.h">
-      <Filter>Room</Filter>
+      <Filter>Lobby\Room</Filter>
     </ClInclude>
     <ClInclude Include="RoomController.h">
       <Filter>Main\Controller</Filter>
@@ -122,14 +131,20 @@
     <ClInclude Include="TestController.h">
       <Filter>Main\Controller</Filter>
     </ClInclude>
-    <ClInclude Include="RoomSystem.h">
-      <Filter>System</Filter>
-    </ClInclude>
     <ClInclude Include="AdminController.h">
       <Filter>Main\Controller\Admin</Filter>
     </ClInclude>
     <ClInclude Include="AdminGrpcServer.h">
       <Filter>Main</Filter>
+    </ClInclude>
+    <ClInclude Include="LobbyController.h">
+      <Filter>Main\Controller</Filter>
+    </ClInclude>
+    <ClInclude Include="LobbySystem.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="Lobby.h">
+      <Filter>Lobby</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

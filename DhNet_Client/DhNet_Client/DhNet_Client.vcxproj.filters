@@ -31,6 +31,9 @@
     <ClCompile Include="LoginController.cpp">
       <Filter>Controller</Filter>
     </ClCompile>
+    <ClCompile Include="LobbyController.cpp">
+      <Filter>Controller</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -43,6 +46,9 @@
       <Filter>Controller</Filter>
     </ClInclude>
     <ClInclude Include="LoginController.h">
+      <Filter>Controller</Filter>
+    </ClInclude>
+    <ClInclude Include="LobbyController.h">
       <Filter>Controller</Filter>
     </ClInclude>
   </ItemGroup>
