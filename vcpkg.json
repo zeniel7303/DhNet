@@ -1,0 +1,15 @@
+{
+  "name": "dhnet-server",
+  "version": "0.1.0",
+  "dependencies": [
+    {
+      "name": "grpc",
+      "version>=": "1.76.0",
+      "features": ["codegen", "core"]
+    },
+    {
+      "name": "openssl",
+      "version>=": "3.6.2"
+    }
+  ]
+}

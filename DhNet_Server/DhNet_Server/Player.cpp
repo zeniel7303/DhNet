@@ -4,6 +4,8 @@
 #include "GameServer.h"
 #include "GameSession.h"
 #include "Room.h"
+#include "Lobby.h"
+#include "LobbySystem.h"
 
 Player::Player(std::shared_ptr<GameSession> _session)
 {
@@ -13,11 +15,11 @@ Player::Player(std::shared_ptr<GameSession> _session)
 	m_name = "TempUser" + std::to_string(num);
 	m_ownerSession = _session;
 
-    // [ shared_from_this()´Â »ý¼ºÀÚ ¾È¿¡¼­ È£ÃâÇÏ¸é ¾ÈµÈ´Ù. ]
-    /* shared_from_this()´Â ´Ü¼øÈ÷ enable_shared_from_this<T>ÀÇ ¸â¹öÀÎ _wptrÀ» shared_ptr·Î Ä³½ºÆÃÇÏ¿© ¹ÝÈ¯ÇÑ´Ù.
-       ±×·±µ¥ enable_shared_from_this<T>ÀÇ ¸â¹ö _WptrÀº enable_shared_from_this<T>ÀÇ »ý¼ºÀÚ¿¡¼­ ¼ÂÆÃµÇ´Â °ÍÀÌ ¾Æ´Ï¶ó, 
-       std::make_shared()¿¡¼­ ¼ÂÆÃµÈ´Ù.std::make_shared<MatchMother>()ÀÇ ³»ºÎ¿¡¼­, _Wptr ¼ÂÆÃÀÌ MatchMother »ý¼ºÀÚº¸´Ù µÚ¿¡¼­ ÀÏ¾î³­´Ù.
-       µû¶ó¼­ »ý¼ºÀÚ ³»ºÎ¿¡¼­ shared_from_this()¸¦ È£ÃâÇÏ´Â °ÍÀº, ¾ÆÁ÷ ¼ÂÆÃµÇÁö ¾ÊÀº _WptrÀ» È£ÃâÇÏ´Â ÇàÀ§ÀÌ¹Ç·Î ÇÁ·Î±×·¥ÀÌ Á×´Â´Ù.*/
+    // [ shared_from_this()ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½È¿ï¿½ï¿½ï¿½ È£ï¿½ï¿½ï¿½Ï¸ï¿½ ï¿½ÈµÈ´ï¿½. ]
+    /* shared_from_this()ï¿½ï¿½ ï¿½Ü¼ï¿½ï¿½ï¿½ enable_shared_from_this<T>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ _wptrï¿½ï¿½ shared_ptrï¿½ï¿½ Ä³ï¿½ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½È¯ï¿½Ñ´ï¿½.
+       ï¿½×·ï¿½ï¿½ï¿½ enable_shared_from_this<T>ï¿½ï¿½ ï¿½ï¿½ï¿½ _Wptrï¿½ï¿½ enable_shared_from_this<T>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ú¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ÃµÇ´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Æ´Ï¶ï¿½, 
+       std::make_shared()ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ÃµÈ´ï¿½.std::make_shared<MatchMother>()ï¿½ï¿½ ï¿½ï¿½ï¿½Î¿ï¿½ï¿½ï¿½, _Wptr ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ MatchMother ï¿½ï¿½ï¿½ï¿½ï¿½Úºï¿½ï¿½ï¿½ ï¿½Ú¿ï¿½ï¿½ï¿½ ï¿½Ï¾î³­ï¿½ï¿½.
+       ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Î¿ï¿½ï¿½ï¿½ shared_from_this()ï¿½ï¿½ È£ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ãµï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ _Wptrï¿½ï¿½ È£ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ì¹Ç·ï¿½ ï¿½ï¿½ï¿½Î±×·ï¿½ï¿½ï¿½ ï¿½×´Â´ï¿½.*/
     // GameServer::Instance().GetSystem<PlayerSystem>()->Add(std::static_pointer_cast<Player>(shared_from_this()));
 }
 
@@ -49,8 +51,6 @@ void Player::EnterRoomFailed()
 
 void Player::LeaveRoom()
 {
-    // std::cout << m_name << "³ª°¨" << std::endl;
-
 	if (const auto room = m_currentRoom.lock())
 	{
 		room->DoAsync(room, &Room::Leave, shared_from_this());
@@ -60,15 +60,16 @@ void Player::LeaveRoom()
 		room->DoAsync(room, &Room::Broadcast, senderAndPacket.second);
 	}
 
-	// ¹æ Á¤º¸ ÇØÁ¦ (¾àÇÑ ÂüÁ¶ ¸®¼Â)
 	m_currentRoom.reset();
+}
 
-	/*auto senderAndPacket = Sender::GetSenderAndPacket<ResRoomExit>();
-	senderAndPacket.first->Init(true);
-	GetOwnerSession()->Send(senderAndPacket.second);*/
-	
-    // Áö±ÝÀº ¹æ ³ª°¬´Ù´Â°Ç °× ²ö°Å¿Í °°´Ù.
-    GameServer::Instance().GetSystem<PlayerSystem>()->Remove(std::static_pointer_cast<Player>(shared_from_this()));
+void Player::LeaveRoomAndReenterLobby()
+{
+	LeaveRoom();
+
+	auto lobby = GameServer::Instance().GetSystem<LobbySystem>()->AssignLobby();
+	if (lobby)
+		lobby->DoAsync(lobby, &Lobby::Enter, shared_from_this());
 }
 
 void Player::LeaveRoomFailed()
@@ -80,12 +81,28 @@ void Player::LeaveRoomFailed()
 
 void Player::RoomChat(std::string _message)
 {
-	if (m_currentRoom.expired()) return;
-	
 	if (const auto room = m_currentRoom.lock())
 	{
 		auto senderAndPacket = Sender::GetSenderAndPacket<NotiRoomChat>();
 		senderAndPacket.first->Init(m_playerId, m_name, _message.c_str());
 		room->DoAsync(room, &Room::Broadcast, senderAndPacket.second);
+	}
+}
+
+
+void Player::LeaveLobby()
+{
+	if (const auto lobby = m_currentLobby.lock())
+	{
+		lobby->DoAsync(lobby, &Lobby::Exit, shared_from_this());
+	}
+	m_currentLobby.reset();
+}
+
+void Player::LobbyChat(std::string _message)
+{
+	if (const auto lobby = m_currentLobby.lock())
+	{
+		lobby->DoAsync(lobby, &Lobby::Chat, shared_from_this(), _message);
 	}
 }

@@ -18,11 +18,13 @@ void GameSession::OnConnected()
 	GameServer::Instance().GetSystem<GameSessionSystem>()->Add(std::static_pointer_cast<GameSession>(shared_from_this()));
 }
 
-void GameSession::OnDisconnected()  
-{  
+void GameSession::OnDisconnected()
+{
 	if (m_player)
 	{
+		m_player->LeaveLobby();
 		m_player->LeaveRoom();
+		GameServer::Instance().GetSystem<PlayerSystem>()->Remove(m_player);
 	}
 
 	m_player.reset();

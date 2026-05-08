@@ -1,8 +1,8 @@
-#pragma once
 #include "stdafx.h"
 #include "LoginController.h"
 #include "GameSession.h"
 #include "Player.h"
+#include "Lobby.h"
 #include "GameServer.h"
 
 bool HandleReqLoginPacket(PacketHeader* _header, std::shared_ptr<Session>& _session)
@@ -17,6 +17,12 @@ bool HandleReqLoginPacket(PacketHeader* _header, std::shared_ptr<Session>& _sess
 	auto senderAndPacket = Sender::GetSenderAndPacket<ResLogin>();
 	senderAndPacket.first->Init(player->GetPlayerId(), player->GetPlayerName());
 	_session->Send(senderAndPacket.second);
+
+	auto lobby = GameServer::Instance().GetSystem<LobbySystem>()->AssignLobby();
+	if (lobby)
+	{
+		lobby->DoAsync(lobby, &Lobby::Enter, player);
+	}
 
 	return true;
 }

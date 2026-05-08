@@ -6,6 +6,7 @@
 #include "GameSessionSystem.h"
 #include "PlayerSystem.h"
 #include "RoomSystem.h"
+#include "LobbySystem.h"
 
 class GameServer
 {
@@ -18,10 +19,11 @@ private:
 
 	ServerServiceRef m_serverService;
 
-	UniqueIdGenerationSystem* m_uniqueIdGenerationSystem;
-	GameSessionSystem* m_gameSessionSystem;
-	PlayerSystem* m_playerSystem;
-	RoomSystem* m_roomSystem;
+	std::unique_ptr<UniqueIdGenerationSystem> m_uniqueIdGenerationSystem;
+	std::unique_ptr<GameSessionSystem> m_gameSessionSystem;
+	std::unique_ptr<PlayerSystem> m_playerSystem;
+	std::unique_ptr<RoomSystem> m_roomSystem;
+	std::unique_ptr<LobbySystem> m_lobbySystem;
 
 private:
 	void RegisterPacket();

@@ -153,4 +153,142 @@ public:
 	char m_playerName[16];
 };
 
+struct PlayerInfo
+{
+	uint64 m_playerId;
+	char m_playerName[16];
+};
+
+struct RoomInfo
+{
+	int32 m_roomIndex;
+	int32 m_playerCount;
+	int32 m_maxPlayers;
+};
+
+class ResLobbyEnter : public PacketHeader
+{
+public:
+	ResLobbyEnter() = default;
+	~ResLobbyEnter() = default;
+
+	void Init(int32 _lobbyIndex)
+	{
+		PacketHeader::Init(PacketEnum::Res_LobbyEnter, sizeof(*this));
+		m_lobbyIndex = _lobbyIndex;
+		m_playerCount = 0;
+		memset(m_players, 0, sizeof(m_players));
+	}
+
+	void AddPlayer(uint64 _playerId, const char* _playerName)
+	{
+		if (m_playerCount >= 50) return;
+		m_players[m_playerCount].m_playerId = _playerId;
+		strncpy_s(m_players[m_playerCount].m_playerName, _playerName, sizeof(PlayerInfo::m_playerName) - 1);
+		m_players[m_playerCount].m_playerName[sizeof(PlayerInfo::m_playerName) - 1] = '\0';
+		m_playerCount++;
+	}
+
+	int32 m_lobbyIndex;
+	int32 m_playerCount;
+	PlayerInfo m_players[50];
+};
+
+class NotiLobbyPlayerEnter : public PacketHeader
+{
+public:
+	NotiLobbyPlayerEnter() = default;
+	~NotiLobbyPlayerEnter() = default;
+
+	void Init(uint64 _playerId, std::string _name)
+	{
+		PacketHeader::Init(PacketEnum::Noti_LobbyPlayerEnter, sizeof(*this));
+		m_playerId = _playerId;
+		strncpy_s(m_playerName, _name.c_str(), sizeof(m_playerName) - 1);
+		m_playerName[sizeof(m_playerName) - 1] = '\0';
+	}
+
+	uint64 m_playerId;
+	char m_playerName[16];
+};
+
+class NotiLobbyPlayerExit : public PacketHeader
+{
+public:
+	NotiLobbyPlayerExit() = default;
+	~NotiLobbyPlayerExit() = default;
+
+	void Init(uint64 _playerId, std::string _name)
+	{
+		PacketHeader::Init(PacketEnum::Noti_LobbyPlayerExit, sizeof(*this));
+		m_playerId = _playerId;
+		strncpy_s(m_playerName, _name.c_str(), sizeof(m_playerName) - 1);
+		m_playerName[sizeof(m_playerName) - 1] = '\0';
+	}
+
+	uint64 m_playerId;
+	char m_playerName[16];
+};
+
+class ReqLobbyChat : public PacketHeader
+{
+public:
+	ReqLobbyChat() = default;
+	~ReqLobbyChat() = default;
+
+	char m_message[256];
+};
+
+class NotiLobbyChat : public PacketHeader
+{
+public:
+	NotiLobbyChat() = default;
+	~NotiLobbyChat() = default;
+
+	void Init(uint64 _playerId, std::string _name, const char* _message)
+	{
+		PacketHeader::Init(PacketEnum::Noti_LobbyChat, sizeof(*this));
+		m_playerId = _playerId;
+		strncpy_s(m_playerName, _name.c_str(), sizeof(m_playerName) - 1);
+		m_playerName[sizeof(m_playerName) - 1] = '\0';
+		strncpy_s(m_message, _message, sizeof(m_message) - 1);
+		m_message[sizeof(m_message) - 1] = '\0';
+	}
+
+	uint64 m_playerId;
+	char m_playerName[16];
+	char m_message[256];
+};
+
+class ReqRoomList : public PacketHeader
+{
+public:
+	ReqRoomList() = default;
+	~ReqRoomList() = default;
+};
+
+class ResRoomList : public PacketHeader
+{
+public:
+	ResRoomList() = default;
+	~ResRoomList() = default;
+
+	void Init()
+	{
+		PacketHeader::Init(PacketEnum::Res_RoomList, sizeof(*this));
+		m_roomCount = 0;
+		memset(m_rooms, 0, sizeof(m_rooms));
+	}
+
+	void AddRoom(int32 _roomIndex, int32 _playerCount, int32 _maxPlayers)
+	{
+		if (m_roomCount >= 20) return;
+		m_rooms[m_roomCount] = { _roomIndex, _playerCount, _maxPlayers };
+		m_roomCount++;
+	}
+
+	int32 m_roomCount;
+	RoomInfo m_rooms[20];
+};
+
 #pragma pack(pop)

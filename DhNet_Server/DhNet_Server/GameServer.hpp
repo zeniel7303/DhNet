@@ -4,29 +4,35 @@
 template<typename T>
 inline T* GameServer::GetSystem()
 {
-    return nullptr; // 기본 템플릿은 nullptr
+    return nullptr;
 }
 
 template<>
 inline UniqueIdGenerationSystem* GameServer::GetSystem<UniqueIdGenerationSystem>()
 {
-    return m_uniqueIdGenerationSystem;
+    return m_uniqueIdGenerationSystem.get();
 }
 
 template<>
 inline GameSessionSystem* GameServer::GetSystem<GameSessionSystem>()
 {
-    return m_gameSessionSystem;
+    return m_gameSessionSystem.get();
 }
 
 template<>
 inline PlayerSystem* GameServer::GetSystem<PlayerSystem>()
 {
-    return m_playerSystem;
+    return m_playerSystem.get();
 }
 
 template<>
 inline RoomSystem* GameServer::GetSystem<RoomSystem>()
 {
-	return m_roomSystem;
+    return m_roomSystem.get();
+}
+
+template<>
+inline LobbySystem* GameServer::GetSystem<LobbySystem>()
+{
+    return m_lobbySystem.get();
 }

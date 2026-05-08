@@ -14,11 +14,6 @@ GameServer::GameServer()
 {
 	m_maxSessionCount = 0;
 	m_port = 0;
-
-	m_uniqueIdGenerationSystem = nullptr;
-	m_gameSessionSystem = nullptr;
-	m_playerSystem = nullptr;
-	m_roomSystem = nullptr;
 }
 
 GameServer::~GameServer()
@@ -45,14 +40,17 @@ void GameServer::RegisterPacket()
     PacketHandler::Instance().Register(PacketEnum::Req_Login, &HandleReqLoginPacket);
     PacketHandler::Instance().Register(PacketEnum::Req_RoomChat, &HandleReqRoomChatPacket);
     PacketHandler::Instance().Register(PacketEnum::Req_RoomExit, &HandleReqRoomExitPacket);
+    PacketHandler::Instance().Register(PacketEnum::Req_LobbyChat, &HandleReqLobbyChatPacket);
+    PacketHandler::Instance().Register(PacketEnum::Req_RoomList, &HandleReqRoomListPacket);
 }
 
 void GameServer::AddSystem()
 {
-	m_uniqueIdGenerationSystem = new UniqueIdGenerationSystem();
-	m_gameSessionSystem = new GameSessionSystem();
-	m_playerSystem = new PlayerSystem();
-    m_roomSystem = new RoomSystem();
+	m_uniqueIdGenerationSystem = std::make_unique<UniqueIdGenerationSystem>();
+	m_gameSessionSystem = std::make_unique<GameSessionSystem>();
+	m_playerSystem = std::make_unique<PlayerSystem>();
+	m_roomSystem = std::make_unique<RoomSystem>();
+	m_lobbySystem = std::make_unique<LobbySystem>();
 }
 
 void GameServer::StartServer()
