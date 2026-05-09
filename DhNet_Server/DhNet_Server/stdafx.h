@@ -21,3 +21,5 @@
 #define MAX_ROOM_PLAYER 8
 #define MAX_LOBBY_PLAYERS 50
 #define MAX_LOBBY_COUNT 5
+
+#include <mysql/mysql.h>

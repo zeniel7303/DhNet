@@ -4,12 +4,13 @@
   "dependencies": [
     {
       "name": "grpc",
-      "version>=": "1.76.0",
-      "features": ["codegen", "core"]
+      "features": ["codegen"]
     },
     {
-      "name": "openssl",
-      "version>=": "3.6.2"
+      "name": "openssl"
+    },
+    {
+      "name": "libmysql"
     }
   ]
 }

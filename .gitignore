@@ -61,3 +61,7 @@ x86/
 # Claude Code
 .claude/
 CLAUDE.md
+
+# vcpkg installed packages
+vcpkg_installed/
+dev/
