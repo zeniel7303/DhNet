@@ -13,6 +13,24 @@ ServerSetting::ServerSetting()
     GetEnvVarUsingWinAPI("DhNet_MAX_SESSION_COUNT", buffer, sizeof(buffer), "1000");
     m_maxSessionCount = std::stoi(buffer);
 
+    GetEnvVarUsingWinAPI("DhNet_DB_HOST", buffer, sizeof(buffer), "127.0.0.1");
+    m_dbHost = buffer;
+
+    GetEnvVarUsingWinAPI("DhNet_DB_PORT", buffer, sizeof(buffer), "3306");
+    m_dbPort = std::stoi(buffer);
+
+    GetEnvVarUsingWinAPI("DhNet_DB_USER", buffer, sizeof(buffer), "dhnet");
+    m_dbUser = buffer;
+
+    GetEnvVarUsingWinAPI("DhNet_DB_PASSWORD", buffer, sizeof(buffer), "dhnet_pw");
+    m_dbPassword = buffer;
+
+    GetEnvVarUsingWinAPI("DhNet_DB_NAME", buffer, sizeof(buffer), "dhnet_db");
+    m_dbName = buffer;
+
+    GetEnvVarUsingWinAPI("DhNet_DB_POOL_SIZE", buffer, sizeof(buffer), "4");
+    m_dbPoolSize = std::stoi(buffer);
+
     /*
     auto ip = GetEnvVar("DhNet_IP", "127.0.0.1");
     m_ip = wstring(ip, ip + strlen(ip)); // Convert char* to wstring

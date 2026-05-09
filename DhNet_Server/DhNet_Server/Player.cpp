@@ -1,4 +1,4 @@
-#include "stdafx.h"
+﻿#include "stdafx.h"
 #include "Player.h"
 #include "../DhNet_Protocol/PacketList.h"
 #include "GameServer.h"
@@ -7,20 +7,11 @@
 #include "Lobby.h"
 #include "LobbySystem.h"
 
-Player::Player(std::shared_ptr<GameSession> _session)
+Player::Player(std::shared_ptr<GameSession> _session, uint64 _accountId, std::string _name)
 {
-	auto num = GameServer::Instance().GetSystem<UniqueIdGenerationSystem>()->GenerateUniqueId();
-
-	m_playerId = num;
-	m_name = "TempUser" + std::to_string(num);
-	m_ownerSession = _session;
-
-    // [ shared_from_this()�� ������ �ȿ��� ȣ���ϸ� �ȵȴ�. ]
-    /* shared_from_this()�� �ܼ��� enable_shared_from_this<T>�� ����� _wptr�� shared_ptr�� ĳ�����Ͽ� ��ȯ�Ѵ�.
-       �׷��� enable_shared_from_this<T>�� ��� _Wptr�� enable_shared_from_this<T>�� �����ڿ��� ���õǴ� ���� �ƴ϶�, 
-       std::make_shared()���� ���õȴ�.std::make_shared<MatchMother>()�� ���ο���, _Wptr ������ MatchMother �����ں��� �ڿ��� �Ͼ��.
-       ���� ������ ���ο��� shared_from_this()�� ȣ���ϴ� ����, ���� ���õ��� ���� _Wptr�� ȣ���ϴ� �����̹Ƿ� ���α׷��� �״´�.*/
-    // GameServer::Instance().GetSystem<PlayerSystem>()->Add(std::static_pointer_cast<Player>(shared_from_this()));
+    m_playerId   = _accountId;
+    m_name       = std::move(_name);
+    m_ownerSession = _session;
 }
 
 Player::~Player()

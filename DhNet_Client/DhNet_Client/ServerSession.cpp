@@ -6,7 +6,7 @@ void ServerSession::OnConnected()
 	std::cout << "Connected To Server" << std::endl;
 
 	auto senderAndPacket = Sender::GetSenderAndPacket<ReqLogin>();
-	senderAndPacket.first->Init(PacketEnum::Req_Login, sizeof(ReqLogin));
+	senderAndPacket.first->Init("testuser", "testpass");
 	Send(senderAndPacket.second);
 }
 

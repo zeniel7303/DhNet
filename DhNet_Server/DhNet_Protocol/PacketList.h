@@ -18,6 +18,30 @@ class ReqLogin : public PacketHeader
 public:
 	ReqLogin() = default;
 	~ReqLogin() = default;
+
+	void Init(const char* username, const char* password)
+	{
+		PacketHeader::Init(PacketEnum::Req_Login, sizeof(*this));
+		strncpy_s(m_username, username, sizeof(m_username) - 1);
+		m_username[sizeof(m_username) - 1] = '\0';
+		strncpy_s(m_password, password, sizeof(m_password) - 1);
+		m_password[sizeof(m_password) - 1] = '\0';
+	}
+
+	char m_username[16];
+	char m_password[64];	// plaintext; AES-GCM encryption will be added in a later phase
+};
+
+class ResLoginFailed : public PacketHeader
+{
+public:
+	ResLoginFailed() = default;
+	~ResLoginFailed() = default;
+
+	void Init()
+	{
+		PacketHeader::Init(PacketEnum::Res_LoginFailed, sizeof(*this));
+	}
 };
 
 class ResLogin : public PacketHeader

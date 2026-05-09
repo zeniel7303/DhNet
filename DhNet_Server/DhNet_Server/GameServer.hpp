@@ -8,12 +8,6 @@ inline T* GameServer::GetSystem()
 }
 
 template<>
-inline UniqueIdGenerationSystem* GameServer::GetSystem<UniqueIdGenerationSystem>()
-{
-    return m_uniqueIdGenerationSystem.get();
-}
-
-template<>
 inline GameSessionSystem* GameServer::GetSystem<GameSessionSystem>()
 {
     return m_gameSessionSystem.get();
@@ -35,4 +29,10 @@ template<>
 inline LobbySystem* GameServer::GetSystem<LobbySystem>()
 {
     return m_lobbySystem.get();
+}
+
+template<>
+inline DbSystem* GameServer::GetSystem<DbSystem>()
+{
+    return m_dbSystem.get();
 }

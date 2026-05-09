@@ -18,7 +18,8 @@ GameServer::GameServer()
 
 GameServer::~GameServer()
 {
-	
+    if (m_dbSystem)
+        m_dbSystem->Shutdown();
 }
 
 GameServer& GameServer::Instance()
@@ -28,6 +29,7 @@ GameServer& GameServer::Instance()
 
 void GameServer::AddSetting(std::shared_ptr<ServerSetting> _setting)
 {
+    m_setting = _setting;
     m_ip = _setting->GetIp();
     m_port = _setting->GetPort();
     m_maxSessionCount = _setting->GetMaxSessionCount();
@@ -46,11 +48,14 @@ void GameServer::RegisterPacket()
 
 void GameServer::AddSystem()
 {
-	m_uniqueIdGenerationSystem = std::make_unique<UniqueIdGenerationSystem>();
 	m_gameSessionSystem = std::make_unique<GameSessionSystem>();
 	m_playerSystem = std::make_unique<PlayerSystem>();
 	m_roomSystem = std::make_unique<RoomSystem>();
 	m_lobbySystem = std::make_unique<LobbySystem>();
+
+	m_dbSystem = std::make_unique<DbSystem>();
+	if (m_setting)
+		m_dbSystem->Init(*m_setting);
 }
 
 void GameServer::StartServer()

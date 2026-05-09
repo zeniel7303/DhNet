@@ -14,7 +14,7 @@ private:
 	std::weak_ptr<Lobby>			m_currentLobby;
 
 public:
-	Player(std::shared_ptr<GameSession> _session);
+	Player(std::shared_ptr<GameSession> _session, uint64 _accountId, std::string _name);
 	~Player();
 
 	void EnterRoom();

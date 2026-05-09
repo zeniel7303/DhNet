@@ -14,3 +14,10 @@ bool HandleResLoginPacket(PacketHeader* _header, std::shared_ptr<Session>& _sess
 
 	return true;
 }
+
+bool HandleResLoginFailedPacket(PacketHeader* _header, std::shared_ptr<Session>& _session)
+{
+	std::cout << "[LoginFailed] Server rejected credentials\n";
+	_session->Disconnect(L"LoginFailed");
+	return true;
+}

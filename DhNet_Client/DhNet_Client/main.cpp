@@ -20,6 +20,7 @@ int main()
 
 	PacketHandler::Instance().Register(PacketEnum::Test, &RecvTestPacket);
 	PacketHandler::Instance().Register(PacketEnum::Res_Login, &HandleResLoginPacket);
+	PacketHandler::Instance().Register(PacketEnum::Res_LoginFailed, &HandleResLoginFailedPacket);
 	PacketHandler::Instance().Register(PacketEnum::Noti_RoomEnter, &HandleNotiRoomEnterPacket);
 	PacketHandler::Instance().Register(PacketEnum::Noti_RoomChat, &HandleNotiRoomChatPacket);
 	PacketHandler::Instance().Register(PacketEnum::Noti_RoomExit, &HandleNotiRoomExitPacket);

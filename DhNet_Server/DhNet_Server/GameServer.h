@@ -2,11 +2,11 @@
 #include "../ServerCore/Service.h"
 #include "ServerSetting.h"
 
-#include "UniqueIdGenerationSystem.h"
 #include "GameSessionSystem.h"
 #include "PlayerSystem.h"
 #include "RoomSystem.h"
 #include "LobbySystem.h"
+#include "DbSystem.h"
 
 class GameServer
 {
@@ -17,13 +17,15 @@ private:
 	uint16 m_port;
 	int32 m_maxSessionCount;
 
+	std::shared_ptr<ServerSetting> m_setting;
+
 	ServerServiceRef m_serverService;
 
-	std::unique_ptr<UniqueIdGenerationSystem> m_uniqueIdGenerationSystem;
 	std::unique_ptr<GameSessionSystem> m_gameSessionSystem;
 	std::unique_ptr<PlayerSystem> m_playerSystem;
 	std::unique_ptr<RoomSystem> m_roomSystem;
 	std::unique_ptr<LobbySystem> m_lobbySystem;
+	std::unique_ptr<DbSystem> m_dbSystem;
 
 private:
 	void RegisterPacket();

@@ -4,3 +4,4 @@
 #include "ServerSession.h"
 
 bool HandleResLoginPacket(PacketHeader* _header, std::shared_ptr<Session>& _session);
+bool HandleResLoginFailedPacket(PacketHeader* _header, std::shared_ptr<Session>& _session);

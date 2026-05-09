@@ -1,0 +1,22 @@
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: dhnet_mysql
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root_pw}
+      MYSQL_DATABASE: ${DhNet_DB_NAME:-dhnet_db}
+      MYSQL_USER: ${DhNet_DB_USER:-dhnet}
+      MYSQL_PASSWORD: ${DhNet_DB_PASSWORD:-dhnet_pw}
+    volumes:
+      - dhnet_mysql_data:/var/lib/mysql
+      - ./mysql/init:/docker-entrypoint-initdb.d:ro
+    command: >
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_unicode_ci
+      --default-authentication-plugin=mysql_native_password
+
+volumes:
+  dhnet_mysql_data:
