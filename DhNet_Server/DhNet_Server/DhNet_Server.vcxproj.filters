@@ -1,61 +1,55 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="Main">
       <UniqueIdentifier>{57b67583-1ab6-4dd1-86ad-1bc53dc2a608}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Main\ServerSetting">
-      <UniqueIdentifier>{92f40493-76ee-4994-bbff-cd971902ddf3}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Player">
       <UniqueIdentifier>{2cff3f5c-7803-4d8f-b07f-aea193e2ef68}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Player\GameSession">
-      <UniqueIdentifier>{54e910ae-d161-4fd1-8bae-08576dd51b7e}</UniqueIdentifier>
     </Filter>
     <Filter Include="Room">
       <UniqueIdentifier>{09f3a66d-c6ac-48e6-b522-7ec4019e5b33}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Main\Controller">
-      <UniqueIdentifier>{be5f096f-ad8a-41cf-9af5-a04e1d7c288a}</UniqueIdentifier>
-    </Filter>
     <Filter Include="System">
       <UniqueIdentifier>{de62352d-f081-456e-8e5b-b21c269629fd}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Main\Controller\Admin">
+    <Filter Include="Controller">
+      <UniqueIdentifier>{be5f096f-ad8a-41cf-9af5-a04e1d7c288a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Controller\Admin">
       <UniqueIdentifier>{6203cf21-575b-4bc6-ad18-5aa1ddec5a04}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Database">
+      <UniqueIdentifier>{a3f12456-b7c8-4d9e-af01-234567890abc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Generated">
+      <UniqueIdentifier>{f1e2d3c4-b5a6-4789-8012-abcdef012345}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
       <Filter>Main</Filter>
     </ClCompile>
-    <ClCompile Include="GameSession.cpp">
-      <Filter>Player\GameSession</Filter>
-    </ClCompile>
-    <ClCompile Include="GameServer.cpp">
-      <Filter>Main</Filter>
-    </ClCompile>
     <ClCompile Include="ServerGlobal.cpp">
       <Filter>Main</Filter>
     </ClCompile>
     <ClCompile Include="ServerSetting.cpp">
-      <Filter>Main\ServerSetting</Filter>
+      <Filter>Main</Filter>
+    </ClCompile>
+    <ClCompile Include="GameServer.cpp">
+      <Filter>Main</Filter>
     </ClCompile>
     <ClCompile Include="Player.cpp">
+      <Filter>Player</Filter>
+    </ClCompile>
+    <ClCompile Include="GameSession.cpp">
       <Filter>Player</Filter>
     </ClCompile>
     <ClCompile Include="Room.cpp">
       <Filter>Room</Filter>
     </ClCompile>
-    <ClCompile Include="LoginController.cpp">
-      <Filter>Main\Controller</Filter>
-    </ClCompile>
-    <ClCompile Include="RoomController.cpp">
-      <Filter>Main\Controller</Filter>
-    </ClCompile>
-    <ClCompile Include="UniqueIdGenerationSystem.cpp">
-      <Filter>System</Filter>
+    <ClCompile Include="Lobby.cpp">
+      <Filter>Room</Filter>
     </ClCompile>
     <ClCompile Include="PlayerSystem.cpp">
       <Filter>System</Filter>
@@ -63,55 +57,85 @@
     <ClCompile Include="GameSessionSystem.cpp">
       <Filter>System</Filter>
     </ClCompile>
-    <ClCompile Include="TestController.cpp">
-      <Filter>Main\Controller</Filter>
-    </ClCompile>
     <ClCompile Include="RoomSystem.cpp">
       <Filter>System</Filter>
     </ClCompile>
-    <ClCompile Include="..\DhNet_Ipc\generated\dhnet.grpc.pb.cc" />
-    <ClCompile Include="..\DhNet_Ipc\generated\dhnet.pb.cc" />
+    <ClCompile Include="LobbySystem.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="LoginController.cpp">
+      <Filter>Controller</Filter>
+    </ClCompile>
+    <ClCompile Include="RoomController.cpp">
+      <Filter>Controller</Filter>
+    </ClCompile>
+    <ClCompile Include="LobbyController.cpp">
+      <Filter>Controller</Filter>
+    </ClCompile>
+    <ClCompile Include="TestController.cpp">
+      <Filter>Controller</Filter>
+    </ClCompile>
+    <ClCompile Include="UniqueIdGenerationSystem.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
     <ClCompile Include="AdminController.cpp">
-      <Filter>Main\Controller\Admin</Filter>
+      <Filter>Controller\Admin</Filter>
     </ClCompile>
     <ClCompile Include="AdminGrpcServer.cpp">
-      <Filter>Main</Filter>
+      <Filter>Controller\Admin</Filter>
+    </ClCompile>
+    <ClCompile Include="DbSystem.cpp">
+      <Filter>Database</Filter>
+    </ClCompile>
+    <ClCompile Include="DbConnection.cpp">
+      <Filter>Database</Filter>
+    </ClCompile>
+    <ClCompile Include="DbConnectionPool.cpp">
+      <Filter>Database</Filter>
+    </ClCompile>
+    <ClCompile Include="AccountRepository.cpp">
+      <Filter>Database</Filter>
+    </ClCompile>
+    <ClCompile Include="CryptoUtil.cpp">
+      <Filter>Database</Filter>
+    </ClCompile>
+    <ClCompile Include="..\DhNet_Ipc\generated\dhnet.grpc.pb.cc">
+      <Filter>Generated</Filter>
+    </ClCompile>
+    <ClCompile Include="..\DhNet_Ipc\generated\dhnet.pb.cc">
+      <Filter>Generated</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="GameSession.h">
-      <Filter>Player\GameSession</Filter>
-    </ClInclude>
-    <ClInclude Include="GameServer.h">
+    <ClInclude Include="stdafx.h">
       <Filter>Main</Filter>
     </ClInclude>
-    <ClInclude Include="stdafx.h" />
     <ClInclude Include="ServerGlobal.h">
       <Filter>Main</Filter>
     </ClInclude>
     <ClInclude Include="ServerSetting.h">
-      <Filter>Main\ServerSetting</Filter>
+      <Filter>Main</Filter>
+    </ClInclude>
+    <ClInclude Include="GameServer.h">
+      <Filter>Main</Filter>
+    </ClInclude>
+    <ClInclude Include="GameServer.hpp">
+      <Filter>Main</Filter>
+    </ClInclude>
+    <ClInclude Include="Controllers.h">
+      <Filter>Main</Filter>
     </ClInclude>
     <ClInclude Include="Player.h">
+      <Filter>Player</Filter>
+    </ClInclude>
+    <ClInclude Include="GameSession.h">
       <Filter>Player</Filter>
     </ClInclude>
     <ClInclude Include="Room.h">
       <Filter>Room</Filter>
     </ClInclude>
-    <ClInclude Include="RoomController.h">
-      <Filter>Main\Controller</Filter>
-    </ClInclude>
-    <ClInclude Include="LoginController.h">
-      <Filter>Main\Controller</Filter>
-    </ClInclude>
-    <ClInclude Include="UniqueIdGenerationSystem.h">
-      <Filter>System</Filter>
-    </ClInclude>
-    <ClInclude Include="Controllers.h">
-      <Filter>Main</Filter>
-    </ClInclude>
-    <ClInclude Include="GameServer.hpp">
-      <Filter>Main</Filter>
+    <ClInclude Include="Lobby.h">
+      <Filter>Room</Filter>
     </ClInclude>
     <ClInclude Include="PlayerSystem.h">
       <Filter>System</Filter>
@@ -119,17 +143,47 @@
     <ClInclude Include="GameSessionSystem.h">
       <Filter>System</Filter>
     </ClInclude>
-    <ClInclude Include="TestController.h">
-      <Filter>Main\Controller</Filter>
-    </ClInclude>
     <ClInclude Include="RoomSystem.h">
       <Filter>System</Filter>
     </ClInclude>
+    <ClInclude Include="LobbySystem.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="LoginController.h">
+      <Filter>Controller</Filter>
+    </ClInclude>
+    <ClInclude Include="RoomController.h">
+      <Filter>Controller</Filter>
+    </ClInclude>
+    <ClInclude Include="LobbyController.h">
+      <Filter>Controller</Filter>
+    </ClInclude>
+    <ClInclude Include="TestController.h">
+      <Filter>Controller</Filter>
+    </ClInclude>
+    <ClInclude Include="UniqueIdGenerationSystem.h">
+      <Filter>System</Filter>
+    </ClInclude>
     <ClInclude Include="AdminController.h">
-      <Filter>Main\Controller\Admin</Filter>
+      <Filter>Controller\Admin</Filter>
     </ClInclude>
     <ClInclude Include="AdminGrpcServer.h">
-      <Filter>Main</Filter>
+      <Filter>Controller\Admin</Filter>
+    </ClInclude>
+    <ClInclude Include="DbSystem.h">
+      <Filter>Database</Filter>
+    </ClInclude>
+    <ClInclude Include="DbConnection.h">
+      <Filter>Database</Filter>
+    </ClInclude>
+    <ClInclude Include="DbConnectionPool.h">
+      <Filter>Database</Filter>
+    </ClInclude>
+    <ClInclude Include="AccountRepository.h">
+      <Filter>Database</Filter>
+    </ClInclude>
+    <ClInclude Include="CryptoUtil.h">
+      <Filter>Database</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
