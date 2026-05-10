@@ -75,7 +75,8 @@ void GameServer::StartServer()
 
     GrpcHost::Instance().Start(m_setting->GetGrpcAddress());
 
-    for (int32 i = 0; i < 5; i++)
+    int32 workerCount = static_cast<int32>(std::thread::hardware_concurrency());
+    for (int32 i = 0; i < workerCount; i++)
     {
         GThreadManager->Launch([=]()
             {

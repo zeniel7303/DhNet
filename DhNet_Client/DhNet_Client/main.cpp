@@ -13,6 +13,8 @@
 
 ThreadManager* GThreadManager = new ThreadManager();
 
+constexpr uint16 SERVER_PORT = 7900;
+
 int main()
 {
 	std::this_thread::sleep_for(std::chrono::seconds(2));
@@ -32,7 +34,7 @@ int main()
 	PacketHandler::Instance().Register(PacketEnum::Noti_RoomExit, &HandleNotiRoomExitPacket);
 
 	ClientServiceRef clientService = std::make_shared<ClientService>(
-		NetAddress(L"127.0.0.1", 7900),
+		NetAddress(L"127.0.0.1", SERVER_PORT),
 		std::make_shared<IocpCore>(),
 		[]() { return std::make_shared<ServerSession>(); },
 		1);
@@ -55,8 +57,11 @@ int main()
 		if (g_inRoom.load())
 		{
 			auto senderAndPacket = Sender::GetSenderAndPacket<ReqRoomChat>();
-			senderAndPacket.first->Init("Test Message");
-			clientService->BroadCast(senderAndPacket.second);
+			if (senderAndPacket.first != nullptr)
+			{
+				senderAndPacket.first->Init("Test Message");
+				clientService->BroadCast(senderAndPacket.second);
+			}
 		}
 		std::this_thread::sleep_for(std::chrono::seconds(1));
 	}

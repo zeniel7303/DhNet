@@ -34,7 +34,7 @@ bool HandleNotiRoomExitPacket(PacketHeader* _header, std::shared_ptr<Session>& _
 	std::cout << notiRoomExit->m_playerName << " Exit " << std::endl;
 
 	auto serverSession = std::static_pointer_cast<ServerSession>(_session);
-	if (notiRoomExit->m_playerId == serverSession->m_playerId)
+	if (notiRoomExit->m_playerId == serverSession->GetPlayerId())
 		g_inRoom = false;
 
 	return true;

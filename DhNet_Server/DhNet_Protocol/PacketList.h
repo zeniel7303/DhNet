@@ -184,6 +184,8 @@ public:
 	char m_playerName[16];
 };
 
+constexpr int32 MAX_LOBBY_PLAYER = 50;
+
 struct PlayerInfo
 {
 	uint64 m_playerId;
@@ -213,7 +215,7 @@ public:
 
 	void AddPlayer(uint64 _playerId, const char* _playerName)
 	{
-		if (m_playerCount >= 50) return;
+		if (m_playerCount >= MAX_LOBBY_PLAYER) return;
 		m_players[m_playerCount].m_playerId = _playerId;
 		strncpy_s(m_players[m_playerCount].m_playerName, _playerName, sizeof(PlayerInfo::m_playerName) - 1);
 		m_players[m_playerCount].m_playerName[sizeof(PlayerInfo::m_playerName) - 1] = '\0';
@@ -222,7 +224,7 @@ public:
 
 	int32 m_lobbyIndex;
 	int32 m_playerCount;
-	PlayerInfo m_players[50];
+	PlayerInfo m_players[MAX_LOBBY_PLAYER];
 };
 
 class NotiLobbyPlayerEnter : public PacketHeader
