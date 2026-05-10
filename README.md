@@ -115,21 +115,24 @@ DhNet/
 
 | ID | 이름 | 설명 |
 |----|------|------|
-| 1  | `ReqLogin` | 로그인 요청 |
-| 2  | `ResLogin` | 로그인 응답 |
-| 3  | `ReqRoomEnter` | 룸 입장 |
-| 4  | `NotiRoomEnter` | 룸 입장 알림 |
-| 5  | `ReqRoomChat` | 룸 채팅 |
-| 6  | `NotiRoomChat` | 룸 채팅 알림 |
-| 7  | `ReqRoomExit` | 룸 퇴장 |
-| 8  | `NotiRoomExit` | 룸 퇴장 알림 |
-| 11 | `ReqLobbyChat` | 로비 채팅 |
-| 12 | `NotiLobbyChat` | 로비 채팅 알림 |
-| 13 | `NotiLobbyPlayerEnter` | 로비 입장 알림 |
-| 14 | `NotiLobbyPlayerExit` | 로비 퇴장 알림 |
-| 15 | `ReqRoomList` | 룸 목록 요청 |
-| 16 | `ResRoomList` | 룸 목록 응답 |
-| 17 | `ResLobbyEnter` | 로비 입장 응답 |
+| 10 | `Req_Login` | 로그인 요청 |
+| 11 | `Res_Login` | 로그인 응답 |
+| 12 | `Res_LoginFailed` | 로그인 실패 응답 |
+| 30 | `Res_LobbyEnter` | 로비 입장 응답 |
+| 31 | `Noti_LobbyPlayerEnter` | 로비 입장 알림 |
+| 32 | `Noti_LobbyPlayerExit` | 로비 퇴장 알림 |
+| 33 | `Req_LobbyChat` | 로비 채팅 요청 |
+| 34 | `Noti_LobbyChat` | 로비 채팅 알림 |
+| 35 | `Req_RoomList` | 룸 목록 요청 |
+| 36 | `Res_RoomList` | 룸 목록 응답 |
+| 60 | `Req_RoomEnter` | 룸 입장 요청 |
+| 61 | `Res_RoomEnter` | 룸 입장 응답 |
+| 62 | `Noti_RoomEnter` | 룸 입장 알림 |
+| 63 | `Req_RoomChat` | 룸 채팅 요청 |
+| 64 | `Noti_RoomChat` | 룸 채팅 알림 |
+| 65 | `Req_RoomExit` | 룸 퇴장 요청 |
+| 66 | `Res_RoomExit` | 룸 퇴장 응답 |
+| 67 | `Noti_RoomExit` | 룸 퇴장 알림 |
 
 </details>
 
@@ -202,7 +205,7 @@ $out     = "DhNet_Server\DhNet_Ipc\generated"
 | Phase | 기능 | 상태 |
 |-------|------|------|
 | Phase 1 | 로비/룸 시스템, 동적 클러스터링, 채팅 | ✅ 완료 |
-| Phase 2 | MySQL C API ConnectionPool, BCrypt 인증 | 예정 |
+| Phase 2 | MySQL C API ConnectionPool, PBKDF2-SHA256 인증 | ✅ 완료 |
 | Phase 3 | OpenSSL AES-128-GCM 패킷 암호화 (ECDH 키 교환) | 예정 |
 | Phase 4 | cpp-httplib REST API (관리 엔드포인트) | 예정 |
 | Phase 5 | 부하 테스트 인프라 (시나리오 기반 스트레스 테스트) | 예정 |
