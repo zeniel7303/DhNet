@@ -113,6 +113,13 @@ public:
 	ReqRoomChat() = default;
 	~ReqRoomChat() = default;
 
+	void Init(const char* message)
+	{
+		PacketHeader::Init(PacketEnum::Req_RoomChat, sizeof(*this));
+		strncpy_s(m_message, message, sizeof(m_message) - 1);
+		m_message[sizeof(m_message) - 1] = '\0';
+	}
+
 	char m_message[256];
 };
 
@@ -259,6 +266,13 @@ class ReqLobbyChat : public PacketHeader
 public:
 	ReqLobbyChat() = default;
 	~ReqLobbyChat() = default;
+
+	void Init(const char* message)
+	{
+		PacketHeader::Init(PacketEnum::Req_LobbyChat, sizeof(*this));
+		strncpy_s(m_message, message, sizeof(m_message) - 1);
+		m_message[sizeof(m_message) - 1] = '\0';
+	}
 
 	char m_message[256];
 };

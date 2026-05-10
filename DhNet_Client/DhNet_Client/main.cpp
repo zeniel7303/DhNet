@@ -8,6 +8,7 @@
 
 #include "TestController.h"
 #include "LoginController.h"
+#include "ClientLobbyController.h"
 #include "RoomController.h"
 
 ThreadManager* GThreadManager = new ThreadManager();
@@ -21,12 +22,17 @@ int main()
 	PacketHandler::Instance().Register(PacketEnum::Test, &RecvTestPacket);
 	PacketHandler::Instance().Register(PacketEnum::Res_Login, &HandleResLoginPacket);
 	PacketHandler::Instance().Register(PacketEnum::Res_LoginFailed, &HandleResLoginFailedPacket);
+	PacketHandler::Instance().Register(PacketEnum::Res_LobbyEnter, &HandleResLobbyEnterPacket);
+	PacketHandler::Instance().Register(PacketEnum::Noti_LobbyPlayerEnter, &HandleNotiLobbyPlayerEnterPacket);
+	PacketHandler::Instance().Register(PacketEnum::Noti_LobbyPlayerExit, &HandleNotiLobbyPlayerExitPacket);
+	PacketHandler::Instance().Register(PacketEnum::Noti_LobbyChat, &HandleNotiLobbyChatPacket);
+	PacketHandler::Instance().Register(PacketEnum::Res_RoomEnter, &HandleResRoomEnterPacket);
 	PacketHandler::Instance().Register(PacketEnum::Noti_RoomEnter, &HandleNotiRoomEnterPacket);
 	PacketHandler::Instance().Register(PacketEnum::Noti_RoomChat, &HandleNotiRoomChatPacket);
 	PacketHandler::Instance().Register(PacketEnum::Noti_RoomExit, &HandleNotiRoomExitPacket);
 
 	ClientServiceRef clientService = std::make_shared<ClientService>(
-		NetAddress(L"127.0.0.1", 7777),
+		NetAddress(L"127.0.0.1", 7900),
 		std::make_shared<IocpCore>(),
 		[]() { return std::make_shared<ServerSession>(); },
 		1);
@@ -44,15 +50,14 @@ int main()
 			});
 	}
 
-	auto senderAndPacket = Sender::GetSenderAndPacket<ReqRoomChat>();
-	senderAndPacket.first->Init(PacketEnum::Req_RoomChat, sizeof(ReqRoomChat));
-    strcpy_s(senderAndPacket.first->m_message, "Test Message");
-
 	while (1)
 	{
-		clientService->BroadCast(senderAndPacket.second);
+		if (g_inRoom.load())
+		{
+			auto senderAndPacket = Sender::GetSenderAndPacket<ReqRoomChat>();
+			senderAndPacket.first->Init("Test Message");
+			clientService->BroadCast(senderAndPacket.second);
+		}
 		std::this_thread::sleep_for(std::chrono::seconds(1));
 	}
-
-	GThreadManager->Join();
 }

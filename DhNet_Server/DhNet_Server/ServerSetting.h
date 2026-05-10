@@ -14,7 +14,8 @@ private:
 	std::string		m_dbName;
 	int32			m_dbPoolSize;
 
-	const char* GetEnvVar(const char* varName, const char* defaultValue);
+	std::string		m_grpcAddress;
+
 	bool GetEnvVarUsingWinAPI(const char* varName, char* buffer, size_t bufferSize, const char* defaultValue);
 
 public:
@@ -31,4 +32,6 @@ public:
 	std::string		GetDbPassword()			const { return m_dbPassword; }
 	std::string		GetDbName()				const { return m_dbName; }
 	int32			GetDbPoolSize()			const { return m_dbPoolSize; }
+
+	std::string		GetGrpcAddress()		const { return m_grpcAddress; }
 };

@@ -73,7 +73,7 @@ void GameServer::StartServer()
 
     ASSERT_CRASH(m_serverService->Start());
 
-    GrpcHost::Instance().Start("127.0.0.1:7778");
+    GrpcHost::Instance().Start(m_setting->GetGrpcAddress());
 
     for (int32 i = 0; i < 5; i++)
     {

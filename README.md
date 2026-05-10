@@ -13,11 +13,12 @@ Windows IOCP 기반 C++ 멀티플레이어 게임 서버 프레임워크.
 | 언어 | C++17 |
 | 네트워크 | Windows IOCP |
 | 프로토콜 | Custom Binary (Little-Endian, 4-byte header) |
-| DB | MySQL C API |
-| 암호화 | OpenSSL (AES-128-GCM, ECDH) |
+| DB | MySQL 8.0 (C API) |
+| 암호화 | OpenSSL (PBKDF2-SHA256 인증, AES-128-GCM 예정) |
 | Admin IPC | gRPC / Protocol Buffers |
 | 패키지 관리 | vcpkg |
 | 빌드 | Visual Studio 2026 / MSBuild |
+| 컨테이너 | Docker (MySQL) |
 
 ---
 
@@ -27,7 +28,7 @@ Windows IOCP 기반 C++ 멀티플레이어 게임 서버 프레임워크.
 ┌─────────────────────────────────────────────────────┐
 │                    Client                           │
 └────────────────────┬────────────────────────────────┘
-                     │ TCP (Custom Binary Protocol)
+                     │ TCP (Custom Binary Protocol, port 7900)
 ┌────────────────────▼────────────────────────────────┐
 │              Network Layer (ServerCore)             │
 │  IocpCore → Listener → Session → RecvBuffer         │
@@ -42,8 +43,11 @@ Windows IOCP 기반 C++ 멀티플레이어 게임 서버 프레임워크.
 │                                                     │
 │  LobbySystem / RoomSystem / GameSessionSystem       │
 ├─────────────────────────────────────────────────────┤
+│               DB Layer (DbSystem)                   │
+│  DbConnectionPool (MySQL C API) + Worker Thread     │
+├─────────────────────────────────────────────────────┤
 │              Admin Layer (DhNet_Ipc)                │
-│  gRPC AdminService (HealthCheck / ListRooms / ...)  │
+│  gRPC AdminService (port 7820)                      │
 └─────────────────────────────────────────────────────┘
 ```
 
@@ -51,7 +55,7 @@ Windows IOCP 기반 C++ 멀티플레이어 게임 서버 프레임워크.
 
 - **JobQueue 직렬화** — `Lobby`, `Room`은 `JobQueue`를 상속하며 내부 상태를 단일 워커 스레드에서 순차 처리합니다. 외부에서는 반드시 `DoAsync()`로 호출합니다.
 - **RW SpinLock** — `PlayerSystem`, `LobbySystem` 등 여러 스레드가 공유하는 컨테이너는 `USE_LOCK` / `READ_LOCK` / `WRITE_LOCK` 매크로로 보호합니다.
-- **Lock-Free CAS** — 로비/룸 슬롯 예약은 `atomic<int32>`와 `compare_exchange_weak`로 TOCTOU 없이 처리합니다.
+- **DB 비동기 처리** — 네트워크 스레드에서 DB를 직접 호출하지 않습니다. `DbSystem`의 전용 워커 스레드 풀이 쿼리를 실행하고, 결과는 `PushGlobalQueue`로 IOCP 스레드에 복귀합니다.
 
 ---
 
@@ -75,6 +79,11 @@ DhNet/
 │   │   └── generated/       # protoc 생성 파일
 │   └── DhNet_Server/        # 게임 서버 로직
 │       ├── GameServer        # 싱글톤, 시스템 컨테이너
+│       ├── ServerSetting     # 환경변수 기반 서버 설정
+│       ├── DbSystem          # DB 워커 스레드 풀
+│       ├── DbConnectionPool  # MySQL C API 커넥션 풀
+│       ├── AccountRepository # 인증 쿼리 (Prepared Statement)
+│       ├── CryptoUtil        # PBKDF2-SHA256 해시/검증
 │       ├── Lobby / LobbySystem / LobbyController
 │       ├── Room  / RoomSystem  / RoomController
 │       ├── Player / PlayerSystem
@@ -87,8 +96,11 @@ DhNet/
 │   ├── ThreadManager        # 워커 스레드 풀
 │   └── GlobalQueue          # 크로스-스레드 작업 큐
 ├── DhNet_Client/            # 테스트 클라이언트
+├── docker/                  # MySQL Docker 설정
+│   ├── docker-compose.yml
+│   └── mysql/init/01_schema.sql
 ├── external/vcpkg           # 패키지 매니저 (서브모듈)
-├── vcpkg.json               # 의존성 버전 고정
+├── vcpkg.json               # 의존성 정의
 └── Binary/                  # 빌드 결과물
 ```
 
@@ -138,36 +150,115 @@ DhNet/
 
 ---
 
+## 로그인 인증 프로세스
+
+클라이언트가 `ReqLogin`을 전송하면 다음 흐름으로 처리됩니다.
+
+```
+Client                    ServerCore              LoginController           DbSystem (Worker Thread)
+  │                           │                        │                           │
+  │── ReqLogin ──────────────►│                        │                           │
+  │   username[16]            │── PacketHandler ──────►│                           │
+  │   password[64]            │                        │ 1. 길이 검증               │
+  │                           │                        │    username: 4~16자        │
+  │                           │                        │    password: 8~64자        │
+  │                           │                        │ 2. DbSystem::Execute ─────►│
+  │                           │                        │                           │ 3. DbConnection 획득
+  │                           │                        │                           │    (ConnectionPool)
+  │                           │                        │                           │
+  │                           │                        │                           │ 4. AccountRepository
+  │                           │                        │                           │    SELECT id,
+  │                           │                        │                           │      password_hash,
+  │                           │                        │                           │      salt
+  │                           │                        │                           │    WHERE username=?
+  │                           │                        │                           │    (Prepared Statement)
+  │                           │                        │                           │
+  │                           │                        │                           │ 5. CryptoUtil::VerifyPassword
+  │                           │                        │                           │    PBKDF2-SHA256
+  │                           │                        │                           │    100,000 iterations
+  │                           │                        │                           │    CRYPTO_memcmp (상수 시간)
+  │                           │                        │                           │
+  │                           │◄── PushGlobalQueue ────│◄──────────────────────────│
+  │                           │    (IOCP 스레드 복귀)   │                           │
+  │                           │                        │                           │
+  │                           │       GameSession::OnLoginResult                   │
+  │                           │                        │                           │
+  │                           │    ┌─ 인증 실패 ────────┤                           │
+  │◄── ResLoginFailed ────────│    │                   │                           │
+  │    (연결 종료)             │    └─ 인증 성공 ────────┤                           │
+  │                           │                        │ Player 생성               │
+  │                           │                        │ PlayerSystem::Add         │
+  │◄── ResLogin ──────────────│                        │ Lobby::Enter (DoAsync)    │
+  │    playerId, playerName   │                        │                           │
+  │◄── ResLobbyEnter ─────────│                        │                           │
+  │    lobbyIndex, players[]  │                        │                           │
+```
+
+### 보안 설계
+
+| 항목 | 구현 |
+|------|------|
+| 비밀번호 저장 | PBKDF2-SHA256, 랜덤 salt 16바이트, 100,000 iterations |
+| Timing Attack 방어 | 존재하지 않는 사용자명 조회 시에도 dummy hash로 VerifyPassword 실행 (응답 시간 균일화) |
+| User Enumeration 방어 | 사용자명 없음 / 비밀번호 불일치 모두 동일한 `ResLoginFailed` 응답 |
+| SQL Injection 방어 | Prepared Statement 전용 사용 (`mysql_stmt_*` API) |
+| 상수 시간 비교 | `CRYPTO_memcmp`으로 해시 비교 (분기 기반 조기 종료 방지) |
+| 패킷 전송 | 현재 평문 (Phase 3에서 AES-128-GCM 적용 예정) |
+
+---
+
 ## 플레이어 생명주기
 
 ```
 접속
  └→ OnConnected → GameSessionSystem 등록
-     └→ [로그인] → PlayerSystem 등록 → AssignLobby
-         └→ Lobby::Enter (DoAsync)
-             ├→ NotiLobbyPlayerEnter (기존 멤버에게)
-             └→ ResLobbyEnter (본인에게, 전체 플레이어 목록 포함)
+     └→ [ReqLogin 수신] → DB 인증 (비동기)
+         └→ OnLoginResult(성공) → Player 생성 → PlayerSystem 등록
+             └→ Lobby::Enter (DoAsync)
+                 ├→ NotiLobbyPlayerEnter (기존 멤버에게)
+                 └→ ResLobbyEnter (본인에게, 전체 플레이어 목록 포함)
 
-[룸 입장]
+[ReqRoomEnter 수신]
  └→ LeaveLobby → NotiLobbyPlayerExit 브로드캐스트
      └→ Room::Enter (DoAsync) → NotiRoomEnter 브로드캐스트
 
-[룸 퇴장]
+[ReqRoomExit 수신]
  └→ Room::Leave → NotiRoomExit 브로드캐스트
      └→ AssignLobby → Lobby::Enter (DoAsync)
 
 접속 해제
- └→ LeaveLobby → LeaveRoom → PlayerSystem::Remove
+ └→ LeaveLobby or LeaveRoom → PlayerSystem::Remove
      └→ GameSessionSystem::Remove
 ```
+
+---
+
+## 환경변수
+
+서버 설정은 환경변수로 주입합니다. 설정하지 않으면 기본값이 사용됩니다.
+
+| 변수 | 기본값 | 설명 |
+|------|--------|------|
+| `DhNet_IP` | `127.0.0.1` | 서버 바인드 IP |
+| `DhNet_PORT` | `7900` | 게임 서버 포트 |
+| `DhNet_MAX_SESSION_COUNT` | `1000` | 최대 동시 세션 수 |
+| `DhNet_GRPC_ADDRESS` | `127.0.0.1:7820` | gRPC Admin 서버 주소 |
+| `DhNet_DB_HOST` | `127.0.0.1` | MySQL 호스트 |
+| `DhNet_DB_PORT` | `3306` | MySQL 포트 |
+| `DhNet_DB_USER` | `dhnet` | MySQL 접속 계정 |
+| `DhNet_DB_PASSWORD` | `dhnet_pw` | MySQL 비밀번호 |
+| `DhNet_DB_NAME` | `dhnet_db` | MySQL 데이터베이스명 |
+| `DhNet_DB_POOL_SIZE` | `4` | 커넥션 풀 크기 (= DB 워커 스레드 수) |
 
 ---
 
 ## 빌드
 
 ### 요구 사항
+
 - Visual Studio 2026 (v145 toolset)
 - vcpkg (서브모듈로 포함)
+- Docker Desktop (MySQL 컨테이너용)
 
 ### 의존성 설치
 
@@ -176,16 +267,64 @@ DhNet/
 cd external\vcpkg
 .\bootstrap-vcpkg.bat -disableMetrics
 
-# 패키지 설치
-.\vcpkg.exe install grpc:x64-windows openssl:x64-windows
+# 패키지 설치 (grpc, openssl, libmysql)
+.\vcpkg.exe install --triplet x64-windows
 ```
 
-### 빌드 명령
+### 빌드 순서
+
+ServerCore → DhNet_Server 순서로 빌드해야 합니다.
 
 ```powershell
-& "C:\Program Files\Microsoft Visual Studio\18\Community\MSBuild\Current\Bin\MSBuild.exe" `
-  "DhNet_Server\DhNet_Server.sln" `
-  /p:Configuration=Debug /p:Platform=x64 /p:PlatformToolset=v145
+$msbuild = "C:\Program Files\Microsoft Visual Studio\18\Community\MSBuild\Current\Bin\MSBuild.exe"
+
+# 1. ServerCore 빌드
+& $msbuild "DhNet_Server\ServerCore\ServerCore.vcxproj" /p:Configuration=Debug /p:Platform=x64
+
+# 2. ServerCore.lib 복사 (vcxproj OutDir 불일치 워크어라운드)
+Copy-Item "DhNet_Server\ServerCore\x64\Debug\ServerCore.lib" "DhNet_Server\x64\Debug\"
+
+# 3. DhNet_Server 빌드
+& $msbuild "DhNet_Server\DhNet_Server\DhNet_Server.vcxproj" /p:Configuration=Debug /p:Platform=x64
+
+# 4. 테스트 클라이언트 빌드
+& $msbuild "DhNet_Client\DhNet_Client\DhNet_Client.vcxproj" /p:Configuration=Debug /p:Platform=x64
+```
+
+### 런타임 DLL 배포
+
+빌드 후 `Binary\Debug\`에 다음 DLL을 복사해야 합니다.
+
+```powershell
+$vcpkg_dbg = "external\vcpkg\installed\x64-windows\debug\bin"
+$vcpkg_rel = "external\vcpkg\installed\x64-windows\bin"
+$dest = "Binary\Debug"
+
+# gRPC / Protobuf / 기타 의존성
+Copy-Item "$vcpkg_dbg\abseil_dll.dll"       $dest
+Copy-Item "$vcpkg_dbg\cares.dll"            $dest
+Copy-Item "$vcpkg_dbg\libcrypto-3-x64.dll" $dest
+Copy-Item "$vcpkg_dbg\libssl-3-x64.dll"    $dest
+Copy-Item "$vcpkg_dbg\lz4d.dll"            $dest
+Copy-Item "$vcpkg_dbg\re2.dll"             $dest
+Copy-Item "$vcpkg_dbg\zd.dll"              $dest
+Copy-Item "$vcpkg_dbg\zstd.dll"            $dest
+
+# libmysql (release bin에서 복사)
+Copy-Item "$vcpkg_rel\libmysql.dll"         $dest
+```
+
+> **참고**: boost DLL (`boost_atomic-*.dll` 등)은 libmysql의 트랜지티브 의존성입니다.
+> 로컬 개발 환경에서는 vcpkg 설치 경로에서 자동 로드되지만, 다른 PC에 배포할 때는 `external\vcpkg\installed\x64-windows\debug\bin\boost_*.dll`도 함께 복사해야 합니다.
+
+### MySQL Docker 시작
+
+```powershell
+cd docker
+docker compose up -d
+
+# 접속 확인
+docker exec -it dhnet_mysql mysql -u dhnet -pdhnet_pw dhnet_db
 ```
 
 ### protobuf 재생성 (dhnet.proto 수정 시)
@@ -196,6 +335,30 @@ $plugin  = "external\vcpkg\installed\x64-windows\tools\grpc\grpc_cpp_plugin.exe"
 $out     = "DhNet_Server\DhNet_Ipc\generated"
 & $protoc --proto_path=DhNet_Server\DhNet_Ipc --cpp_out=$out --grpc_out=$out `
   "--plugin=protoc-gen-grpc=$plugin" DhNet_Server\DhNet_Ipc\dhnet.proto
+```
+
+---
+
+## 테스트 계정 설정
+
+Docker MySQL 시작 후 테스트 계정 비밀번호 해시를 생성해 INSERT해야 합니다.
+
+```python
+import hashlib, os
+
+password = "testpass"
+salt = os.urandom(16).hex()
+hash_val = hashlib.pbkdf2_hmac(
+    "sha256", password.encode(), bytes.fromhex(salt), 100000
+).hex()
+print(f"salt: {salt}")
+print(f"hash: {hash_val}")
+```
+
+```sql
+UPDATE accounts
+SET password_hash = '<hash>', salt = '<salt>'
+WHERE username = 'testuser';
 ```
 
 ---
