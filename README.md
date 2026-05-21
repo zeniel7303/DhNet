@@ -14,7 +14,7 @@ Windows IOCP 기반 C++ 멀티플레이어 게임 서버 프레임워크.
 | 네트워크 | Windows IOCP |
 | 프로토콜 | Custom Binary (Little-Endian, 4-byte header) |
 | DB | MySQL 8.0 (C API) |
-| 암호화 | OpenSSL (PBKDF2-SHA256 인증, AES-128-GCM 예정) |
+| 암호화 | OpenSSL (PBKDF2-SHA256 인증, AES-128-GCM + ECDH P-256 세션 암호화) |
 | Admin IPC | gRPC / Protocol Buffers |
 | 패키지 관리 | vcpkg |
 | 빌드 | Visual Studio 2026 / MSBuild |
@@ -84,6 +84,8 @@ DhNet/
 │       ├── DbConnectionPool  # MySQL C API 커넥션 풀
 │       ├── AccountRepository # 인증 쿼리 (Prepared Statement)
 │       ├── CryptoUtil        # PBKDF2-SHA256 해시/검증
+│       ├── AesGcm            # AES-128-GCM 암복호화 (헤더 전용)
+│       ├── EcdhKeyExchange   # ECDH P-256 키 교환 + SHA-256 세션 키 유도
 │       ├── Lobby / LobbySystem / LobbyController
 │       ├── Room  / RoomSystem  / RoomController
 │       ├── Player / PlayerSystem
@@ -127,6 +129,9 @@ DhNet/
 
 | ID | 이름 | 설명 |
 |----|------|------|
+| 1  | `Req_KeyExchange` | ECDH 공개키 전송 (핸드셰이크 시작) |
+| 2  | `Res_KeyExchange` | 서버 공개키 응답 (핸드셰이크 완료) |
+| 3  | `Encrypted` | 암호화 래퍼 (핸드셰이크 후 모든 패킷) |
 | 10 | `Req_Login` | 로그인 요청 |
 | 11 | `Res_Login` | 로그인 응답 |
 | 12 | `Res_LoginFailed` | 로그인 실패 응답 |
@@ -147,6 +152,43 @@ DhNet/
 | 67 | `Noti_RoomExit` | 룸 퇴장 알림 |
 
 </details>
+
+---
+
+## 암호화 핸드셰이크 (ECDH + AES-128-GCM)
+
+TCP 연결 직후 키 교환을 완료하며, 이후 모든 패킷은 `EncryptedPacket`으로 래핑됩니다.
+
+```
+Client                              Server
+  │                                   │
+  │  1. GenerateKeyPair (P-256)        │
+  │── ReqKeyExchange ─────────────────►│  clientPubKey[65]
+  │   (평문 전송)                      │
+  │                                   │  2. GenerateKeyPair (P-256)
+  │                                   │  3. DeriveSharedSecret (ECDH)
+  │                                   │  4. DeriveSessionKey (SHA-256)
+  │                                   │     "DhNet-session-key" || secret → AES key 16B
+  │◄── ResKeyExchange ────────────────│  serverPubKey[65]
+  │   (평문 전송)                      │
+  │                                   │
+  │  5. DeriveSharedSecret (ECDH)      │
+  │  6. DeriveSessionKey (SHA-256)     │
+  │     → 동일한 AES-128 세션 키       │
+  │                                   │
+  │  ✅ 핸드셰이크 완료 — 이후 모든 패킷은 EncryptedPacket으로 래핑
+  │                                   │
+  │── EncryptedPacket[ReqLogin] ──────►│  nonce(12) | ciphertext | tag(16)
+  │◄── EncryptedPacket[ResLogin] ─────│
+  │           ...                     │
+```
+
+`EncryptedPacket` 구조:
+```
+┌────────────┬────────────┬──────────────┬──────────────────────┬──────────┐
+│  size (2B) │  id=3 (2B) │  nonce (12B) │  ciphertext (plain)  │ tag (16B)│
+└────────────┴────────────┴──────────────┴──────────────────────┴──────────┘
+```
 
 ---
 
@@ -203,7 +245,7 @@ Client                    ServerCore              LoginController           DbSy
 | User Enumeration 방어 | 사용자명 없음 / 비밀번호 불일치 모두 동일한 `ResLoginFailed` 응답 |
 | SQL Injection 방어 | Prepared Statement 전용 사용 (`mysql_stmt_*` API) |
 | 상수 시간 비교 | `CRYPTO_memcmp`으로 해시 비교 (분기 기반 조기 종료 방지) |
-| 패킷 전송 | 현재 평문 (Phase 3에서 AES-128-GCM 적용 예정) |
+| 패킷 암호화 | ECDH P-256 키 교환 → SHA-256 세션 키 유도 → AES-128-GCM (RAND_bytes nonce, GCM 인증 태그 16B) |
 
 ---
 
@@ -369,6 +411,6 @@ WHERE username = 'testuser';
 |-------|------|------|
 | Phase 1 | 로비/룸 시스템, 동적 클러스터링, 채팅 | ✅ 완료 |
 | Phase 2 | MySQL C API ConnectionPool, PBKDF2-SHA256 인증 | ✅ 완료 |
-| Phase 3 | OpenSSL AES-128-GCM 패킷 암호화 (ECDH 키 교환) | 예정 |
+| Phase 3 | OpenSSL AES-128-GCM 패킷 암호화 (ECDH P-256 키 교환) | ✅ 완료 |
 | Phase 4 | cpp-httplib REST API (관리 엔드포인트) | 예정 |
 | Phase 5 | 부하 테스트 인프라 (시나리오 기반 스트레스 테스트) | 예정 |
