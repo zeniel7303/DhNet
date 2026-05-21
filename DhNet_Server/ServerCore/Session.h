@@ -58,7 +58,7 @@ public:
 	virtual void				Dispatch(class IocpEvent* _iocpEvent, int32 _numOfBytes = 0) override;
 
 public:
-	void						Send(SenderRef _sender);
+	virtual void				Send(SenderRef _sender);
 	bool						Connect();
 	void						Disconnect(const WCHAR* _cause);
 

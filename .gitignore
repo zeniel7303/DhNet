@@ -65,3 +65,10 @@ CLAUDE.md
 # vcpkg installed packages
 vcpkg_installed/
 dev/
+
+# Test log files (E2E 검증용 stdout/stderr 캡처)
+server_*.txt
+client_*.txt
+
+# MSBuild 중간 산출물
+*.FileListAbsolute.txt

@@ -2,7 +2,44 @@
 #include "../ServerCore/PacketHeader.h"
 #include "PacketEnum.h"
 
+constexpr int MAX_PLAIN_PACKET_SIZE = 1280;
+
 #pragma pack(push, 1)
+
+// ── 핸드셰이크 패킷 ────────────────────────────────────
+
+class ReqKeyExchange : public PacketHeader
+{
+public:
+	void Init()
+	{
+		PacketHeader::Init(PacketEnum::Req_KeyExchange, sizeof(*this));
+	}
+	uint8 clientPubKey[65]; // P-256 uncompressed (0x04 | X | Y)
+};
+
+class ResKeyExchange : public PacketHeader
+{
+public:
+	void Init()
+	{
+		PacketHeader::Init(PacketEnum::Res_KeyExchange, sizeof(*this));
+	}
+	uint8 serverPubKey[65]; // P-256 uncompressed (0x04 | X | Y)
+};
+
+// ── 암호화 래퍼 패킷 ────────────────────────────────────
+// payload = nonce(12) | ciphertext(N) | tag(16)
+// m_dataSize = sizeof(PacketHeader) + 12 + N + 16  (실제 사용 크기)
+class EncryptedPacket : public PacketHeader
+{
+public:
+	uint8 payload[MAX_PLAIN_PACKET_SIZE + 28];
+};
+static_assert(sizeof(EncryptedPacket) <= 2 * 1024,
+              "EncryptedPacket exceeds 2 DataChunks; reduce MAX_PLAIN_PACKET_SIZE");
+
+// ── 테스트/게임 패킷 ────────────────────────────────────
 
 class TestPacket : public PacketHeader
 {
@@ -29,7 +66,7 @@ public:
 	}
 
 	char m_username[16];
-	char m_password[64];	// plaintext; AES-GCM encryption will be added in a later phase
+	char m_password[64];
 };
 
 class ResLoginFailed : public PacketHeader

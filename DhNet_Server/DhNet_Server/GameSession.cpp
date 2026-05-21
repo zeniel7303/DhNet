@@ -7,11 +7,12 @@
 
 GameSession::GameSession()
 {
-	
 }
 
 GameSession::~GameSession()
 {
+	if (m_myPrivKey)
+		EVP_PKEY_free(m_myPrivKey);
 	std::cout << "~GameSession" << std::endl;
 }
 
@@ -36,7 +37,119 @@ void GameSession::OnDisconnected()
 
 bool GameSession::OnRecv(PacketHeader* _packet)
 {
-	return PacketHandler::Instance().Process(_packet->m_packetNum, _packet, std::static_pointer_cast<Session>(shared_from_this()));
+	if (!m_handshakeDone.load(std::memory_order_acquire))
+	{
+		if (_packet->m_packetNum == PacketEnum::Req_KeyExchange)
+		{
+			HandleKeyExchange(reinterpret_cast<ReqKeyExchange*>(_packet));
+			return true;
+		}
+		Disconnect(L"ProtocolViolation");
+		return false;
+	}
+
+	if (_packet->m_packetNum != PacketEnum::Encrypted)
+	{
+		Disconnect(L"ProtocolViolation");
+		return false;
+	}
+
+	auto* enc = reinterpret_cast<EncryptedPacket*>(_packet);
+	int32 payloadLen = enc->m_dataSize - static_cast<int32>(sizeof(PacketHeader));
+	if (payloadLen < 28 || payloadLen > MAX_PLAIN_PACKET_SIZE + 28)
+	{
+		Disconnect(L"InvalidEncryptedSize");
+		return false;
+	}
+
+	uint8 plainBuf[MAX_PLAIN_PACKET_SIZE];
+	int32 plainLen = 0;
+	if (!m_cipher->Decrypt(enc->payload, payloadLen, plainBuf, plainLen))
+	{
+		Disconnect(L"GCMVerifyFailed");
+		return false;
+	}
+
+	auto* inner = reinterpret_cast<PacketHeader*>(plainBuf);
+	return PacketHandler::Instance().Process(inner->m_packetNum, inner, std::static_pointer_cast<Session>(shared_from_this()));
+}
+
+void GameSession::Send(SenderRef _sender)
+{
+	if (m_handshakeDone.load(std::memory_order_acquire))
+		SendEncrypted(std::move(_sender));
+	else
+		Session::Send(std::move(_sender));
+}
+
+void GameSession::HandleKeyExchange(ReqKeyExchange* _pkt)
+{
+	m_myPrivKey = EcdhKeyExchange::GenerateKeyPair();
+	if (!m_myPrivKey)
+	{
+		Disconnect(L"KeyGenFailed");
+		return;
+	}
+
+	uint8 secret[32];
+	if (!EcdhKeyExchange::DeriveSharedSecret(m_myPrivKey, _pkt->clientPubKey, secret))
+	{
+		SecureZeroMemory(secret, sizeof(secret));
+		Disconnect(L"EcdhFailed");
+		return;
+	}
+
+	uint8 sessionKey[16];
+	if (!EcdhKeyExchange::DeriveSessionKey(secret, sessionKey))
+	{
+		SecureZeroMemory(secret, sizeof(secret));
+		SecureZeroMemory(sessionKey, sizeof(sessionKey));
+		Disconnect(L"KeyDeriveFailed");
+		return;
+	}
+
+	auto [res, sender] = Sender::GetSenderAndPacket<ResKeyExchange>();
+	if (!EcdhKeyExchange::GetPublicKeyBytes(m_myPrivKey, res->serverPubKey))
+	{
+		SecureZeroMemory(secret, sizeof(secret));
+		SecureZeroMemory(sessionKey, sizeof(sessionKey));
+		Disconnect(L"PubKeyExportFailed");
+		return;
+	}
+	res->Init();
+
+	EVP_PKEY_free(m_myPrivKey);
+	m_myPrivKey = nullptr;
+
+	m_cipher = std::make_unique<AesGcm>();
+	m_cipher->Init(sessionKey);
+	SecureZeroMemory(secret, sizeof(secret));
+	SecureZeroMemory(sessionKey, sizeof(sessionKey));
+	m_handshakeDone.store(true, std::memory_order_release);
+
+	Session::Send(std::move(sender));
+}
+
+void GameSession::SendEncrypted(SenderRef _inner)
+{
+	auto* innerRaw = reinterpret_cast<const uint8*>(_inner->GetSendPointer());
+	int32 innerLen  = _inner->GetSendSize();
+
+	if (innerLen <= 0 || innerLen > MAX_PLAIN_PACKET_SIZE)
+		return;
+
+	auto [enc, encSender] = Sender::GetSenderAndPacket<EncryptedPacket>();
+	if (!encSender)
+		return;
+
+	int32 payloadLen = 0;
+	if (!m_cipher->Encrypt(innerRaw, innerLen, enc->payload, payloadLen))
+		return;
+
+	enc->Init(PacketEnum::Encrypted,
+	          static_cast<uint16>(sizeof(PacketHeader) + payloadLen));
+
+	Session::Send(std::move(encSender));
 }
 
 void GameSession::OnSend(int32 _len)

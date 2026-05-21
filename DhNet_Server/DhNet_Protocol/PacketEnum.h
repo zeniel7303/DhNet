@@ -3,7 +3,10 @@
 enum PacketEnum : unsigned __int16
 {
 	// ── 시스템 (0~9) ─────────────────────────────────
-	Test = 0,
+	Test            = 0,
+	Req_KeyExchange = 1,
+	Res_KeyExchange = 2,
+	Encrypted       = 3,
 
 	// ── 인증 (10~29) ─────────────────────────────────
 	Req_Login      = 10,

@@ -167,6 +167,8 @@
     <ClCompile Include="UniqueIdGenerationSystem.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AesGcm.h" />
+    <ClInclude Include="EcdhKeyExchange.h" />
     <ClInclude Include="AccountRepository.h" />
     <ClInclude Include="AdminController.h" />
     <ClInclude Include="CryptoUtil.h" />
