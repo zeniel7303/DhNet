@@ -19,6 +19,18 @@ Player::~Player()
     // std::cout << "~Player" << std::endl;
 }
 
+void Player::SetCurrentLobby(const std::shared_ptr<Lobby>& _lobby)
+{
+    m_currentLobby = _lobby;
+    m_currentLobbyIndex.store(_lobby ? _lobby->GetLobbyIndex() : -1, std::memory_order_relaxed);
+}
+
+void Player::SetCurrentRoom(const std::shared_ptr<Room>& _room)
+{
+    m_currentRoom = _room;
+    m_currentRoomIndex.store(_room ? _room->GetRoomIndex() : -1, std::memory_order_relaxed);
+}
+
 void Player::EnterRoom()
 {
 	/*auto senderAndPacket = Sender::GetSenderAndPacket<ResRoomEnter>();
@@ -52,6 +64,7 @@ void Player::LeaveRoom()
 	}
 
 	m_currentRoom.reset();
+	m_currentRoomIndex.store(-1, std::memory_order_relaxed);
 }
 
 void Player::LeaveRoomAndReenterLobby()
@@ -88,6 +101,7 @@ void Player::LeaveLobby()
 		lobby->DoAsync(lobby, &Lobby::Exit, shared_from_this());
 	}
 	m_currentLobby.reset();
+	m_currentLobbyIndex.store(-1, std::memory_order_relaxed);
 }
 
 void Player::LobbyChat(std::string _message)

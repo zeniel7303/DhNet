@@ -12,6 +12,8 @@ private:
 	std::shared_ptr<GameSession>	m_ownerSession;
 	std::weak_ptr<Room>				m_currentRoom;
 	std::weak_ptr<Lobby>			m_currentLobby;
+	std::atomic<int32>				m_currentLobbyIndex{ -1 };
+	std::atomic<int32>				m_currentRoomIndex{ -1 };
 
 public:
 	Player(std::shared_ptr<GameSession> _session, uint64 _accountId, std::string _name);
@@ -32,7 +34,9 @@ public:
 	std::shared_ptr<GameSession> GetOwnerSession()	{ return m_ownerSession; }
 	std::weak_ptr<Room> GetCurrentRoom()			{ return m_currentRoom; }
 	std::weak_ptr<Lobby> GetCurrentLobby()			{ return m_currentLobby; }
+	int32 GetCurrentLobbyIndex() const				{ return m_currentLobbyIndex.load(std::memory_order_relaxed); }
+	int32 GetCurrentRoomIndex() const				{ return m_currentRoomIndex.load(std::memory_order_relaxed); }
 
-	void SetCurrentRoom(const std::shared_ptr<Room>& _room)   { m_currentRoom = _room; }
-	void SetCurrentLobby(const std::shared_ptr<Lobby>& _lobby) { m_currentLobby = _lobby; }
+	void SetCurrentRoom(const std::shared_ptr<Room>& _room);
+	void SetCurrentLobby(const std::shared_ptr<Lobby>& _lobby);
 };
