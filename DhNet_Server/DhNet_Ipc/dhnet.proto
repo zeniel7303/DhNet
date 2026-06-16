@@ -31,9 +31,42 @@ message BroadcastResponse {
   string detail = 2;
 }
 
+// Players
+message ListPlayersRequest {}
+message PlayerInfo {
+  uint64 id = 1;
+  string name = 2;
+  int32 lobbyIndex = 3; // -1 = 로비에 없음
+  int32 roomIndex = 4;  // -1 = 방에 없음
+}
+message ListPlayersResponse {
+  repeated PlayerInfo players = 1;
+}
+message KickPlayerRequest {
+  uint64 id = 1;
+}
+message KickPlayerResponse {
+  bool success = 1;
+  string detail = 2;
+}
+
+// Lobbies
+message ListLobbiesRequest {}
+message LobbyInfo {
+  int32 id = 1;
+  int32 playerCount = 2;
+  int32 capacity = 3;
+}
+message ListLobbiesResponse {
+  repeated LobbyInfo lobbies = 1;
+}
+
 // Service
 service AdminService {
   rpc HealthCheck(HealthCheckRequest) returns (HealthCheckResponse);
   rpc ListRooms(ListRoomsRequest) returns (ListRoomsResponse);
   rpc Broadcast(BroadcastRequest) returns (BroadcastResponse);
+  rpc ListPlayers(ListPlayersRequest) returns (ListPlayersResponse);
+  rpc KickPlayer(KickPlayerRequest) returns (KickPlayerResponse);
+  rpc ListLobbies(ListLobbiesRequest) returns (ListLobbiesResponse);
 }

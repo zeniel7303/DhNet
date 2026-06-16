@@ -15,5 +15,6 @@ public:
 	
 	void Add(std::shared_ptr<Player> _player);
 	void Remove(std::shared_ptr<Player> _player);
-	std::shared_ptr<Player> Find(int _id);
+	std::shared_ptr<Player> Find(uint64 _id);
+	std::vector<std::shared_ptr<Player>> GetPlayers();
 };

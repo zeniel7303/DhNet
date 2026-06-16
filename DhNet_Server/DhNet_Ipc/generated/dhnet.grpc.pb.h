@@ -58,6 +58,27 @@ class AdminService final {
     std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::dhnet::BroadcastResponse>> PrepareAsyncBroadcast(::grpc::ClientContext* context, const ::dhnet::BroadcastRequest& request, ::grpc::CompletionQueue* cq) {
       return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::dhnet::BroadcastResponse>>(PrepareAsyncBroadcastRaw(context, request, cq));
     }
+    virtual ::grpc::Status ListPlayers(::grpc::ClientContext* context, const ::dhnet::ListPlayersRequest& request, ::dhnet::ListPlayersResponse* response) = 0;
+    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::dhnet::ListPlayersResponse>> AsyncListPlayers(::grpc::ClientContext* context, const ::dhnet::ListPlayersRequest& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::dhnet::ListPlayersResponse>>(AsyncListPlayersRaw(context, request, cq));
+    }
+    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::dhnet::ListPlayersResponse>> PrepareAsyncListPlayers(::grpc::ClientContext* context, const ::dhnet::ListPlayersRequest& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::dhnet::ListPlayersResponse>>(PrepareAsyncListPlayersRaw(context, request, cq));
+    }
+    virtual ::grpc::Status KickPlayer(::grpc::ClientContext* context, const ::dhnet::KickPlayerRequest& request, ::dhnet::KickPlayerResponse* response) = 0;
+    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::dhnet::KickPlayerResponse>> AsyncKickPlayer(::grpc::ClientContext* context, const ::dhnet::KickPlayerRequest& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::dhnet::KickPlayerResponse>>(AsyncKickPlayerRaw(context, request, cq));
+    }
+    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::dhnet::KickPlayerResponse>> PrepareAsyncKickPlayer(::grpc::ClientContext* context, const ::dhnet::KickPlayerRequest& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::dhnet::KickPlayerResponse>>(PrepareAsyncKickPlayerRaw(context, request, cq));
+    }
+    virtual ::grpc::Status ListLobbies(::grpc::ClientContext* context, const ::dhnet::ListLobbiesRequest& request, ::dhnet::ListLobbiesResponse* response) = 0;
+    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::dhnet::ListLobbiesResponse>> AsyncListLobbies(::grpc::ClientContext* context, const ::dhnet::ListLobbiesRequest& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::dhnet::ListLobbiesResponse>>(AsyncListLobbiesRaw(context, request, cq));
+    }
+    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::dhnet::ListLobbiesResponse>> PrepareAsyncListLobbies(::grpc::ClientContext* context, const ::dhnet::ListLobbiesRequest& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::dhnet::ListLobbiesResponse>>(PrepareAsyncListLobbiesRaw(context, request, cq));
+    }
     class async_interface {
      public:
       virtual ~async_interface() {}
@@ -67,6 +88,12 @@ class AdminService final {
       virtual void ListRooms(::grpc::ClientContext* context, const ::dhnet::ListRoomsRequest* request, ::dhnet::ListRoomsResponse* response, ::grpc::ClientUnaryReactor* reactor) = 0;
       virtual void Broadcast(::grpc::ClientContext* context, const ::dhnet::BroadcastRequest* request, ::dhnet::BroadcastResponse* response, std::function<void(::grpc::Status)>) = 0;
       virtual void Broadcast(::grpc::ClientContext* context, const ::dhnet::BroadcastRequest* request, ::dhnet::BroadcastResponse* response, ::grpc::ClientUnaryReactor* reactor) = 0;
+      virtual void ListPlayers(::grpc::ClientContext* context, const ::dhnet::ListPlayersRequest* request, ::dhnet::ListPlayersResponse* response, std::function<void(::grpc::Status)>) = 0;
+      virtual void ListPlayers(::grpc::ClientContext* context, const ::dhnet::ListPlayersRequest* request, ::dhnet::ListPlayersResponse* response, ::grpc::ClientUnaryReactor* reactor) = 0;
+      virtual void KickPlayer(::grpc::ClientContext* context, const ::dhnet::KickPlayerRequest* request, ::dhnet::KickPlayerResponse* response, std::function<void(::grpc::Status)>) = 0;
+      virtual void KickPlayer(::grpc::ClientContext* context, const ::dhnet::KickPlayerRequest* request, ::dhnet::KickPlayerResponse* response, ::grpc::ClientUnaryReactor* reactor) = 0;
+      virtual void ListLobbies(::grpc::ClientContext* context, const ::dhnet::ListLobbiesRequest* request, ::dhnet::ListLobbiesResponse* response, std::function<void(::grpc::Status)>) = 0;
+      virtual void ListLobbies(::grpc::ClientContext* context, const ::dhnet::ListLobbiesRequest* request, ::dhnet::ListLobbiesResponse* response, ::grpc::ClientUnaryReactor* reactor) = 0;
     };
     typedef class async_interface experimental_async_interface;
     virtual class async_interface* async() { return nullptr; }
@@ -78,6 +105,12 @@ class AdminService final {
     virtual ::grpc::ClientAsyncResponseReaderInterface< ::dhnet::ListRoomsResponse>* PrepareAsyncListRoomsRaw(::grpc::ClientContext* context, const ::dhnet::ListRoomsRequest& request, ::grpc::CompletionQueue* cq) = 0;
     virtual ::grpc::ClientAsyncResponseReaderInterface< ::dhnet::BroadcastResponse>* AsyncBroadcastRaw(::grpc::ClientContext* context, const ::dhnet::BroadcastRequest& request, ::grpc::CompletionQueue* cq) = 0;
     virtual ::grpc::ClientAsyncResponseReaderInterface< ::dhnet::BroadcastResponse>* PrepareAsyncBroadcastRaw(::grpc::ClientContext* context, const ::dhnet::BroadcastRequest& request, ::grpc::CompletionQueue* cq) = 0;
+    virtual ::grpc::ClientAsyncResponseReaderInterface< ::dhnet::ListPlayersResponse>* AsyncListPlayersRaw(::grpc::ClientContext* context, const ::dhnet::ListPlayersRequest& request, ::grpc::CompletionQueue* cq) = 0;
+    virtual ::grpc::ClientAsyncResponseReaderInterface< ::dhnet::ListPlayersResponse>* PrepareAsyncListPlayersRaw(::grpc::ClientContext* context, const ::dhnet::ListPlayersRequest& request, ::grpc::CompletionQueue* cq) = 0;
+    virtual ::grpc::ClientAsyncResponseReaderInterface< ::dhnet::KickPlayerResponse>* AsyncKickPlayerRaw(::grpc::ClientContext* context, const ::dhnet::KickPlayerRequest& request, ::grpc::CompletionQueue* cq) = 0;
+    virtual ::grpc::ClientAsyncResponseReaderInterface< ::dhnet::KickPlayerResponse>* PrepareAsyncKickPlayerRaw(::grpc::ClientContext* context, const ::dhnet::KickPlayerRequest& request, ::grpc::CompletionQueue* cq) = 0;
+    virtual ::grpc::ClientAsyncResponseReaderInterface< ::dhnet::ListLobbiesResponse>* AsyncListLobbiesRaw(::grpc::ClientContext* context, const ::dhnet::ListLobbiesRequest& request, ::grpc::CompletionQueue* cq) = 0;
+    virtual ::grpc::ClientAsyncResponseReaderInterface< ::dhnet::ListLobbiesResponse>* PrepareAsyncListLobbiesRaw(::grpc::ClientContext* context, const ::dhnet::ListLobbiesRequest& request, ::grpc::CompletionQueue* cq) = 0;
   };
   class Stub final : public StubInterface {
    public:
@@ -103,6 +136,27 @@ class AdminService final {
     std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::dhnet::BroadcastResponse>> PrepareAsyncBroadcast(::grpc::ClientContext* context, const ::dhnet::BroadcastRequest& request, ::grpc::CompletionQueue* cq) {
       return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::dhnet::BroadcastResponse>>(PrepareAsyncBroadcastRaw(context, request, cq));
     }
+    ::grpc::Status ListPlayers(::grpc::ClientContext* context, const ::dhnet::ListPlayersRequest& request, ::dhnet::ListPlayersResponse* response) override;
+    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::dhnet::ListPlayersResponse>> AsyncListPlayers(::grpc::ClientContext* context, const ::dhnet::ListPlayersRequest& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::dhnet::ListPlayersResponse>>(AsyncListPlayersRaw(context, request, cq));
+    }
+    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::dhnet::ListPlayersResponse>> PrepareAsyncListPlayers(::grpc::ClientContext* context, const ::dhnet::ListPlayersRequest& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::dhnet::ListPlayersResponse>>(PrepareAsyncListPlayersRaw(context, request, cq));
+    }
+    ::grpc::Status KickPlayer(::grpc::ClientContext* context, const ::dhnet::KickPlayerRequest& request, ::dhnet::KickPlayerResponse* response) override;
+    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::dhnet::KickPlayerResponse>> AsyncKickPlayer(::grpc::ClientContext* context, const ::dhnet::KickPlayerRequest& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::dhnet::KickPlayerResponse>>(AsyncKickPlayerRaw(context, request, cq));
+    }
+    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::dhnet::KickPlayerResponse>> PrepareAsyncKickPlayer(::grpc::ClientContext* context, const ::dhnet::KickPlayerRequest& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::dhnet::KickPlayerResponse>>(PrepareAsyncKickPlayerRaw(context, request, cq));
+    }
+    ::grpc::Status ListLobbies(::grpc::ClientContext* context, const ::dhnet::ListLobbiesRequest& request, ::dhnet::ListLobbiesResponse* response) override;
+    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::dhnet::ListLobbiesResponse>> AsyncListLobbies(::grpc::ClientContext* context, const ::dhnet::ListLobbiesRequest& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::dhnet::ListLobbiesResponse>>(AsyncListLobbiesRaw(context, request, cq));
+    }
+    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::dhnet::ListLobbiesResponse>> PrepareAsyncListLobbies(::grpc::ClientContext* context, const ::dhnet::ListLobbiesRequest& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::dhnet::ListLobbiesResponse>>(PrepareAsyncListLobbiesRaw(context, request, cq));
+    }
     class async final :
       public StubInterface::async_interface {
      public:
@@ -112,6 +166,12 @@ class AdminService final {
       void ListRooms(::grpc::ClientContext* context, const ::dhnet::ListRoomsRequest* request, ::dhnet::ListRoomsResponse* response, ::grpc::ClientUnaryReactor* reactor) override;
       void Broadcast(::grpc::ClientContext* context, const ::dhnet::BroadcastRequest* request, ::dhnet::BroadcastResponse* response, std::function<void(::grpc::Status)>) override;
       void Broadcast(::grpc::ClientContext* context, const ::dhnet::BroadcastRequest* request, ::dhnet::BroadcastResponse* response, ::grpc::ClientUnaryReactor* reactor) override;
+      void ListPlayers(::grpc::ClientContext* context, const ::dhnet::ListPlayersRequest* request, ::dhnet::ListPlayersResponse* response, std::function<void(::grpc::Status)>) override;
+      void ListPlayers(::grpc::ClientContext* context, const ::dhnet::ListPlayersRequest* request, ::dhnet::ListPlayersResponse* response, ::grpc::ClientUnaryReactor* reactor) override;
+      void KickPlayer(::grpc::ClientContext* context, const ::dhnet::KickPlayerRequest* request, ::dhnet::KickPlayerResponse* response, std::function<void(::grpc::Status)>) override;
+      void KickPlayer(::grpc::ClientContext* context, const ::dhnet::KickPlayerRequest* request, ::dhnet::KickPlayerResponse* response, ::grpc::ClientUnaryReactor* reactor) override;
+      void ListLobbies(::grpc::ClientContext* context, const ::dhnet::ListLobbiesRequest* request, ::dhnet::ListLobbiesResponse* response, std::function<void(::grpc::Status)>) override;
+      void ListLobbies(::grpc::ClientContext* context, const ::dhnet::ListLobbiesRequest* request, ::dhnet::ListLobbiesResponse* response, ::grpc::ClientUnaryReactor* reactor) override;
      private:
       friend class Stub;
       explicit async(Stub* stub): stub_(stub) { }
@@ -129,9 +189,18 @@ class AdminService final {
     ::grpc::ClientAsyncResponseReader< ::dhnet::ListRoomsResponse>* PrepareAsyncListRoomsRaw(::grpc::ClientContext* context, const ::dhnet::ListRoomsRequest& request, ::grpc::CompletionQueue* cq) override;
     ::grpc::ClientAsyncResponseReader< ::dhnet::BroadcastResponse>* AsyncBroadcastRaw(::grpc::ClientContext* context, const ::dhnet::BroadcastRequest& request, ::grpc::CompletionQueue* cq) override;
     ::grpc::ClientAsyncResponseReader< ::dhnet::BroadcastResponse>* PrepareAsyncBroadcastRaw(::grpc::ClientContext* context, const ::dhnet::BroadcastRequest& request, ::grpc::CompletionQueue* cq) override;
+    ::grpc::ClientAsyncResponseReader< ::dhnet::ListPlayersResponse>* AsyncListPlayersRaw(::grpc::ClientContext* context, const ::dhnet::ListPlayersRequest& request, ::grpc::CompletionQueue* cq) override;
+    ::grpc::ClientAsyncResponseReader< ::dhnet::ListPlayersResponse>* PrepareAsyncListPlayersRaw(::grpc::ClientContext* context, const ::dhnet::ListPlayersRequest& request, ::grpc::CompletionQueue* cq) override;
+    ::grpc::ClientAsyncResponseReader< ::dhnet::KickPlayerResponse>* AsyncKickPlayerRaw(::grpc::ClientContext* context, const ::dhnet::KickPlayerRequest& request, ::grpc::CompletionQueue* cq) override;
+    ::grpc::ClientAsyncResponseReader< ::dhnet::KickPlayerResponse>* PrepareAsyncKickPlayerRaw(::grpc::ClientContext* context, const ::dhnet::KickPlayerRequest& request, ::grpc::CompletionQueue* cq) override;
+    ::grpc::ClientAsyncResponseReader< ::dhnet::ListLobbiesResponse>* AsyncListLobbiesRaw(::grpc::ClientContext* context, const ::dhnet::ListLobbiesRequest& request, ::grpc::CompletionQueue* cq) override;
+    ::grpc::ClientAsyncResponseReader< ::dhnet::ListLobbiesResponse>* PrepareAsyncListLobbiesRaw(::grpc::ClientContext* context, const ::dhnet::ListLobbiesRequest& request, ::grpc::CompletionQueue* cq) override;
     const ::grpc::internal::RpcMethod rpcmethod_HealthCheck_;
     const ::grpc::internal::RpcMethod rpcmethod_ListRooms_;
     const ::grpc::internal::RpcMethod rpcmethod_Broadcast_;
+    const ::grpc::internal::RpcMethod rpcmethod_ListPlayers_;
+    const ::grpc::internal::RpcMethod rpcmethod_KickPlayer_;
+    const ::grpc::internal::RpcMethod rpcmethod_ListLobbies_;
   };
   static std::unique_ptr<Stub> NewStub(const std::shared_ptr< ::grpc::ChannelInterface>& channel, const ::grpc::StubOptions& options = ::grpc::StubOptions());
 
@@ -142,6 +211,9 @@ class AdminService final {
     virtual ::grpc::Status HealthCheck(::grpc::ServerContext* context, const ::dhnet::HealthCheckRequest* request, ::dhnet::HealthCheckResponse* response);
     virtual ::grpc::Status ListRooms(::grpc::ServerContext* context, const ::dhnet::ListRoomsRequest* request, ::dhnet::ListRoomsResponse* response);
     virtual ::grpc::Status Broadcast(::grpc::ServerContext* context, const ::dhnet::BroadcastRequest* request, ::dhnet::BroadcastResponse* response);
+    virtual ::grpc::Status ListPlayers(::grpc::ServerContext* context, const ::dhnet::ListPlayersRequest* request, ::dhnet::ListPlayersResponse* response);
+    virtual ::grpc::Status KickPlayer(::grpc::ServerContext* context, const ::dhnet::KickPlayerRequest* request, ::dhnet::KickPlayerResponse* response);
+    virtual ::grpc::Status ListLobbies(::grpc::ServerContext* context, const ::dhnet::ListLobbiesRequest* request, ::dhnet::ListLobbiesResponse* response);
   };
   template <class BaseClass>
   class WithAsyncMethod_HealthCheck : public BaseClass {
@@ -203,7 +275,67 @@ class AdminService final {
       ::grpc::Service::RequestAsyncUnary(2, context, request, response, new_call_cq, notification_cq, tag);
     }
   };
-  typedef WithAsyncMethod_HealthCheck<WithAsyncMethod_ListRooms<WithAsyncMethod_Broadcast<Service > > > AsyncService;
+  template <class BaseClass>
+  class WithAsyncMethod_ListPlayers : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithAsyncMethod_ListPlayers() {
+      ::grpc::Service::MarkMethodAsync(3);
+    }
+    ~WithAsyncMethod_ListPlayers() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status ListPlayers(::grpc::ServerContext* /*context*/, const ::dhnet::ListPlayersRequest* /*request*/, ::dhnet::ListPlayersResponse* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    void RequestListPlayers(::grpc::ServerContext* context, ::dhnet::ListPlayersRequest* request, ::grpc::ServerAsyncResponseWriter< ::dhnet::ListPlayersResponse>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
+      ::grpc::Service::RequestAsyncUnary(3, context, request, response, new_call_cq, notification_cq, tag);
+    }
+  };
+  template <class BaseClass>
+  class WithAsyncMethod_KickPlayer : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithAsyncMethod_KickPlayer() {
+      ::grpc::Service::MarkMethodAsync(4);
+    }
+    ~WithAsyncMethod_KickPlayer() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status KickPlayer(::grpc::ServerContext* /*context*/, const ::dhnet::KickPlayerRequest* /*request*/, ::dhnet::KickPlayerResponse* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    void RequestKickPlayer(::grpc::ServerContext* context, ::dhnet::KickPlayerRequest* request, ::grpc::ServerAsyncResponseWriter< ::dhnet::KickPlayerResponse>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
+      ::grpc::Service::RequestAsyncUnary(4, context, request, response, new_call_cq, notification_cq, tag);
+    }
+  };
+  template <class BaseClass>
+  class WithAsyncMethod_ListLobbies : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithAsyncMethod_ListLobbies() {
+      ::grpc::Service::MarkMethodAsync(5);
+    }
+    ~WithAsyncMethod_ListLobbies() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status ListLobbies(::grpc::ServerContext* /*context*/, const ::dhnet::ListLobbiesRequest* /*request*/, ::dhnet::ListLobbiesResponse* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    void RequestListLobbies(::grpc::ServerContext* context, ::dhnet::ListLobbiesRequest* request, ::grpc::ServerAsyncResponseWriter< ::dhnet::ListLobbiesResponse>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
+      ::grpc::Service::RequestAsyncUnary(5, context, request, response, new_call_cq, notification_cq, tag);
+    }
+  };
+  typedef WithAsyncMethod_HealthCheck<WithAsyncMethod_ListRooms<WithAsyncMethod_Broadcast<WithAsyncMethod_ListPlayers<WithAsyncMethod_KickPlayer<WithAsyncMethod_ListLobbies<Service > > > > > > AsyncService;
   template <class BaseClass>
   class WithCallbackMethod_HealthCheck : public BaseClass {
    private:
@@ -285,7 +417,88 @@ class AdminService final {
     virtual ::grpc::ServerUnaryReactor* Broadcast(
       ::grpc::CallbackServerContext* /*context*/, const ::dhnet::BroadcastRequest* /*request*/, ::dhnet::BroadcastResponse* /*response*/)  { return nullptr; }
   };
-  typedef WithCallbackMethod_HealthCheck<WithCallbackMethod_ListRooms<WithCallbackMethod_Broadcast<Service > > > CallbackService;
+  template <class BaseClass>
+  class WithCallbackMethod_ListPlayers : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithCallbackMethod_ListPlayers() {
+      ::grpc::Service::MarkMethodCallback(3,
+          new ::grpc::internal::CallbackUnaryHandler< ::dhnet::ListPlayersRequest, ::dhnet::ListPlayersResponse>(
+            [this](
+                   ::grpc::CallbackServerContext* context, const ::dhnet::ListPlayersRequest* request, ::dhnet::ListPlayersResponse* response) { return this->ListPlayers(context, request, response); }));}
+    void SetMessageAllocatorFor_ListPlayers(
+        ::grpc::MessageAllocator< ::dhnet::ListPlayersRequest, ::dhnet::ListPlayersResponse>* allocator) {
+      ::grpc::internal::MethodHandler* const handler = ::grpc::Service::GetHandler(3);
+      static_cast<::grpc::internal::CallbackUnaryHandler< ::dhnet::ListPlayersRequest, ::dhnet::ListPlayersResponse>*>(handler)
+              ->SetMessageAllocator(allocator);
+    }
+    ~WithCallbackMethod_ListPlayers() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status ListPlayers(::grpc::ServerContext* /*context*/, const ::dhnet::ListPlayersRequest* /*request*/, ::dhnet::ListPlayersResponse* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    virtual ::grpc::ServerUnaryReactor* ListPlayers(
+      ::grpc::CallbackServerContext* /*context*/, const ::dhnet::ListPlayersRequest* /*request*/, ::dhnet::ListPlayersResponse* /*response*/)  { return nullptr; }
+  };
+  template <class BaseClass>
+  class WithCallbackMethod_KickPlayer : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithCallbackMethod_KickPlayer() {
+      ::grpc::Service::MarkMethodCallback(4,
+          new ::grpc::internal::CallbackUnaryHandler< ::dhnet::KickPlayerRequest, ::dhnet::KickPlayerResponse>(
+            [this](
+                   ::grpc::CallbackServerContext* context, const ::dhnet::KickPlayerRequest* request, ::dhnet::KickPlayerResponse* response) { return this->KickPlayer(context, request, response); }));}
+    void SetMessageAllocatorFor_KickPlayer(
+        ::grpc::MessageAllocator< ::dhnet::KickPlayerRequest, ::dhnet::KickPlayerResponse>* allocator) {
+      ::grpc::internal::MethodHandler* const handler = ::grpc::Service::GetHandler(4);
+      static_cast<::grpc::internal::CallbackUnaryHandler< ::dhnet::KickPlayerRequest, ::dhnet::KickPlayerResponse>*>(handler)
+              ->SetMessageAllocator(allocator);
+    }
+    ~WithCallbackMethod_KickPlayer() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status KickPlayer(::grpc::ServerContext* /*context*/, const ::dhnet::KickPlayerRequest* /*request*/, ::dhnet::KickPlayerResponse* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    virtual ::grpc::ServerUnaryReactor* KickPlayer(
+      ::grpc::CallbackServerContext* /*context*/, const ::dhnet::KickPlayerRequest* /*request*/, ::dhnet::KickPlayerResponse* /*response*/)  { return nullptr; }
+  };
+  template <class BaseClass>
+  class WithCallbackMethod_ListLobbies : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithCallbackMethod_ListLobbies() {
+      ::grpc::Service::MarkMethodCallback(5,
+          new ::grpc::internal::CallbackUnaryHandler< ::dhnet::ListLobbiesRequest, ::dhnet::ListLobbiesResponse>(
+            [this](
+                   ::grpc::CallbackServerContext* context, const ::dhnet::ListLobbiesRequest* request, ::dhnet::ListLobbiesResponse* response) { return this->ListLobbies(context, request, response); }));}
+    void SetMessageAllocatorFor_ListLobbies(
+        ::grpc::MessageAllocator< ::dhnet::ListLobbiesRequest, ::dhnet::ListLobbiesResponse>* allocator) {
+      ::grpc::internal::MethodHandler* const handler = ::grpc::Service::GetHandler(5);
+      static_cast<::grpc::internal::CallbackUnaryHandler< ::dhnet::ListLobbiesRequest, ::dhnet::ListLobbiesResponse>*>(handler)
+              ->SetMessageAllocator(allocator);
+    }
+    ~WithCallbackMethod_ListLobbies() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status ListLobbies(::grpc::ServerContext* /*context*/, const ::dhnet::ListLobbiesRequest* /*request*/, ::dhnet::ListLobbiesResponse* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    virtual ::grpc::ServerUnaryReactor* ListLobbies(
+      ::grpc::CallbackServerContext* /*context*/, const ::dhnet::ListLobbiesRequest* /*request*/, ::dhnet::ListLobbiesResponse* /*response*/)  { return nullptr; }
+  };
+  typedef WithCallbackMethod_HealthCheck<WithCallbackMethod_ListRooms<WithCallbackMethod_Broadcast<WithCallbackMethod_ListPlayers<WithCallbackMethod_KickPlayer<WithCallbackMethod_ListLobbies<Service > > > > > > CallbackService;
   typedef CallbackService ExperimentalCallbackService;
   template <class BaseClass>
   class WithGenericMethod_HealthCheck : public BaseClass {
@@ -334,6 +547,57 @@ class AdminService final {
     }
     // disable synchronous version of this method
     ::grpc::Status Broadcast(::grpc::ServerContext* /*context*/, const ::dhnet::BroadcastRequest* /*request*/, ::dhnet::BroadcastResponse* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+  };
+  template <class BaseClass>
+  class WithGenericMethod_ListPlayers : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithGenericMethod_ListPlayers() {
+      ::grpc::Service::MarkMethodGeneric(3);
+    }
+    ~WithGenericMethod_ListPlayers() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status ListPlayers(::grpc::ServerContext* /*context*/, const ::dhnet::ListPlayersRequest* /*request*/, ::dhnet::ListPlayersResponse* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+  };
+  template <class BaseClass>
+  class WithGenericMethod_KickPlayer : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithGenericMethod_KickPlayer() {
+      ::grpc::Service::MarkMethodGeneric(4);
+    }
+    ~WithGenericMethod_KickPlayer() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status KickPlayer(::grpc::ServerContext* /*context*/, const ::dhnet::KickPlayerRequest* /*request*/, ::dhnet::KickPlayerResponse* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+  };
+  template <class BaseClass>
+  class WithGenericMethod_ListLobbies : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithGenericMethod_ListLobbies() {
+      ::grpc::Service::MarkMethodGeneric(5);
+    }
+    ~WithGenericMethod_ListLobbies() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status ListLobbies(::grpc::ServerContext* /*context*/, const ::dhnet::ListLobbiesRequest* /*request*/, ::dhnet::ListLobbiesResponse* /*response*/) override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
@@ -396,6 +660,66 @@ class AdminService final {
     }
     void RequestBroadcast(::grpc::ServerContext* context, ::grpc::ByteBuffer* request, ::grpc::ServerAsyncResponseWriter< ::grpc::ByteBuffer>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
       ::grpc::Service::RequestAsyncUnary(2, context, request, response, new_call_cq, notification_cq, tag);
+    }
+  };
+  template <class BaseClass>
+  class WithRawMethod_ListPlayers : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithRawMethod_ListPlayers() {
+      ::grpc::Service::MarkMethodRaw(3);
+    }
+    ~WithRawMethod_ListPlayers() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status ListPlayers(::grpc::ServerContext* /*context*/, const ::dhnet::ListPlayersRequest* /*request*/, ::dhnet::ListPlayersResponse* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    void RequestListPlayers(::grpc::ServerContext* context, ::grpc::ByteBuffer* request, ::grpc::ServerAsyncResponseWriter< ::grpc::ByteBuffer>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
+      ::grpc::Service::RequestAsyncUnary(3, context, request, response, new_call_cq, notification_cq, tag);
+    }
+  };
+  template <class BaseClass>
+  class WithRawMethod_KickPlayer : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithRawMethod_KickPlayer() {
+      ::grpc::Service::MarkMethodRaw(4);
+    }
+    ~WithRawMethod_KickPlayer() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status KickPlayer(::grpc::ServerContext* /*context*/, const ::dhnet::KickPlayerRequest* /*request*/, ::dhnet::KickPlayerResponse* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    void RequestKickPlayer(::grpc::ServerContext* context, ::grpc::ByteBuffer* request, ::grpc::ServerAsyncResponseWriter< ::grpc::ByteBuffer>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
+      ::grpc::Service::RequestAsyncUnary(4, context, request, response, new_call_cq, notification_cq, tag);
+    }
+  };
+  template <class BaseClass>
+  class WithRawMethod_ListLobbies : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithRawMethod_ListLobbies() {
+      ::grpc::Service::MarkMethodRaw(5);
+    }
+    ~WithRawMethod_ListLobbies() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status ListLobbies(::grpc::ServerContext* /*context*/, const ::dhnet::ListLobbiesRequest* /*request*/, ::dhnet::ListLobbiesResponse* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    void RequestListLobbies(::grpc::ServerContext* context, ::grpc::ByteBuffer* request, ::grpc::ServerAsyncResponseWriter< ::grpc::ByteBuffer>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
+      ::grpc::Service::RequestAsyncUnary(5, context, request, response, new_call_cq, notification_cq, tag);
     }
   };
   template <class BaseClass>
@@ -462,6 +786,72 @@ class AdminService final {
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
     virtual ::grpc::ServerUnaryReactor* Broadcast(
+      ::grpc::CallbackServerContext* /*context*/, const ::grpc::ByteBuffer* /*request*/, ::grpc::ByteBuffer* /*response*/)  { return nullptr; }
+  };
+  template <class BaseClass>
+  class WithRawCallbackMethod_ListPlayers : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithRawCallbackMethod_ListPlayers() {
+      ::grpc::Service::MarkMethodRawCallback(3,
+          new ::grpc::internal::CallbackUnaryHandler< ::grpc::ByteBuffer, ::grpc::ByteBuffer>(
+            [this](
+                   ::grpc::CallbackServerContext* context, const ::grpc::ByteBuffer* request, ::grpc::ByteBuffer* response) { return this->ListPlayers(context, request, response); }));
+    }
+    ~WithRawCallbackMethod_ListPlayers() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status ListPlayers(::grpc::ServerContext* /*context*/, const ::dhnet::ListPlayersRequest* /*request*/, ::dhnet::ListPlayersResponse* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    virtual ::grpc::ServerUnaryReactor* ListPlayers(
+      ::grpc::CallbackServerContext* /*context*/, const ::grpc::ByteBuffer* /*request*/, ::grpc::ByteBuffer* /*response*/)  { return nullptr; }
+  };
+  template <class BaseClass>
+  class WithRawCallbackMethod_KickPlayer : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithRawCallbackMethod_KickPlayer() {
+      ::grpc::Service::MarkMethodRawCallback(4,
+          new ::grpc::internal::CallbackUnaryHandler< ::grpc::ByteBuffer, ::grpc::ByteBuffer>(
+            [this](
+                   ::grpc::CallbackServerContext* context, const ::grpc::ByteBuffer* request, ::grpc::ByteBuffer* response) { return this->KickPlayer(context, request, response); }));
+    }
+    ~WithRawCallbackMethod_KickPlayer() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status KickPlayer(::grpc::ServerContext* /*context*/, const ::dhnet::KickPlayerRequest* /*request*/, ::dhnet::KickPlayerResponse* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    virtual ::grpc::ServerUnaryReactor* KickPlayer(
+      ::grpc::CallbackServerContext* /*context*/, const ::grpc::ByteBuffer* /*request*/, ::grpc::ByteBuffer* /*response*/)  { return nullptr; }
+  };
+  template <class BaseClass>
+  class WithRawCallbackMethod_ListLobbies : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithRawCallbackMethod_ListLobbies() {
+      ::grpc::Service::MarkMethodRawCallback(5,
+          new ::grpc::internal::CallbackUnaryHandler< ::grpc::ByteBuffer, ::grpc::ByteBuffer>(
+            [this](
+                   ::grpc::CallbackServerContext* context, const ::grpc::ByteBuffer* request, ::grpc::ByteBuffer* response) { return this->ListLobbies(context, request, response); }));
+    }
+    ~WithRawCallbackMethod_ListLobbies() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status ListLobbies(::grpc::ServerContext* /*context*/, const ::dhnet::ListLobbiesRequest* /*request*/, ::dhnet::ListLobbiesResponse* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    virtual ::grpc::ServerUnaryReactor* ListLobbies(
       ::grpc::CallbackServerContext* /*context*/, const ::grpc::ByteBuffer* /*request*/, ::grpc::ByteBuffer* /*response*/)  { return nullptr; }
   };
   template <class BaseClass>
@@ -545,9 +935,90 @@ class AdminService final {
     // replace default version of method with streamed unary
     virtual ::grpc::Status StreamedBroadcast(::grpc::ServerContext* context, ::grpc::ServerUnaryStreamer< ::dhnet::BroadcastRequest,::dhnet::BroadcastResponse>* server_unary_streamer) = 0;
   };
-  typedef WithStreamedUnaryMethod_HealthCheck<WithStreamedUnaryMethod_ListRooms<WithStreamedUnaryMethod_Broadcast<Service > > > StreamedUnaryService;
+  template <class BaseClass>
+  class WithStreamedUnaryMethod_ListPlayers : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithStreamedUnaryMethod_ListPlayers() {
+      ::grpc::Service::MarkMethodStreamed(3,
+        new ::grpc::internal::StreamedUnaryHandler<
+          ::dhnet::ListPlayersRequest, ::dhnet::ListPlayersResponse>(
+            [this](::grpc::ServerContext* context,
+                   ::grpc::ServerUnaryStreamer<
+                     ::dhnet::ListPlayersRequest, ::dhnet::ListPlayersResponse>* streamer) {
+                       return this->StreamedListPlayers(context,
+                         streamer);
+                  }));
+    }
+    ~WithStreamedUnaryMethod_ListPlayers() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable regular version of this method
+    ::grpc::Status ListPlayers(::grpc::ServerContext* /*context*/, const ::dhnet::ListPlayersRequest* /*request*/, ::dhnet::ListPlayersResponse* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    // replace default version of method with streamed unary
+    virtual ::grpc::Status StreamedListPlayers(::grpc::ServerContext* context, ::grpc::ServerUnaryStreamer< ::dhnet::ListPlayersRequest,::dhnet::ListPlayersResponse>* server_unary_streamer) = 0;
+  };
+  template <class BaseClass>
+  class WithStreamedUnaryMethod_KickPlayer : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithStreamedUnaryMethod_KickPlayer() {
+      ::grpc::Service::MarkMethodStreamed(4,
+        new ::grpc::internal::StreamedUnaryHandler<
+          ::dhnet::KickPlayerRequest, ::dhnet::KickPlayerResponse>(
+            [this](::grpc::ServerContext* context,
+                   ::grpc::ServerUnaryStreamer<
+                     ::dhnet::KickPlayerRequest, ::dhnet::KickPlayerResponse>* streamer) {
+                       return this->StreamedKickPlayer(context,
+                         streamer);
+                  }));
+    }
+    ~WithStreamedUnaryMethod_KickPlayer() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable regular version of this method
+    ::grpc::Status KickPlayer(::grpc::ServerContext* /*context*/, const ::dhnet::KickPlayerRequest* /*request*/, ::dhnet::KickPlayerResponse* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    // replace default version of method with streamed unary
+    virtual ::grpc::Status StreamedKickPlayer(::grpc::ServerContext* context, ::grpc::ServerUnaryStreamer< ::dhnet::KickPlayerRequest,::dhnet::KickPlayerResponse>* server_unary_streamer) = 0;
+  };
+  template <class BaseClass>
+  class WithStreamedUnaryMethod_ListLobbies : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithStreamedUnaryMethod_ListLobbies() {
+      ::grpc::Service::MarkMethodStreamed(5,
+        new ::grpc::internal::StreamedUnaryHandler<
+          ::dhnet::ListLobbiesRequest, ::dhnet::ListLobbiesResponse>(
+            [this](::grpc::ServerContext* context,
+                   ::grpc::ServerUnaryStreamer<
+                     ::dhnet::ListLobbiesRequest, ::dhnet::ListLobbiesResponse>* streamer) {
+                       return this->StreamedListLobbies(context,
+                         streamer);
+                  }));
+    }
+    ~WithStreamedUnaryMethod_ListLobbies() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable regular version of this method
+    ::grpc::Status ListLobbies(::grpc::ServerContext* /*context*/, const ::dhnet::ListLobbiesRequest* /*request*/, ::dhnet::ListLobbiesResponse* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    // replace default version of method with streamed unary
+    virtual ::grpc::Status StreamedListLobbies(::grpc::ServerContext* context, ::grpc::ServerUnaryStreamer< ::dhnet::ListLobbiesRequest,::dhnet::ListLobbiesResponse>* server_unary_streamer) = 0;
+  };
+  typedef WithStreamedUnaryMethod_HealthCheck<WithStreamedUnaryMethod_ListRooms<WithStreamedUnaryMethod_Broadcast<WithStreamedUnaryMethod_ListPlayers<WithStreamedUnaryMethod_KickPlayer<WithStreamedUnaryMethod_ListLobbies<Service > > > > > > StreamedUnaryService;
   typedef Service SplitStreamedService;
-  typedef WithStreamedUnaryMethod_HealthCheck<WithStreamedUnaryMethod_ListRooms<WithStreamedUnaryMethod_Broadcast<Service > > > StreamedService;
+  typedef WithStreamedUnaryMethod_HealthCheck<WithStreamedUnaryMethod_ListRooms<WithStreamedUnaryMethod_Broadcast<WithStreamedUnaryMethod_ListPlayers<WithStreamedUnaryMethod_KickPlayer<WithStreamedUnaryMethod_ListLobbies<Service > > > > > > StreamedService;
 };
 
 }  // namespace dhnet

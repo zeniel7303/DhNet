@@ -12,4 +12,5 @@ public:
 	~LobbySystem() = default;
 
 	std::shared_ptr<Lobby> AssignLobby();
+	std::vector<std::shared_ptr<Lobby>> GetLobbies();
 };

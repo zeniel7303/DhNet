@@ -14,4 +14,7 @@
 bool AdminHealthCheck(dhnet::HealthCheckResponse* resp);
 bool AdminListRooms(const dhnet::ListRoomsRequest* req, dhnet::ListRoomsResponse* resp, std::string& err);
 bool AdminBroadcast(const dhnet::BroadcastRequest* req, dhnet::BroadcastResponse* resp, std::string& err);
+bool AdminListPlayers(const dhnet::ListPlayersRequest* req, dhnet::ListPlayersResponse* resp, std::string& err);
+bool AdminKickPlayer(const dhnet::KickPlayerRequest* req, dhnet::KickPlayerResponse* resp, std::string& err);
+bool AdminListLobbies(const dhnet::ListLobbiesRequest* req, dhnet::ListLobbiesResponse* resp, std::string& err);
 #endif

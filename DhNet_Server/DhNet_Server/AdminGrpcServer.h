@@ -57,5 +57,14 @@ public:
 
     grpc::Status Broadcast(grpc::ServerContext* ctx, const dhnet::BroadcastRequest* req,
                            dhnet::BroadcastResponse* resp) override;
+
+    grpc::Status ListPlayers(grpc::ServerContext* ctx, const dhnet::ListPlayersRequest* req,
+                             dhnet::ListPlayersResponse* resp) override;
+
+    grpc::Status KickPlayer(grpc::ServerContext* ctx, const dhnet::KickPlayerRequest* req,
+                            dhnet::KickPlayerResponse* resp) override;
+
+    grpc::Status ListLobbies(grpc::ServerContext* ctx, const dhnet::ListLobbiesRequest* req,
+                             dhnet::ListLobbiesResponse* resp) override;
 };
 #endif

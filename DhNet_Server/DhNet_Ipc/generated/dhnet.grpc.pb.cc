@@ -26,6 +26,9 @@ static const char* AdminService_method_names[] = {
   "/dhnet.AdminService/HealthCheck",
   "/dhnet.AdminService/ListRooms",
   "/dhnet.AdminService/Broadcast",
+  "/dhnet.AdminService/ListPlayers",
+  "/dhnet.AdminService/KickPlayer",
+  "/dhnet.AdminService/ListLobbies",
 };
 
 std::unique_ptr< AdminService::Stub> AdminService::NewStub(const std::shared_ptr< ::grpc::ChannelInterface>& channel, const ::grpc::StubOptions& options) {
@@ -38,6 +41,9 @@ AdminService::Stub::Stub(const std::shared_ptr< ::grpc::ChannelInterface>& chann
   : channel_(channel), rpcmethod_HealthCheck_(AdminService_method_names[0], options.suffix_for_stats(),::grpc::internal::RpcMethod::NORMAL_RPC, channel)
   , rpcmethod_ListRooms_(AdminService_method_names[1], options.suffix_for_stats(),::grpc::internal::RpcMethod::NORMAL_RPC, channel)
   , rpcmethod_Broadcast_(AdminService_method_names[2], options.suffix_for_stats(),::grpc::internal::RpcMethod::NORMAL_RPC, channel)
+  , rpcmethod_ListPlayers_(AdminService_method_names[3], options.suffix_for_stats(),::grpc::internal::RpcMethod::NORMAL_RPC, channel)
+  , rpcmethod_KickPlayer_(AdminService_method_names[4], options.suffix_for_stats(),::grpc::internal::RpcMethod::NORMAL_RPC, channel)
+  , rpcmethod_ListLobbies_(AdminService_method_names[5], options.suffix_for_stats(),::grpc::internal::RpcMethod::NORMAL_RPC, channel)
   {}
 
 ::grpc::Status AdminService::Stub::HealthCheck(::grpc::ClientContext* context, const ::dhnet::HealthCheckRequest& request, ::dhnet::HealthCheckResponse* response) {
@@ -109,6 +115,75 @@ void AdminService::Stub::async::Broadcast(::grpc::ClientContext* context, const 
   return result;
 }
 
+::grpc::Status AdminService::Stub::ListPlayers(::grpc::ClientContext* context, const ::dhnet::ListPlayersRequest& request, ::dhnet::ListPlayersResponse* response) {
+  return ::grpc::internal::BlockingUnaryCall< ::dhnet::ListPlayersRequest, ::dhnet::ListPlayersResponse, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(channel_.get(), rpcmethod_ListPlayers_, context, request, response);
+}
+
+void AdminService::Stub::async::ListPlayers(::grpc::ClientContext* context, const ::dhnet::ListPlayersRequest* request, ::dhnet::ListPlayersResponse* response, std::function<void(::grpc::Status)> f) {
+  ::grpc::internal::CallbackUnaryCall< ::dhnet::ListPlayersRequest, ::dhnet::ListPlayersResponse, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(stub_->channel_.get(), stub_->rpcmethod_ListPlayers_, context, request, response, std::move(f));
+}
+
+void AdminService::Stub::async::ListPlayers(::grpc::ClientContext* context, const ::dhnet::ListPlayersRequest* request, ::dhnet::ListPlayersResponse* response, ::grpc::ClientUnaryReactor* reactor) {
+  ::grpc::internal::ClientCallbackUnaryFactory::Create< ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(stub_->channel_.get(), stub_->rpcmethod_ListPlayers_, context, request, response, reactor);
+}
+
+::grpc::ClientAsyncResponseReader< ::dhnet::ListPlayersResponse>* AdminService::Stub::PrepareAsyncListPlayersRaw(::grpc::ClientContext* context, const ::dhnet::ListPlayersRequest& request, ::grpc::CompletionQueue* cq) {
+  return ::grpc::internal::ClientAsyncResponseReaderHelper::Create< ::dhnet::ListPlayersResponse, ::dhnet::ListPlayersRequest, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(channel_.get(), cq, rpcmethod_ListPlayers_, context, request);
+}
+
+::grpc::ClientAsyncResponseReader< ::dhnet::ListPlayersResponse>* AdminService::Stub::AsyncListPlayersRaw(::grpc::ClientContext* context, const ::dhnet::ListPlayersRequest& request, ::grpc::CompletionQueue* cq) {
+  auto* result =
+    this->PrepareAsyncListPlayersRaw(context, request, cq);
+  result->StartCall();
+  return result;
+}
+
+::grpc::Status AdminService::Stub::KickPlayer(::grpc::ClientContext* context, const ::dhnet::KickPlayerRequest& request, ::dhnet::KickPlayerResponse* response) {
+  return ::grpc::internal::BlockingUnaryCall< ::dhnet::KickPlayerRequest, ::dhnet::KickPlayerResponse, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(channel_.get(), rpcmethod_KickPlayer_, context, request, response);
+}
+
+void AdminService::Stub::async::KickPlayer(::grpc::ClientContext* context, const ::dhnet::KickPlayerRequest* request, ::dhnet::KickPlayerResponse* response, std::function<void(::grpc::Status)> f) {
+  ::grpc::internal::CallbackUnaryCall< ::dhnet::KickPlayerRequest, ::dhnet::KickPlayerResponse, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(stub_->channel_.get(), stub_->rpcmethod_KickPlayer_, context, request, response, std::move(f));
+}
+
+void AdminService::Stub::async::KickPlayer(::grpc::ClientContext* context, const ::dhnet::KickPlayerRequest* request, ::dhnet::KickPlayerResponse* response, ::grpc::ClientUnaryReactor* reactor) {
+  ::grpc::internal::ClientCallbackUnaryFactory::Create< ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(stub_->channel_.get(), stub_->rpcmethod_KickPlayer_, context, request, response, reactor);
+}
+
+::grpc::ClientAsyncResponseReader< ::dhnet::KickPlayerResponse>* AdminService::Stub::PrepareAsyncKickPlayerRaw(::grpc::ClientContext* context, const ::dhnet::KickPlayerRequest& request, ::grpc::CompletionQueue* cq) {
+  return ::grpc::internal::ClientAsyncResponseReaderHelper::Create< ::dhnet::KickPlayerResponse, ::dhnet::KickPlayerRequest, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(channel_.get(), cq, rpcmethod_KickPlayer_, context, request);
+}
+
+::grpc::ClientAsyncResponseReader< ::dhnet::KickPlayerResponse>* AdminService::Stub::AsyncKickPlayerRaw(::grpc::ClientContext* context, const ::dhnet::KickPlayerRequest& request, ::grpc::CompletionQueue* cq) {
+  auto* result =
+    this->PrepareAsyncKickPlayerRaw(context, request, cq);
+  result->StartCall();
+  return result;
+}
+
+::grpc::Status AdminService::Stub::ListLobbies(::grpc::ClientContext* context, const ::dhnet::ListLobbiesRequest& request, ::dhnet::ListLobbiesResponse* response) {
+  return ::grpc::internal::BlockingUnaryCall< ::dhnet::ListLobbiesRequest, ::dhnet::ListLobbiesResponse, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(channel_.get(), rpcmethod_ListLobbies_, context, request, response);
+}
+
+void AdminService::Stub::async::ListLobbies(::grpc::ClientContext* context, const ::dhnet::ListLobbiesRequest* request, ::dhnet::ListLobbiesResponse* response, std::function<void(::grpc::Status)> f) {
+  ::grpc::internal::CallbackUnaryCall< ::dhnet::ListLobbiesRequest, ::dhnet::ListLobbiesResponse, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(stub_->channel_.get(), stub_->rpcmethod_ListLobbies_, context, request, response, std::move(f));
+}
+
+void AdminService::Stub::async::ListLobbies(::grpc::ClientContext* context, const ::dhnet::ListLobbiesRequest* request, ::dhnet::ListLobbiesResponse* response, ::grpc::ClientUnaryReactor* reactor) {
+  ::grpc::internal::ClientCallbackUnaryFactory::Create< ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(stub_->channel_.get(), stub_->rpcmethod_ListLobbies_, context, request, response, reactor);
+}
+
+::grpc::ClientAsyncResponseReader< ::dhnet::ListLobbiesResponse>* AdminService::Stub::PrepareAsyncListLobbiesRaw(::grpc::ClientContext* context, const ::dhnet::ListLobbiesRequest& request, ::grpc::CompletionQueue* cq) {
+  return ::grpc::internal::ClientAsyncResponseReaderHelper::Create< ::dhnet::ListLobbiesResponse, ::dhnet::ListLobbiesRequest, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(channel_.get(), cq, rpcmethod_ListLobbies_, context, request);
+}
+
+::grpc::ClientAsyncResponseReader< ::dhnet::ListLobbiesResponse>* AdminService::Stub::AsyncListLobbiesRaw(::grpc::ClientContext* context, const ::dhnet::ListLobbiesRequest& request, ::grpc::CompletionQueue* cq) {
+  auto* result =
+    this->PrepareAsyncListLobbiesRaw(context, request, cq);
+  result->StartCall();
+  return result;
+}
+
 AdminService::Service::Service() {
   AddMethod(new ::grpc::internal::RpcServiceMethod(
       AdminService_method_names[0],
@@ -140,6 +215,36 @@ AdminService::Service::Service() {
              ::dhnet::BroadcastResponse* resp) {
                return service->Broadcast(ctx, req, resp);
              }, this)));
+  AddMethod(new ::grpc::internal::RpcServiceMethod(
+      AdminService_method_names[3],
+      ::grpc::internal::RpcMethod::NORMAL_RPC,
+      new ::grpc::internal::RpcMethodHandler< AdminService::Service, ::dhnet::ListPlayersRequest, ::dhnet::ListPlayersResponse, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(
+          [](AdminService::Service* service,
+             ::grpc::ServerContext* ctx,
+             const ::dhnet::ListPlayersRequest* req,
+             ::dhnet::ListPlayersResponse* resp) {
+               return service->ListPlayers(ctx, req, resp);
+             }, this)));
+  AddMethod(new ::grpc::internal::RpcServiceMethod(
+      AdminService_method_names[4],
+      ::grpc::internal::RpcMethod::NORMAL_RPC,
+      new ::grpc::internal::RpcMethodHandler< AdminService::Service, ::dhnet::KickPlayerRequest, ::dhnet::KickPlayerResponse, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(
+          [](AdminService::Service* service,
+             ::grpc::ServerContext* ctx,
+             const ::dhnet::KickPlayerRequest* req,
+             ::dhnet::KickPlayerResponse* resp) {
+               return service->KickPlayer(ctx, req, resp);
+             }, this)));
+  AddMethod(new ::grpc::internal::RpcServiceMethod(
+      AdminService_method_names[5],
+      ::grpc::internal::RpcMethod::NORMAL_RPC,
+      new ::grpc::internal::RpcMethodHandler< AdminService::Service, ::dhnet::ListLobbiesRequest, ::dhnet::ListLobbiesResponse, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(
+          [](AdminService::Service* service,
+             ::grpc::ServerContext* ctx,
+             const ::dhnet::ListLobbiesRequest* req,
+             ::dhnet::ListLobbiesResponse* resp) {
+               return service->ListLobbies(ctx, req, resp);
+             }, this)));
 }
 
 AdminService::Service::~Service() {
@@ -160,6 +265,27 @@ AdminService::Service::~Service() {
 }
 
 ::grpc::Status AdminService::Service::Broadcast(::grpc::ServerContext* context, const ::dhnet::BroadcastRequest* request, ::dhnet::BroadcastResponse* response) {
+  (void) context;
+  (void) request;
+  (void) response;
+  return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+}
+
+::grpc::Status AdminService::Service::ListPlayers(::grpc::ServerContext* context, const ::dhnet::ListPlayersRequest* request, ::dhnet::ListPlayersResponse* response) {
+  (void) context;
+  (void) request;
+  (void) response;
+  return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+}
+
+::grpc::Status AdminService::Service::KickPlayer(::grpc::ServerContext* context, const ::dhnet::KickPlayerRequest* request, ::dhnet::KickPlayerResponse* response) {
+  (void) context;
+  (void) request;
+  (void) response;
+  return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+}
+
+::grpc::Status AdminService::Service::ListLobbies(::grpc::ServerContext* context, const ::dhnet::ListLobbiesRequest* request, ::dhnet::ListLobbiesResponse* response) {
   (void) context;
   (void) request;
   (void) response;

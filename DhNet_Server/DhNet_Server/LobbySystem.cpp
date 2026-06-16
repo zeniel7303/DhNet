@@ -41,3 +41,9 @@ std::shared_ptr<Lobby> LobbySystem::AssignLobby()
 
 	return nullptr;
 }
+
+std::vector<std::shared_ptr<Lobby>> LobbySystem::GetLobbies()
+{
+	READ_LOCK
+	return m_lobbies;
+}

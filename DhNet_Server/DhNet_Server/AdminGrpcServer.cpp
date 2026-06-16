@@ -121,4 +121,43 @@ grpc::Status AdminServiceImpl::Broadcast(grpc::ServerContext*, const dhnet::Broa
     }
     return grpc::Status::OK;
 }
+
+grpc::Status AdminServiceImpl::ListPlayers(grpc::ServerContext*, const dhnet::ListPlayersRequest* req, dhnet::ListPlayersResponse* resp)
+{
+    std::string err;
+    bool ok = AdminListPlayers(req, resp, err);
+    if (!ok)
+    {
+        return grpc::Status(grpc::StatusCode::DEADLINE_EXCEEDED, err);
+    }
+    return grpc::Status::OK;
+}
+
+grpc::Status AdminServiceImpl::KickPlayer(grpc::ServerContext*, const dhnet::KickPlayerRequest* req, dhnet::KickPlayerResponse* resp)
+{
+    std::string err;
+    bool ok = AdminKickPlayer(req, resp, err);
+    if (!ok)
+    {
+        resp->set_success(false);
+        resp->set_detail(err);
+        return grpc::Status(grpc::StatusCode::DEADLINE_EXCEEDED, err);
+    }
+    if (!resp->success())
+    {
+        return grpc::Status(grpc::StatusCode::NOT_FOUND, resp->detail());
+    }
+    return grpc::Status::OK;
+}
+
+grpc::Status AdminServiceImpl::ListLobbies(grpc::ServerContext*, const dhnet::ListLobbiesRequest* req, dhnet::ListLobbiesResponse* resp)
+{
+    std::string err;
+    bool ok = AdminListLobbies(req, resp, err);
+    if (!ok)
+    {
+        return grpc::Status(grpc::StatusCode::DEADLINE_EXCEEDED, err);
+    }
+    return grpc::Status::OK;
+}
 #endif

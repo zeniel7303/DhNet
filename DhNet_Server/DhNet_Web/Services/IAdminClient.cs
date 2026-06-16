@@ -1,4 +1,4 @@
-#pragma warning disable CS1591 // °ø°³µÈ Çü½Ä ¶Ç´Â ¸â¹ö¿¡ ´ëÇÑ XML ÁÖ¼®ÀÌ ¾ø½À´Ï´Ù.
+#pragma warning disable CS1591 // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ç´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ XML ï¿½Ö¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½.
 
 namespace DhNet.Web.Services;
 
@@ -6,9 +6,16 @@ public record HealthDto(string Status);
 
 public record RoomDto(long Id, string Name, int PlayerCount, int Capacity);
 
+public record PlayerDto(ulong Id, string Name, int LobbyIndex, int RoomIndex);
+
+public record LobbyDto(int Id, int PlayerCount, int Capacity);
+
 public interface IAdminClient
 {
     Task<HealthDto> HealthCheckAsync(CancellationToken ct);
     Task<IReadOnlyList<RoomDto>> ListRoomsAsync(CancellationToken ct);
     Task<bool> BroadcastAsync(long roomId, string message, CancellationToken ct);
+    Task<IReadOnlyList<PlayerDto>> ListPlayersAsync(CancellationToken ct);
+    Task<bool> KickPlayerAsync(ulong id, CancellationToken ct);
+    Task<IReadOnlyList<LobbyDto>> ListLobbiesAsync(CancellationToken ct);
 }

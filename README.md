@@ -16,6 +16,7 @@ Windows IOCP 기반 C++ 멀티플레이어 게임 서버 프레임워크.
 | DB | MySQL 8.0 (C API) |
 | 암호화 | OpenSSL (PBKDF2-SHA256 인증, AES-128-GCM + ECDH P-256 세션 암호화) |
 | Admin IPC | gRPC / Protocol Buffers |
+| Admin REST | ASP.NET Core 8 (REST 게이트웨이) |
 | 패키지 관리 | vcpkg |
 | 빌드 | Visual Studio 2026 / MSBuild |
 | 컨테이너 | Docker (MySQL) |
@@ -47,7 +48,13 @@ Windows IOCP 기반 C++ 멀티플레이어 게임 서버 프레임워크.
 │  DbConnectionPool (MySQL C API) + Worker Thread     │
 ├─────────────────────────────────────────────────────┤
 │              Admin Layer (DhNet_Ipc)                │
-│  gRPC AdminService (port 7820)                      │
+│  gRPC AdminService (port 7778)                      │
+│               ↑ gRPC (내부 전용)                    │
+├─────────────────────────────────────────────────────┤
+│         Admin REST Gateway (DhNet_Web)              │
+│  ASP.NET Core 8, Kestrel (port 8080)                │
+│  GET /players · POST /players/{id}/kick             │
+│  GET /lobbies · GET /rooms · GET /health            │
 └─────────────────────────────────────────────────────┘
 ```
 
@@ -77,6 +84,10 @@ DhNet/
 │   ├── DhNet_Ipc/           # gRPC Admin 인터페이스
 │   │   ├── dhnet.proto
 │   │   └── generated/       # protoc 생성 파일
+│   ├── DhNet_Web/           # ASP.NET Core REST 게이트웨이
+│   │   ├── Controllers/     # PlayersController, LobbiesController, RoomsController
+│   │   ├── Services/        # IAdminClient / GrpcAdminClient
+│   │   └── Program.cs
 │   └── DhNet_Server/        # 게임 서버 로직
 │       ├── GameServer        # 싱글톤, 시스템 컨테이너
 │       ├── ServerSetting     # 환경변수 기반 서버 설정
@@ -104,6 +115,33 @@ DhNet/
 ├── external/vcpkg           # 패키지 매니저 (서브모듈)
 ├── vcpkg.json               # 의존성 정의
 └── Binary/                  # 빌드 결과물
+```
+
+---
+
+## Admin REST API
+
+`DhNet_Web` (ASP.NET Core 8)이 gRPC AdminService 앞단에서 REST 게이트웨이 역할을 합니다.  
+기본 주소: `http://127.0.0.1:8080`
+
+| 메서드 | 경로 | 설명 |
+|--------|------|------|
+| `GET`  | `/health` | 서버 상태 확인 |
+| `GET`  | `/players` | 접속 중인 플레이어 전체 목록 |
+| `POST` | `/players/{id}/kick` | 플레이어 강제 퇴장 |
+| `GET`  | `/lobbies` | 전체 로비 목록 (playerCount / capacity) |
+| `GET`  | `/rooms` | 활성화된 룸 목록 |
+
+### 실행
+
+```powershell
+# 1. 게임 서버 (gRPC 포트 7778로 기동)
+$env:DhNet_GRPC_ADDRESS = "127.0.0.1:7778"
+.\Binary\Debug\DhNet_Server.exe
+
+# 2. REST 게이트웨이
+cd DhNet_Server\DhNet_Web
+dotnet run
 ```
 
 ---
@@ -335,29 +373,19 @@ Copy-Item "DhNet_Server\ServerCore\x64\Debug\ServerCore.lib" "DhNet_Server\x64\D
 
 ### 런타임 DLL 배포
 
-빌드 후 `Binary\Debug\`에 다음 DLL을 복사해야 합니다.
+`Binary\Debug\` 에 필요한 DLL이 이미 커밋되어 있으므로 별도 복사가 불필요합니다.
 
-```powershell
-$vcpkg_dbg = "external\vcpkg\installed\x64-windows\debug\bin"
-$vcpkg_rel = "external\vcpkg\installed\x64-windows\bin"
-$dest = "Binary\Debug"
+포함된 DLL: `abseil_dll`, `cares`, `libcrypto-3-x64`, `libssl-3-x64`, `libprotobufd`, `re2`, `zd`, `zstd`, `zlibd1`, `libmysql`
 
-# gRPC / Protobuf / 기타 의존성
-Copy-Item "$vcpkg_dbg\abseil_dll.dll"       $dest
-Copy-Item "$vcpkg_dbg\cares.dll"            $dest
-Copy-Item "$vcpkg_dbg\libcrypto-3-x64.dll" $dest
-Copy-Item "$vcpkg_dbg\libssl-3-x64.dll"    $dest
-Copy-Item "$vcpkg_dbg\lz4d.dll"            $dest
-Copy-Item "$vcpkg_dbg\re2.dll"             $dest
-Copy-Item "$vcpkg_dbg\zd.dll"              $dest
-Copy-Item "$vcpkg_dbg\zstd.dll"            $dest
-
-# libmysql (release bin에서 복사)
-Copy-Item "$vcpkg_rel\libmysql.dll"         $dest
-```
-
-> **참고**: boost DLL (`boost_atomic-*.dll` 등)은 libmysql의 트랜지티브 의존성입니다.
-> 로컬 개발 환경에서는 vcpkg 설치 경로에서 자동 로드되지만, 다른 PC에 배포할 때는 `external\vcpkg\installed\x64-windows\debug\bin\boost_*.dll`도 함께 복사해야 합니다.
+> **vcpkg 패키지를 재설치·업그레이드한 경우** 빌드된 exe와 DLL 버전이 맞지 않아 `STATUS_ENTRYPOINT_NOT_FOUND`가 발생할 수 있습니다. 이때는 아래 스크립트로 재동기화 후 커밋하세요.
+>
+> ```powershell
+> $src  = "external\vcpkg\installed\x64-windows\debug\bin"
+> $dest = "Binary\Debug"
+> @("abseil_dll","cares","libcrypto-3-x64","libssl-3-x64",
+>   "libprotobufd","re2","zd","zstd","libmysql") |
+>   ForEach-Object { Copy-Item "$src\$_.dll" $dest }
+> ```
 
 ### MySQL Docker 시작
 
@@ -412,5 +440,5 @@ WHERE username = 'testuser';
 | Phase 1 | 로비/룸 시스템, 동적 클러스터링, 채팅 | ✅ 완료 |
 | Phase 2 | MySQL C API ConnectionPool, PBKDF2-SHA256 인증 | ✅ 완료 |
 | Phase 3 | OpenSSL AES-128-GCM 패킷 암호화 (ECDH P-256 키 교환) | ✅ 완료 |
-| Phase 4 | cpp-httplib REST API (관리 엔드포인트) | 예정 |
+| Phase 4 | gRPC AdminService 확장 + ASP.NET Core REST 게이트웨이 (players / kick / lobbies / rooms) | ✅ 완료 |
 | Phase 5 | 부하 테스트 인프라 (시나리오 기반 스트레스 테스트) | 예정 |
