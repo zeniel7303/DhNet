@@ -16,7 +16,7 @@ void PlayerSystem::Add(std::shared_ptr<Player> _player)
 void PlayerSystem::Remove(std::shared_ptr<Player> _player)
 {
 	WRITE_LOCK
-	m_players.unsafe_erase(_player->GetPlayerId());
+	m_players.erase(_player->GetPlayerId());
 }
 
 std::shared_ptr<Player> PlayerSystem::Find(uint64 _id)
