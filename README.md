@@ -60,9 +60,10 @@ Windows IOCP 기반 C++ 멀티플레이어 게임 서버 프레임워크.
 
 ### 동시성 모델
 
-- **JobQueue 직렬화** — `Lobby`, `Room`은 `JobQueue`를 상속하며 내부 상태를 단일 워커 스레드에서 순차 처리합니다. 외부에서는 반드시 `DoAsync()`로 호출합니다.
+- **N개 워커 스레드 통합 풀** — IOCP 전담/로직 전담 구분 없이 `hardware_concurrency`개의 워커가 동일한 루프(`IocpCore::Dispatch` → `DoGlobalQueueWork`)를 반복합니다. IOCP 완료 이벤트와 GlobalQueue 작업 모두 같은 풀에서 처리됩니다.
+- **JobQueue 직렬화** — `Lobby`, `Room`은 `JobQueue`를 상속하며 내부 상태를 한 번에 하나의 워커 스레드가 순차 처리합니다 (고정 스레드가 아니라 GlobalQueue에서 꺼내는 쪽이 실행). 외부에서는 반드시 `DoAsync()`로 호출합니다.
 - **RW SpinLock** — `PlayerSystem`, `LobbySystem` 등 여러 스레드가 공유하는 컨테이너는 `USE_LOCK` / `READ_LOCK` / `WRITE_LOCK` 매크로로 보호합니다.
-- **DB 비동기 처리** — 네트워크 스레드에서 DB를 직접 호출하지 않습니다. `DbSystem`의 전용 워커 스레드 풀이 쿼리를 실행하고, 결과는 `PushGlobalQueue`로 IOCP 스레드에 복귀합니다.
+- **DB 비동기 처리** — 워커 스레드에서 DB를 직접 호출하지 않습니다. `DbSystem`의 전용 워커 스레드 풀이 쿼리를 실행하고, 결과는 `PushGlobalQueue`로 워커 스레드 풀에 복귀합니다.
 
 ---
 
