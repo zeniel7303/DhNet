@@ -22,47 +22,58 @@ bool AdminHealthCheck(dhnet::HealthCheckResponse* resp)
 
 bool AdminListRooms(const dhnet::ListRoomsRequest* /*req*/, dhnet::ListRoomsResponse* resp, std::string& err)
 {
-    return DispatchToLogicThreadWithTimeout([resp]() -> bool {
-        if (!resp) return false;
+    struct RoomEntry { int64_t id; std::string name; int32 playerCount; int32 capacity; };
+    auto result = std::make_shared<std::vector<RoomEntry>>();
 
+    bool ok = DispatchToLogicThreadWithTimeout([result]() -> bool {
         auto rooms = GameServer::Instance().GetSystem<RoomSystem>()->GetRooms();
-        if (rooms.empty()) return false;
+        if (rooms.empty()) return true;
 
         for (const auto& kv : rooms)
         {
             const auto& room = kv.second;
             if (!room) continue;
 
-            dhnet::RoomInfo* r = resp->add_rooms();
-            const auto id = static_cast<int64_t>(room->GetRoomIndex());
-            r->set_id(id);
-            r->set_name("room-" + std::to_string(id));
-            r->set_playercount(room->GetPlayerCount());
-            r->set_capacity(MAX_ROOM_PLAYER);
+            const int64_t id = room->GetRoomIndex();
+            result->push_back({ id, "room-" + std::to_string(id), room->GetPlayerCount(), MAX_ROOM_PLAYER });
         }
         return true;
     }, std::chrono::milliseconds(1000), err);
+
+    if (!ok) return false;
+
+    for (const auto& e : *result)
+    {
+        dhnet::RoomInfo* r = resp->add_rooms();
+        r->set_id(e.id);
+        r->set_name(e.name);
+        r->set_playercount(e.playerCount);
+        r->set_capacity(e.capacity);
+    }
+    return true;
 }
 
 bool AdminBroadcast(const dhnet::BroadcastRequest* req, dhnet::BroadcastResponse* resp, std::string& err)
 {
-    const auto roomId = req ? req->roomid() : 0;
+    const auto roomId  = req ? req->roomid()  : 0;
     const auto message = req ? req->message() : std::string();
 
-    return DispatchToLogicThreadWithTimeout([roomId, message, resp]() -> bool {
-        if (!resp) return false;
+    struct BroadcastResult { bool success; std::string detail; };
+    auto result = std::make_shared<BroadcastResult>();
+
+    bool ok = DispatchToLogicThreadWithTimeout([roomId, message, result]() -> bool {
         if (message.empty())
         {
-            resp->set_success(false);
-            resp->set_detail("Message is empty");
+            result->success = false;
+            result->detail  = "Message is empty";
             return true;
         }
 
         auto room = GameServer::Instance().GetSystem<RoomSystem>()->GetRoom(static_cast<int32>(roomId));
         if (!room)
         {
-            resp->set_success(false);
-            resp->set_detail("Room not available");
+            result->success = false;
+            result->detail  = "Room not available";
             return true;
         }
 
@@ -70,81 +81,107 @@ bool AdminBroadcast(const dhnet::BroadcastRequest* req, dhnet::BroadcastResponse
         senderAndPacket.first->Init(0, "ADMIN", message.c_str());
         room->DoAsync(room, &Room::Broadcast, senderAndPacket.second);
 
-        resp->set_success(true);
-        resp->set_detail("OK");
+        result->success = true;
+        result->detail  = "OK";
         return true;
     }, std::chrono::milliseconds(1500), err);
+
+    if (!ok) return false;
+
+    resp->set_success(result->success);
+    resp->set_detail(result->detail);
+    return true;
 }
 
 bool AdminListPlayers(const dhnet::ListPlayersRequest* /*req*/, dhnet::ListPlayersResponse* resp, std::string& err)
 {
-    return DispatchToLogicThreadWithTimeout([resp]() -> bool {
-        if (!resp) return false;
+    struct PlayerEntry { uint64 id; std::string name; int32 lobbyIndex; int32 roomIndex; };
+    auto result = std::make_shared<std::vector<PlayerEntry>>();
 
+    bool ok = DispatchToLogicThreadWithTimeout([result]() -> bool {
         auto players = GameServer::Instance().GetSystem<PlayerSystem>()->GetPlayers();
         for (const auto& player : players)
         {
             if (!player) continue;
-
-            dhnet::PlayerInfo* p = resp->add_players();
-            p->set_id(player->GetPlayerId());
-            p->set_name(player->GetPlayerName());
-
-            int32 lobbyIndex = -1;
-            if (auto lobby = player->GetCurrentLobby().lock())
-                lobbyIndex = lobby->GetLobbyIndex();
-            p->set_lobbyindex(lobbyIndex);
-
-            int32 roomIndex = -1;
-            if (auto room = player->GetCurrentRoom().lock())
-                roomIndex = room->GetRoomIndex();
-            p->set_roomindex(roomIndex);
+            result->push_back({
+                player->GetPlayerId(),
+                player->GetPlayerName(),
+                player->GetCurrentLobbyIndex(),
+                player->GetCurrentRoomIndex()
+            });
         }
         return true;
     }, std::chrono::milliseconds(1000), err);
+
+    if (!ok) return false;
+
+    for (const auto& e : *result)
+    {
+        dhnet::PlayerInfo* p = resp->add_players();
+        p->set_id(e.id);
+        p->set_name(e.name);
+        p->set_lobbyindex(e.lobbyIndex);
+        p->set_roomindex(e.roomIndex);
+    }
+    return true;
 }
 
 bool AdminKickPlayer(const dhnet::KickPlayerRequest* req, dhnet::KickPlayerResponse* resp, std::string& err)
 {
     const auto playerId = req ? req->id() : 0;
 
-    return DispatchToLogicThreadWithTimeout([playerId, resp]() -> bool {
-        if (!resp) return false;
+    struct KickResult { bool success; std::string detail; };
+    auto result = std::make_shared<KickResult>();
 
+    bool ok = DispatchToLogicThreadWithTimeout([playerId, result]() -> bool {
         auto player = GameServer::Instance().GetSystem<PlayerSystem>()->Find(playerId);
         if (!player)
         {
-            resp->set_success(false);
-            resp->set_detail("Player not found");
+            result->success = false;
+            result->detail  = "Player not found";
             return true;
         }
 
         if (auto session = player->GetOwnerSession())
             session->Disconnect(L"Kicked by admin");
 
-        resp->set_success(true);
-        resp->set_detail("OK");
+        result->success = true;
+        result->detail  = "OK";
         return true;
     }, std::chrono::milliseconds(1000), err);
+
+    if (!ok) return false;
+
+    resp->set_success(result->success);
+    resp->set_detail(result->detail);
+    return true;
 }
 
 bool AdminListLobbies(const dhnet::ListLobbiesRequest* /*req*/, dhnet::ListLobbiesResponse* resp, std::string& err)
 {
-    return DispatchToLogicThreadWithTimeout([resp]() -> bool {
-        if (!resp) return false;
+    struct LobbyEntry { int32 id; int32 playerCount; int32 capacity; };
+    auto result = std::make_shared<std::vector<LobbyEntry>>();
 
+    bool ok = DispatchToLogicThreadWithTimeout([result]() -> bool {
         auto lobbies = GameServer::Instance().GetSystem<LobbySystem>()->GetLobbies();
         for (const auto& lobby : lobbies)
         {
             if (!lobby) continue;
-
-            dhnet::LobbyInfo* l = resp->add_lobbies();
-            l->set_id(lobby->GetLobbyIndex());
-            l->set_playercount(lobby->GetPlayerCount());
-            l->set_capacity(MAX_LOBBY_PLAYERS);
+            result->push_back({ lobby->GetLobbyIndex(), lobby->GetPlayerCount(), MAX_LOBBY_PLAYERS });
         }
         return true;
     }, std::chrono::milliseconds(1000), err);
+
+    if (!ok) return false;
+
+    for (const auto& e : *result)
+    {
+        dhnet::LobbyInfo* l = resp->add_lobbies();
+        l->set_id(e.id);
+        l->set_playercount(e.playerCount);
+        l->set_capacity(e.capacity);
+    }
+    return true;
 }
 
 #endif
