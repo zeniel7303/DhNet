@@ -232,26 +232,33 @@ void Session::ProcessRecv(int32 _numOfBytes)
 		return;
 	}
 
-	while (1)
+	while (true)
 	{
-		auto packet = reinterpret_cast<PacketHeader*>(m_recvBuffer.ReadPos());
-		if (m_recvBuffer.DataSize() >= packet->m_dataSize)
-		{
-			// 컨텐츠 코드에서 재정의
-			auto result = OnRecv(packet);
-			if (result == false)
-			{
-				Disconnect(L"OnRead Error");
-			}
+		if (m_recvBuffer.DataSize() < sizeof(PacketHeader))
+			break;
 
-			if (m_recvBuffer.OnRead(packet->m_dataSize) == false)
-			{
-				Disconnect(L"OnRead Overflow");
-				return;
-			}
+		auto packet = reinterpret_cast<PacketHeader*>(m_recvBuffer.ReadPos());
+
+		if (packet->m_dataSize < sizeof(PacketHeader))
+		{
+			Disconnect(L"Invalid Packet Size");
+			return;
 		}
 
-		break;
+		if (m_recvBuffer.DataSize() < packet->m_dataSize)
+			break;
+
+		if (OnRecv(packet) == false)
+		{
+			Disconnect(L"OnRead Error");
+			return;
+		}
+
+		if (m_recvBuffer.OnRead(packet->m_dataSize) == false)
+		{
+			Disconnect(L"OnRead Overflow");
+			return;
+		}
 	}
 
 	// 커서 정리
