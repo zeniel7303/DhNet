@@ -5,7 +5,7 @@ void Room::Enter(std::shared_ptr<Player> _player)
 {
 	if (static_cast<int32>(m_players.size()) >= MAX_ROOM_PLAYER)
 	{
-		// ÀÌ °÷¿¡ µé¾î¿À±â Àü¿¡ TryReserveSlot´Â ¹«Á¶°Ç ½ÇÇàµÈ´Ù´Â °¡Á¤ ÇÏ¿¡ ReleaseReservedSlot È£Ãâ
+		// ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ TryReserveSlotï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½È´Ù´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ï¿ï¿½ ReleaseReservedSlot È£ï¿½ï¿½
 		ReleaseReservedSlot();
 		_player->EnterRoomFailed();
 		return;
@@ -14,7 +14,7 @@ void Room::Enter(std::shared_ptr<Player> _player)
 	auto [it, result] = m_players.try_emplace(_player->GetPlayerId(), _player);
 	if (!result)
 	{
-		// ÀÌ °÷¿¡ µé¾î¿À±â Àü¿¡ TryReserveSlot´Â ¹«Á¶°Ç ½ÇÇàµÈ´Ù´Â °¡Á¤ ÇÏ¿¡ ReleaseReservedSlot È£Ãâ
+		// ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ TryReserveSlotï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½È´Ù´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ï¿ï¿½ ReleaseReservedSlot È£ï¿½ï¿½
 		ReleaseReservedSlot();
 		_player->EnterRoomFailed();
 		return;
@@ -43,7 +43,8 @@ void Room::Broadcast(std::shared_ptr<Sender> _sender)
 {
 	for (auto& p : m_players)
 	{
-		p.second->GetOwnerSession()->Send(_sender);
+		if (auto session = p.second->GetOwnerSession())
+			session->Send(_sender);
 	}
 }
 

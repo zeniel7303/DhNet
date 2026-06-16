@@ -9,7 +9,7 @@ class Player : public std::enable_shared_from_this<Player>
 private:
 	uint64							m_playerId = 0;
 	std::string						m_name;
-	std::shared_ptr<GameSession>	m_ownerSession;
+	std::weak_ptr<GameSession>		m_ownerSession;
 	std::weak_ptr<Room>				m_currentRoom;
 	std::weak_ptr<Lobby>			m_currentLobby;
 	std::atomic<int32>				m_currentLobbyIndex{ -1 };
@@ -31,7 +31,7 @@ public:
 
 	uint64 GetPlayerId()							{ return m_playerId; }
 	std::string GetPlayerName()						{ return m_name; }
-	std::shared_ptr<GameSession> GetOwnerSession()	{ return m_ownerSession; }
+	std::shared_ptr<GameSession> GetOwnerSession()	{ return m_ownerSession.lock(); }
 	std::weak_ptr<Room> GetCurrentRoom()			{ return m_currentRoom; }
 	std::weak_ptr<Lobby> GetCurrentLobby()			{ return m_currentLobby; }
 	int32 GetCurrentLobbyIndex() const				{ return m_currentLobbyIndex.load(std::memory_order_relaxed); }

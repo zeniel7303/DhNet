@@ -56,7 +56,8 @@ void Lobby::Broadcast(std::shared_ptr<Sender> _sender)
 {
 	for (auto& [id, player] : m_players)
 	{
-		player->GetOwnerSession()->Send(_sender);
+		if (auto session = player->GetOwnerSession())
+			session->Send(_sender);
 	}
 }
 
