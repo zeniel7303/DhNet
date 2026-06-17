@@ -5,11 +5,6 @@
 
 void Lobby::Enter(std::shared_ptr<Player> _player)
 {
-	// 기존 멤버에게만 신규 입장 알림 (try_emplace 전 브로드캐스트)
-	auto notiSender = Sender::GetSenderAndPacket<NotiLobbyPlayerEnter>();
-	notiSender.first->Init(_player->GetPlayerId(), _player->GetPlayerName().c_str());
-	Broadcast(notiSender.second);
-
 	auto [it, result] = m_players.try_emplace(_player->GetPlayerId(), _player);
 	if (!result)
 	{
@@ -21,7 +16,23 @@ void Lobby::Enter(std::shared_ptr<Player> _player)
 	_player->SetCurrentLobby(self);
 
 	auto session = _player->GetOwnerSession();
-	if (!session) return;
+	if (!session)
+	{
+		// Enter 실행 전 연결이 끊긴 경우: 아직 알림 미전송이므로 조용히 정리
+		m_players.erase(_player->GetPlayerId());
+		ReleaseReservedSlot();
+		return;
+	}
+
+	// 세션 유효성 확인 후 기존 멤버에게만 입장 알림 (신규 플레이어 본인 제외)
+	auto notiSender = Sender::GetSenderAndPacket<NotiLobbyPlayerEnter>();
+	notiSender.first->Init(_player->GetPlayerId(), _player->GetPlayerName().c_str());
+	for (auto& [id, player] : m_players)
+	{
+		if (id == _player->GetPlayerId()) continue;
+		if (auto sess = player->GetOwnerSession())
+			sess->Send(notiSender.second);
+	}
 
 	auto senderAndPacket = Sender::GetSenderAndPacket<ResLobbyEnter>();
 	senderAndPacket.first->Init(m_lobbyIndex);

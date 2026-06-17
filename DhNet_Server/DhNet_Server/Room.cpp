@@ -22,6 +22,15 @@ void Room::Enter(std::shared_ptr<Player> _player)
 
 	const auto self = std::static_pointer_cast<Room>(shared_from_this());
 	_player->SetCurrentRoom(self);
+
+	if (!_player->GetOwnerSession())
+	{
+		// Enter 실행 전 연결이 끊긴 경우: 맵·슬롯 정리 (NotiRoomEnter는 아직 미전송이므로 보상 불필요)
+		m_players.erase(_player->GetPlayerId());
+		ReleaseReservedSlot();
+		return;
+	}
+
 	_player->EnterRoom();
 
 	std::cout << m_players.size() << std::endl;
