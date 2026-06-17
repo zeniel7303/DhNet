@@ -58,9 +58,8 @@ DhNet_Server/.idea
 x64/
 x86/
 
-# Claude Code
-.claude/
-CLAUDE.md
+# Claude Code (세션 캐시만 제외)
+.claude/build-cache/
 
 # vcpkg installed packages
 vcpkg_installed/
