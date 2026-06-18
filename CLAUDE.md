@@ -84,7 +84,7 @@ dotnet build DhNet_Server/DhNet_Web/DhNet_Web.csproj
 `DhNet_Server/DhNet_Ipc/tools/generate_protos.ps1` 실행. `.proto` 수정 시 C++ generated 파일(`dhnet.pb.cc/h`, `dhnet.grpc.pb.cc/h`)도 함께 재생성 필요.
 
 ### 런타임 DLL
-`Binary/Debug/`에 필요: abseil_dll, cares, libcrypto-3-x64, libprotobufd, libssl-3-x64, re2, zlibd1, libmysql, zd, zstd  
+`Binary/Debug/`에 필요: abseil_dll, cares, libcrypto-3-x64, libprotobufd, libssl-3-x64, re2, zlibd1, libmysql, zd, zstd, spdlogd, fmtd  
 vcpkg 업데이트 후 DLL 교체 필요.
 
 ## 코딩 컨벤션

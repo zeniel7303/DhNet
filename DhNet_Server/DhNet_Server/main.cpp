@@ -8,7 +8,7 @@ static void CheckAllEnv(char** envp)
 	for (char** env = envp; *env != 0; env++)
 	{
 		char* thisEnv = *env;
-		printf("%s\n", thisEnv);
+		LOG_DEBUG("{}", thisEnv);
 	}
 #endif
 }

@@ -1,8 +1,11 @@
 using System.Net;
 using DhNet.Web.Services;
-using Microsoft.AspNetCore.HttpLogging;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Host.UseSerilog((context, config) =>
+    config.ReadFrom.Configuration(context.Configuration));
 
 // Bind only to localhost
 builder.WebHost.UseKestrel(options =>
@@ -14,22 +17,15 @@ builder.WebHost.UseKestrel(options =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddHttpLogging(o =>
-{
-    o.LoggingFields = HttpLoggingFields.RequestMethod |
-                      HttpLoggingFields.RequestPath |
-                      HttpLoggingFields.ResponseStatusCode;
-});
-
-builder.Services.AddSingleton<IAdminClient>(_ =>
-    new GrpcAdminClient("http://127.0.0.1:7778"));
+builder.Services.AddSingleton<IAdminClient>(sp =>
+    new GrpcAdminClient("http://127.0.0.1:7778", sp.GetRequiredService<ILogger<GrpcAdminClient>>()));
 
 // Controllers
 builder.Services.AddControllers();
 
 var app = builder.Build();
 
-app.UseHttpLogging();
+app.UseSerilogRequestLogging();
 
 app.UseSwagger();
 app.UseSwaggerUI();

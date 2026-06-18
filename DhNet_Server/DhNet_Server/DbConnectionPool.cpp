@@ -11,7 +11,7 @@ bool DbConnectionPool::Init(const std::string& host, int32 port, const std::stri
         MYSQL* conn = mysql_init(nullptr);
         if (!conn)
         {
-            std::cout << "[DbConnectionPool] mysql_init failed for connection " << i << "\n";
+            LOG_ERROR("[DbConnectionPool] mysql_init failed for connection {}", i);
             continue;
         }
 
@@ -26,15 +26,14 @@ bool DbConnectionPool::Init(const std::string& host, int32 port, const std::stri
                 connected = true;
                 break;
             }
-            std::cout << "[DbConnectionPool] Connect attempt " << (retry + 1)
-                      << " failed: " << mysql_error(conn) << "\n";
+            LOG_WARN("[DbConnectionPool] Connect attempt {} failed: {}", retry + 1, mysql_error(conn));
             if (retry < 2)
                 ::Sleep(200);
         }
 
         if (!connected)
         {
-            std::cout << "[DbConnectionPool] Warning: connection " << i << " unavailable, skipped\n";
+            LOG_WARN("[DbConnectionPool] connection {} unavailable, skipped", i);
             mysql_close(conn);
             continue;
         }
@@ -45,9 +44,9 @@ bool DbConnectionPool::Init(const std::string& host, int32 port, const std::stri
     }
 
     if (_poolSize > 0)
-        std::cout << "[DbConnectionPool] Initialized with " << _poolSize << " connections\n";
+        LOG_INFO("[DbConnectionPool] Initialized with {} connections", _poolSize);
     else
-        std::cout << "[DbConnectionPool] Warning: no DB connections established\n";
+        LOG_ERROR("[DbConnectionPool] no DB connections established");
 
     return _poolSize > 0;
 }
@@ -68,7 +67,7 @@ MYSQL* DbConnectionPool::Acquire()
     WRITE_LOCK;
     if (_connections.empty())
     {
-        std::cout << "[DbConnectionPool] Warning: pool exhausted, returning nullptr\n";
+        LOG_WARN("[DbConnectionPool] pool exhausted, returning nullptr");
         return nullptr;
     }
     MYSQL* conn = _connections.front();

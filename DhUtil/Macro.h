@@ -1,6 +1,19 @@
 #pragma once
 
+#include "Logger.h"
+
 #define OUT
+
+/*----------------------------
+			 Log
+------------------------------*/
+
+#define LOG_TRACE(...)		GLogger->trace(__VA_ARGS__)
+#define LOG_DEBUG(...)		GLogger->debug(__VA_ARGS__)
+#define LOG_INFO(...)		GLogger->info(__VA_ARGS__)
+#define LOG_WARN(...)		GLogger->warn(__VA_ARGS__)
+#define LOG_ERROR(...)		GLogger->error(__VA_ARGS__)
+#define LOG_CRITICAL(...)	GLogger->critical(__VA_ARGS__)
 
 /*----------------------------
 			 Lock
@@ -19,6 +32,8 @@
 
 #define CRASH(cause)					\
 {										\
+	LOG_CRITICAL("CRASH: {} ({}:{})", cause, __FILE__, __LINE__); \
+	LoggerShutdown();					\
 	unsigned __int32* crash = nullptr;	\
 	__analysis_assume(crash != nullptr);\
 	*crash = 0xDEADBEEF;				\

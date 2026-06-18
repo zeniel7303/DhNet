@@ -63,8 +63,7 @@ void Session::Disconnect(const WCHAR* _cause)
 if (m_connected.exchange(false) == false)  
 	return;  
 
-	// TEMP  
-	std::wcout << L"Disconnect : " << std::wstring(_cause) << std::endl;
+	LOG_DEBUG("Disconnect : {}", std::string(_cause, _cause + wcslen(_cause)));
 
 	OnDisconnected(); // 컨텐츠 코드에서 재정의  
 	GetService()->ReleaseSession(GetSessionRef());
@@ -303,8 +302,7 @@ void Session::HandleError(int32 _errorCode)
 		Disconnect(L"HandleError");
 		break;
 	default:
-		// TODO : Log
-		std::cout << "Handle Error : " << _errorCode << '\n';
+		LOG_WARN("[Session] Handle Error : {}", _errorCode);
 		break;
 	}
 }

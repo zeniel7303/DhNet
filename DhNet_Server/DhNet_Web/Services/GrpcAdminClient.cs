@@ -10,11 +10,13 @@ public sealed class GrpcAdminClient : IAdminClient, IDisposable
 {
     private readonly GrpcChannel _channel;
     private readonly AdminService.AdminServiceClient _client;
+    private readonly ILogger<GrpcAdminClient> _logger;
 
-    public GrpcAdminClient(string address)
+    public GrpcAdminClient(string address, ILogger<GrpcAdminClient> logger)
     {
         _channel = GrpcChannel.ForAddress(address);
         _client = new AdminService.AdminServiceClient(_channel);
+        _logger = logger;
     }
 
     public async Task<HealthDto> HealthCheckAsync(CancellationToken ct)
@@ -26,7 +28,7 @@ public sealed class GrpcAdminClient : IAdminClient, IDisposable
         }
         catch (RpcException ex)
         {
-            throw CreateHttpMappedException(ex);
+            throw CreateHttpMappedException(ex, nameof(HealthCheckAsync));
         }
     }
 
@@ -41,7 +43,7 @@ public sealed class GrpcAdminClient : IAdminClient, IDisposable
         }
         catch (RpcException ex)
         {
-            throw CreateHttpMappedException(ex);
+            throw CreateHttpMappedException(ex, nameof(ListRoomsAsync));
         }
     }
 
@@ -56,7 +58,7 @@ public sealed class GrpcAdminClient : IAdminClient, IDisposable
         }
         catch (RpcException ex)
         {
-            throw CreateHttpMappedException(ex);
+            throw CreateHttpMappedException(ex, nameof(ListPlayersAsync));
         }
     }
 
@@ -71,7 +73,7 @@ public sealed class GrpcAdminClient : IAdminClient, IDisposable
         }
         catch (RpcException ex)
         {
-            throw CreateHttpMappedException(ex);
+            throw CreateHttpMappedException(ex, nameof(KickPlayerAsync));
         }
     }
 
@@ -86,7 +88,7 @@ public sealed class GrpcAdminClient : IAdminClient, IDisposable
         }
         catch (RpcException ex)
         {
-            throw CreateHttpMappedException(ex);
+            throw CreateHttpMappedException(ex, nameof(ListLobbiesAsync));
         }
     }
 
@@ -101,14 +103,20 @@ public sealed class GrpcAdminClient : IAdminClient, IDisposable
         }
         catch (RpcException ex)
         {
-            throw CreateHttpMappedException(ex);
+            throw CreateHttpMappedException(ex, nameof(BroadcastAsync));
         }
     }
 
-    private static Exception CreateHttpMappedException(RpcException ex)
+    private Exception CreateHttpMappedException(RpcException ex, string methodName)
     {
         var code = ex.StatusCode;
         var msg = ex.Status.Detail;
+
+        if (code == StatusCode.DeadlineExceeded || code == StatusCode.Unavailable)
+            _logger.LogWarning(ex, "[GrpcAdminClient] {Method} failed: {Code} {Detail}", methodName, code, msg);
+        else
+            _logger.LogError(ex, "[GrpcAdminClient] {Method} failed: {Code} {Detail}", methodName, code, msg);
+
         return code switch
         {
             StatusCode.InvalidArgument => new ArgumentException(msg),

@@ -5,7 +5,7 @@ void DeadLockProfiler::PushLock(const char* _name)
 {
 	std::lock_guard<std::mutex> guard(m_lock);
 
-	// ¾ÆÀÌµğ¸¦ Ã£°Å³ª ¹ß±ŞÇÑ´Ù.
+	// ë½ IDë¥¼ ì°¾ê±°ë‚˜ ìƒˆë¡œ ë°œê¸‰í•œë‹¤.
 	int32 lockId = 0;
 
 	auto findIt = m_nameToId.find(_name);
@@ -20,10 +20,10 @@ void DeadLockProfiler::PushLock(const char* _name)
 		lockId = findIt->second;
 	}
 
-	// Àâ°í ÀÖ´Â ¶ôÀÌ ÀÖ¾ú´Ù¸é
+	// í˜„ì¬ ì¡ê³  ìˆëŠ” ë½ì´ ìˆë‹¤ë©´
 	if (LLockStack.empty() == false)
 	{
-		// ±âÁ¸¿¡ ¹ß°ßµÇÁö ¾ÊÀº ÄÉÀÌ½º¶ó¸é µ¥µå¶ô ¿©ºÎ ´Ù½Ã È®ÀÎÇÑ´Ù. (½ÎÀÌÅ¬ ÆÇº°)
+		// ìƒˆë¡œ ë°œê²¬ë˜ì§€ ì•Šì€ ì¼€ì´ìŠ¤ë¼ë©´ ì‚¬ì´í´ ì—¬ë¶€ë¥¼ ë‹¤ì‹œ í™•ì¸í•œë‹¤. (ì‹¸ì´í´ íŒë³„)
 		const int32 prevId = LLockStack.top();
 		if (lockId != prevId)
 		{
@@ -43,7 +43,7 @@ void DeadLockProfiler::PopLock(const char* _name)
 {
 	std::lock_guard<std::mutex> guard(m_lock);
 
-	// ±»ÀÌ ¾ø¾îµµ µÇ´Â ¹ö±× ¿¹¹æÂ÷¿ø ÄÚµåµé
+	// ë½ì´ ì¡í˜€ ìˆì§€ ì•Šì€ ìƒíƒœì—ì„œì˜ ì•ˆì „ì¥ì¹˜
 	{
 		if (LLockStack.empty()) CRASH("MULTIPLE_UNLOCK");
 
@@ -65,7 +65,7 @@ void DeadLockProfiler::CheckCycle()
 	for (int32 lockId = 0; lockId < lockCount; lockId++)
 		DFS(lockId);
 
-	// ¿¬»êÀÌ ³¡³µÀ¸¸é Á¤¸®ÇÑ´Ù.
+	// ì‚¬ì´í´ íƒìƒ‰ì´ ëë‚¬ìœ¼ë‹ˆ ìƒíƒœë¥¼ ì •ë¦¬í•œë‹¤.
 	m_discoveredOrder.clear();
 	m_finished.clear();
 	m_parent.clear();
@@ -78,7 +78,7 @@ void DeadLockProfiler::DFS(int32 _here)
 
 	m_discoveredOrder[_here] = m_discoveredCount++;
 
-	// ¸ğµç ÀÎÁ¢ÇÑ Á¤Á¡À» ¼øÈ¸ÇÑ´Ù.
+	// ì¸ì ‘í•œ ë½ë“¤ì„ ìˆœíšŒí•œë‹¤.
 	auto findIt = m_lockHistory.find(_here);
 	if (findIt == m_lockHistory.end())
 	{
@@ -89,7 +89,7 @@ void DeadLockProfiler::DFS(int32 _here)
 	std::set<int32>& nextSet = findIt->second;
 	for (int32 there : nextSet)
 	{
-		// ¾ÆÁ÷ ¹æ¹®ÇÑ ÀûÀÌ ¾ø´Ù¸é ¹æ¹®ÇÑ´Ù.
+		// ì•„ì§ ë°©ë¬¸í•˜ì§€ ì•Šì•˜ë‹¤ë©´ ë°©ë¬¸í•œë‹¤.
 		if (m_discoveredOrder[there] == -1)
 		{
 			m_parent[there] = _here;
@@ -97,20 +97,20 @@ void DeadLockProfiler::DFS(int32 _here)
 			continue;
 		}
 
-		// _here°¡ thereº¸´Ù ¸ÕÀú ¹ß°ßµÇ¾ú´Ù¸é, there´Â _hereÀÇ ÈÄ¼ÕÀÌ´Ù. (¼ø¹æÇâ °£¼±)
+		// _hereë³´ë‹¤ thereê°€ ë¨¼ì € ë°œê²¬ë˜ì—ˆë‹¤ë©´, thereëŠ” _hereì˜ ì¡°ìƒì´ë‹¤. (ì—­ë°©í–¥ ì—£ì§€)
 		if (m_discoveredOrder[_here] < m_discoveredOrder[there])
 			continue;
 
-		// ¼ø¹æÇâÀÌ ¾Æ´Ï´Ù.
-		// DFS(there)°¡ ¾ÆÁ÷ Á¾·áÇÏÁö ¾Ê¾Ò´Ù¸é, there´Â _hereÀÇ ¼±Á¶ÀÌ´Ù. (¿ª¹æÇâ °£¼±)
+		// ì¡°ìƒì´ ì•„ë‹ˆë‹¤.
+		// DFS(there)ê°€ ì•„ì§ ëë‚˜ì§€ ì•Šì•˜ë‹¤ë©´, thereëŠ” _hereì˜ í›„ì†ì´ë‹¤. (ìˆœë°©í–¥ ì—£ì§€)
 		if (m_finished[there] == false)
 		{
-			printf("%s -> %s \n", m_idToName[_here], m_idToName[there]);
+			LOG_CRITICAL("[DeadLock] {} -> {}", m_idToName[_here], m_idToName[there]);
 
 			int32 now = _here;
 			while (true)
 			{
-				printf("%s -> %s \n", m_idToName[m_parent[now]], m_idToName[now]);
+				LOG_CRITICAL("[DeadLock] {} -> {}", m_idToName[m_parent[now]], m_idToName[now]);
 				now = m_parent[now];
 
 				if (now == there) break;

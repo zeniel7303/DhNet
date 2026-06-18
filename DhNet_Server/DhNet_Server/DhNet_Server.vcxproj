@@ -110,12 +110,13 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalIncludeDirectories>..\DhNet_Ipc\generated;..\..\external\vcpkg\installed\x64-windows\include;..\..\Tools\include</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4996</DisableSpecificWarnings>
+      <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>..\..\external\vcpkg\installed\x64-windows\debug\lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>grpc++.lib;grpc.lib;gpr.lib;libprotobufd.lib;abseil_dll.lib;absl_flags_internal.lib;absl_flags_commandlineflag.lib;absl_flags_commandlineflag_internal.lib;absl_flags_config.lib;absl_flags_marshalling.lib;absl_flags_parse.lib;absl_flags_program_name.lib;absl_flags_reflection.lib;absl_flags_usage.lib;absl_flags_usage_internal.lib;absl_flags_private_handle_accessor.lib;absl_log_flags.lib;upb_base_lib.lib;upb_hash_lib.lib;upb_lex_lib.lib;upb_mem_lib.lib;upb_message_lib.lib;upb_mini_descriptor_lib.lib;upb_mini_table_lib.lib;upb_reflection_lib.lib;upb_wire_lib.lib;upb_json_lib.lib;upb_textformat_lib.lib;utf8_range.lib;utf8_validity.lib;cares.lib;address_sorting.lib;re2.lib;zd.lib;libssl.lib;libcrypto.lib;libmysql.lib;dbghelp.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>grpc++.lib;grpc.lib;gpr.lib;libprotobufd.lib;abseil_dll.lib;absl_flags_internal.lib;absl_flags_commandlineflag.lib;absl_flags_commandlineflag_internal.lib;absl_flags_config.lib;absl_flags_marshalling.lib;absl_flags_parse.lib;absl_flags_program_name.lib;absl_flags_reflection.lib;absl_flags_usage.lib;absl_flags_usage_internal.lib;absl_flags_private_handle_accessor.lib;absl_log_flags.lib;upb_base_lib.lib;upb_hash_lib.lib;upb_lex_lib.lib;upb_mem_lib.lib;upb_message_lib.lib;upb_mini_descriptor_lib.lib;upb_mini_table_lib.lib;upb_reflection_lib.lib;upb_wire_lib.lib;upb_json_lib.lib;upb_textformat_lib.lib;utf8_range.lib;utf8_validity.lib;cares.lib;address_sorting.lib;re2.lib;zd.lib;libssl.lib;libcrypto.lib;libmysql.lib;dbghelp.lib;spdlogd.lib;fmtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -128,6 +129,7 @@
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>..\DhNet_Ipc\generated;..\..\external\vcpkg\installed\x64-windows\include;..\..\Tools\include</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4996</DisableSpecificWarnings>
+      <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -135,7 +137,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>..\..\external\vcpkg\installed\x64-windows\lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>grpc++.lib;grpc.lib;gpr.lib;libprotobuf.lib;abseil_dll.lib;absl_flags_internal.lib;absl_flags_commandlineflag.lib;absl_flags_commandlineflag_internal.lib;absl_flags_config.lib;absl_flags_marshalling.lib;absl_flags_parse.lib;absl_flags_program_name.lib;absl_flags_reflection.lib;absl_flags_usage.lib;absl_flags_usage_internal.lib;absl_flags_private_handle_accessor.lib;absl_log_flags.lib;upb_base_lib.lib;upb_hash_lib.lib;upb_lex_lib.lib;upb_mem_lib.lib;upb_message_lib.lib;upb_mini_descriptor_lib.lib;upb_mini_table_lib.lib;upb_reflection_lib.lib;upb_wire_lib.lib;upb_json_lib.lib;upb_textformat_lib.lib;utf8_range.lib;utf8_validity.lib;cares.lib;address_sorting.lib;re2.lib;z.lib;libssl.lib;libcrypto.lib;libmysql.lib;dbghelp.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>grpc++.lib;grpc.lib;gpr.lib;libprotobuf.lib;abseil_dll.lib;absl_flags_internal.lib;absl_flags_commandlineflag.lib;absl_flags_commandlineflag_internal.lib;absl_flags_config.lib;absl_flags_marshalling.lib;absl_flags_parse.lib;absl_flags_program_name.lib;absl_flags_reflection.lib;absl_flags_usage.lib;absl_flags_usage_internal.lib;absl_flags_private_handle_accessor.lib;absl_log_flags.lib;upb_base_lib.lib;upb_hash_lib.lib;upb_lex_lib.lib;upb_mem_lib.lib;upb_message_lib.lib;upb_mini_descriptor_lib.lib;upb_mini_table_lib.lib;upb_reflection_lib.lib;upb_wire_lib.lib;upb_json_lib.lib;upb_textformat_lib.lib;utf8_range.lib;utf8_validity.lib;cares.lib;address_sorting.lib;re2.lib;z.lib;libssl.lib;libcrypto.lib;libmysql.lib;dbghelp.lib;spdlog.lib;fmt.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>

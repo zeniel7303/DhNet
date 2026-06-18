@@ -38,7 +38,7 @@ bool IocpCore::Dispatch(uint32 _timeoutMs)
 		case WAIT_TIMEOUT:
 			return false;
 		case ERROR_CONNECTION_REFUSED:
-			std::cout << "¿ø°Ý ÄÄÇ»ÅÍ°¡ ³×Æ®¿öÅ© ¿¬°áÀ» °ÅºÎÇß½À´Ï´Ù." << std::endl;
+			LOG_WARN("[IocpCore] ì›ê²© ì»´í“¨í„°ê°€ ë„¤íŠ¸ì›Œí¬ ì—°ê²°ì„ ê±°ë¶€í–ˆìŠµë‹ˆë‹¤.");
 			return false;
 		default:
 			IocpObjectRef iocpObject = iocpEvent->m_owner;

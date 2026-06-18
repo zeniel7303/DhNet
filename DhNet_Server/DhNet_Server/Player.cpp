@@ -16,7 +16,6 @@ Player::Player(std::shared_ptr<GameSession> _session, uint64 _accountId, std::st
 
 Player::~Player()
 {
-    // std::cout << "~Player" << std::endl;
 }
 
 void Player::SetCurrentLobby(const std::shared_ptr<Lobby>& _lobby)

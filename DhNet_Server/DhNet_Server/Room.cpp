@@ -5,7 +5,7 @@ void Room::Enter(std::shared_ptr<Player> _player)
 {
 	if (static_cast<int32>(m_players.size()) >= MAX_ROOM_PLAYER)
 	{
-		// �� ���� ������ ���� TryReserveSlot�� ������ ����ȴٴ� ���� �Ͽ� ReleaseReservedSlot ȣ��
+		// 방이 가득 찬 경우 TryReserveSlot에서 이미 예약되었다는 전제 하에 ReleaseReservedSlot 호출
 		ReleaseReservedSlot();
 		_player->EnterRoomFailed();
 		return;
@@ -14,7 +14,7 @@ void Room::Enter(std::shared_ptr<Player> _player)
 	auto [it, result] = m_players.try_emplace(_player->GetPlayerId(), _player);
 	if (!result)
 	{
-		// �� ���� ������ ���� TryReserveSlot�� ������ ����ȴٴ� ���� �Ͽ� ReleaseReservedSlot ȣ��
+		// 중복 입장 등으로 실패한 경우 TryReserveSlot에서 이미 예약되었다는 전제 하에 ReleaseReservedSlot 호출
 		ReleaseReservedSlot();
 		_player->EnterRoomFailed();
 		return;
@@ -33,7 +33,7 @@ void Room::Enter(std::shared_ptr<Player> _player)
 
 	_player->EnterRoom();
 
-	std::cout << m_players.size() << std::endl;
+	LOG_DEBUG("[Room] player count: {}", m_players.size());
 }
 
 void Room::Leave(std::shared_ptr<Player> _player)
@@ -45,7 +45,7 @@ void Room::Leave(std::shared_ptr<Player> _player)
 		m_availableSlots.fetch_add(1);
 	}
 
-	std::cout << m_players.size() << std::endl;
+	LOG_DEBUG("[Room] player count: {}", m_players.size());
 }
 
 void Room::Broadcast(std::shared_ptr<Sender> _sender)

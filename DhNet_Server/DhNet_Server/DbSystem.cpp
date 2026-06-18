@@ -17,7 +17,7 @@ bool DbSystem::Init(const ServerSetting& setting)
         setting.GetDbPoolSize());
 
     if (!poolReady)
-        std::cout << "[DbSystem] Warning: starting without DB — login will be rejected\n";
+        LOG_WARN("[DbSystem] starting without DB - login will be rejected");
 
     // Thread count matches actual pool size so every thread has a connection
     int32 threadCount = _pool.IsReady() ? setting.GetDbPoolSize() : 0;
@@ -25,7 +25,7 @@ bool DbSystem::Init(const ServerSetting& setting)
     for (int32 i = 0; i < threadCount; i++)
         _threads.emplace_back(&DbSystem::WorkerThread, this);
 
-    std::cout << "[DbSystem] Started " << threadCount << " worker threads\n";
+    LOG_INFO("[DbSystem] Started {} worker threads", threadCount);
     return poolReady;
 }
 

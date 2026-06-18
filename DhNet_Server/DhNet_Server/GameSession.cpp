@@ -13,7 +13,7 @@ GameSession::~GameSession()
 {
 	if (m_myPrivKey)
 		EVP_PKEY_free(m_myPrivKey);
-	std::cout << "~GameSession" << std::endl;
+	LOG_DEBUG("~GameSession");
 }
 
 void GameSession::OnConnected()
@@ -154,7 +154,6 @@ void GameSession::SendEncrypted(SenderRef _inner)
 
 void GameSession::OnSend(int32 _len)
 {
-	// std::cout << "OnSend Len " << _len << std::endl;
 }
 
 void GameSession::OnLoginResult(bool _ok, uint64 _accountId, std::string _playerName)

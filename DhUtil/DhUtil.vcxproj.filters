@@ -40,6 +40,9 @@
     <ClInclude Include="GlobalQueue.h">
       <Filter>GlobalQueue</Filter>
     </ClInclude>
+    <ClInclude Include="Logger.h">
+      <Filter>Main</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ThreadManager.cpp">
@@ -71,6 +74,9 @@
     </ClCompile>
     <ClCompile Include="GlobalQueue.cpp">
       <Filter>GlobalQueue</Filter>
+    </ClCompile>
+    <ClCompile Include="Logger.cpp">
+      <Filter>Main</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
