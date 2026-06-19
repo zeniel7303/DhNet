@@ -4,6 +4,7 @@
 #include "Listener.h"
 #include "Session.h"
 #include <functional>
+#include <vector>
 
 using SessionFactory = std::function<SessionRef(void)>;
 
@@ -32,6 +33,7 @@ public:
 	void AddSession(SessionRef _session);
 	void ReleaseSession(SessionRef _session);
 	void BroadCast(SenderRef _sender);
+	std::vector<SessionRef> GetSessions();
 
 	NetAddress& GetNetAddress() { return m_netAddress; }
 	IocpCoreRef GetIocpCore() { return m_iocpCore; }

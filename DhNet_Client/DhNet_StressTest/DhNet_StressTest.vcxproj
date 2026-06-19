@@ -138,11 +138,17 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="..\DhNet_Client\ServerSession.cpp" />
     <ClCompile Include="..\DhNet_Client\LoginController.cpp" />
-    <ClCompile Include="..\DhNet_Client\RoomController.cpp" />
+    <ClCompile Include="ScenarioStateRegistry.cpp" />
+    <ClCompile Include="ScenarioHandlers.cpp" />
+    <ClCompile Include="MetricsAggregator.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\DhNet_Client\TestController.h" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="ScenarioConfig.h" />
+    <ClInclude Include="ScenarioState.h" />
+    <ClInclude Include="ScenarioStateRegistry.h" />
+    <ClInclude Include="ScenarioHandlers.h" />
+    <ClInclude Include="MetricsAggregator.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

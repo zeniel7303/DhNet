@@ -49,6 +49,16 @@ void Service::BroadCast(SenderRef _sender)
 	}
 }
 
+std::vector<SessionRef> Service::GetSessions()
+{
+	std::vector<SessionRef> sessions;
+	READ_LOCK
+	sessions.reserve(m_sessions.size());
+	for (const auto& session : m_sessions)
+		sessions.push_back(session);
+	return sessions;
+}
+
 ServerService::ServerService(NetAddress _netAddress, IocpCoreRef _iocpCore, SessionFactory _sessionFactory, int32 _maxSessionCount)
 	: Service(_netAddress, _iocpCore, _sessionFactory, _maxSessionCount)
 {

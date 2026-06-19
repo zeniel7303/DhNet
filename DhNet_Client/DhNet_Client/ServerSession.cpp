@@ -20,6 +20,8 @@ void ServerSession::OnConnected()
 	}
 	pkt->Init();
 	Session::Send(std::move(sender));
+
+	if (m_onConnectedExtra) m_onConnectedExtra();
 }
 
 bool ServerSession::OnRecv(PacketHeader* _packet)
@@ -126,4 +128,6 @@ void ServerSession::OnSend(int32 _len)
 void ServerSession::OnDisconnected()
 {
 	std::cout << "Disconnected" << std::endl;
+
+	if (m_onDisconnectedExtra) m_onDisconnectedExtra();
 }
