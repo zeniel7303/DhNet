@@ -1,4 +1,5 @@
 using System.Net;
+using DhNet.Web.Filters;
 using DhNet.Web.Services;
 using Serilog;
 
@@ -21,7 +22,7 @@ builder.Services.AddSingleton<IAdminClient>(sp =>
     new GrpcAdminClient("http://127.0.0.1:7778", sp.GetRequiredService<ILogger<GrpcAdminClient>>()));
 
 // Controllers
-builder.Services.AddControllers();
+builder.Services.AddControllers(o => o.Filters.Add<GrpcExceptionFilterAttribute>());
 
 var app = builder.Build();
 

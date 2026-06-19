@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using DhNet.Ipc;
 using Grpc.Core;
 using Grpc.Net.Client;
@@ -19,91 +20,60 @@ public sealed class GrpcAdminClient : IAdminClient, IDisposable
         _logger = logger;
     }
 
-    public async Task<HealthDto> HealthCheckAsync(CancellationToken ct)
+    public Task<HealthDto> HealthCheckAsync(CancellationToken ct) => ExecuteAsync(async () =>
     {
-        try
-        {
-            var resp = await _client.HealthCheckAsync(new HealthCheckRequest(), cancellationToken: ct);
-            return new HealthDto(resp.Status);
-        }
-        catch (RpcException ex)
-        {
-            throw CreateHttpMappedException(ex, nameof(HealthCheckAsync));
-        }
-    }
+        var resp = await _client.HealthCheckAsync(new HealthCheckRequest(), cancellationToken: ct);
+        return new HealthDto(resp.Status);
+    });
 
-    public async Task<IReadOnlyList<RoomDto>> ListRoomsAsync(CancellationToken ct)
+    public Task<IReadOnlyList<RoomDto>> ListRoomsAsync(CancellationToken ct) => ExecuteAsync(async () =>
     {
-        try
-        {
-            var resp = await _client.ListRoomsAsync(new ListRoomsRequest(), cancellationToken: ct);
-            var list = new List<RoomDto>(resp.Rooms.Count);
-            list.AddRange(resp.Rooms.Select(r => new RoomDto(r.Id, r.Name, r.PlayerCount, r.Capacity)));
-            return list;
-        }
-        catch (RpcException ex)
-        {
-            throw CreateHttpMappedException(ex, nameof(ListRoomsAsync));
-        }
-    }
+        var resp = await _client.ListRoomsAsync(new ListRoomsRequest(), cancellationToken: ct);
+        IReadOnlyList<RoomDto> list = resp.Rooms.Select(r => new RoomDto(r.Id, r.Name, r.PlayerCount, r.Capacity)).ToList();
+        return list;
+    });
 
-    public async Task<IReadOnlyList<PlayerDto>> ListPlayersAsync(CancellationToken ct)
+    public Task<IReadOnlyList<PlayerDto>> ListPlayersAsync(CancellationToken ct) => ExecuteAsync(async () =>
     {
-        try
-        {
-            var resp = await _client.ListPlayersAsync(new ListPlayersRequest(), cancellationToken: ct);
-            var list = new List<PlayerDto>(resp.Players.Count);
-            list.AddRange(resp.Players.Select(p => new PlayerDto(p.Id, p.Name, p.LobbyIndex, p.RoomIndex)));
-            return list;
-        }
-        catch (RpcException ex)
-        {
-            throw CreateHttpMappedException(ex, nameof(ListPlayersAsync));
-        }
-    }
+        var resp = await _client.ListPlayersAsync(new ListPlayersRequest(), cancellationToken: ct);
+        IReadOnlyList<PlayerDto> list = resp.Players.Select(p => new PlayerDto(p.Id, p.Name, p.LobbyIndex, p.RoomIndex)).ToList();
+        return list;
+    });
 
-    public async Task<bool> KickPlayerAsync(ulong id, CancellationToken ct)
+    public Task<bool> KickPlayerAsync(ulong id, CancellationToken ct) => ExecuteAsync(async () =>
     {
-        try
-        {
-            var resp = await _client.KickPlayerAsync(new KickPlayerRequest { Id = id }, cancellationToken: ct);
-            return !resp.Success
-                ? throw new RpcException(new Status(StatusCode.Unknown, resp.Detail))
-                : true;
-        }
-        catch (RpcException ex)
-        {
-            throw CreateHttpMappedException(ex, nameof(KickPlayerAsync));
-        }
-    }
+        var resp = await _client.KickPlayerAsync(new KickPlayerRequest { Id = id }, cancellationToken: ct);
+        return !resp.Success
+            ? throw new RpcException(new Status(StatusCode.Unknown, resp.Detail))
+            : true;
+    });
 
-    public async Task<IReadOnlyList<LobbyDto>> ListLobbiesAsync(CancellationToken ct)
+    public Task<IReadOnlyList<LobbyDto>> ListLobbiesAsync(CancellationToken ct) => ExecuteAsync(async () =>
     {
-        try
-        {
-            var resp = await _client.ListLobbiesAsync(new ListLobbiesRequest(), cancellationToken: ct);
-            var list = new List<LobbyDto>(resp.Lobbies.Count);
-            list.AddRange(resp.Lobbies.Select(l => new LobbyDto(l.Id, l.PlayerCount, l.Capacity)));
-            return list;
-        }
-        catch (RpcException ex)
-        {
-            throw CreateHttpMappedException(ex, nameof(ListLobbiesAsync));
-        }
-    }
+        var resp = await _client.ListLobbiesAsync(new ListLobbiesRequest(), cancellationToken: ct);
+        IReadOnlyList<LobbyDto> list = resp.Lobbies.Select(l => new LobbyDto(l.Id, l.PlayerCount, l.Capacity)).ToList();
+        return list;
+    });
 
-    public async Task<bool> BroadcastAsync(long roomId, string message, CancellationToken ct)
+    public Task<bool> BroadcastAsync(long roomId, string message, CancellationToken ct) => ExecuteAsync(async () =>
+    {
+        var resp = await _client.BroadcastAsync(new BroadcastRequest { RoomId = roomId, Message = message }, cancellationToken: ct);
+        return !resp.Success
+            ? throw new RpcException(new Status(StatusCode.Unknown, resp.Detail))
+            : true;
+    });
+
+    // [CallerMemberName]이 호출 지점의 메서드 이름을 자동으로 채워주므로
+    // 각 RPC 메서드에서 try/catch + nameof(자기자신) 반복을 제거할 수 있다.
+    private async Task<T> ExecuteAsync<T>(Func<Task<T>> rpcCall, [CallerMemberName] string methodName = "")
     {
         try
         {
-            var resp = await _client.BroadcastAsync(new BroadcastRequest { RoomId = roomId, Message = message }, cancellationToken: ct);
-            return !resp.Success 
-                ? throw new RpcException(new Status(StatusCode.Unknown, resp.Detail)) 
-                : true;
+            return await rpcCall();
         }
         catch (RpcException ex)
         {
-            throw CreateHttpMappedException(ex, nameof(BroadcastAsync));
+            throw CreateHttpMappedException(ex, methodName);
         }
     }
 
