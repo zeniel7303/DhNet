@@ -58,10 +58,9 @@ DhNet_Server/.idea
 x64/
 x86/
 
-# Claude Code (세션 캐시만 제외)
-.claude/build-cache/
-
-# Claude workspace (claude-workspace 레포로 별도 관리)
+# Claude (claude-workspace 레포로 별도 관리)
+.claude/
+CLAUDE.md
 dev/
 
 # vcpkg installed packages
