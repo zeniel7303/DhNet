@@ -61,9 +61,11 @@ x86/
 # Claude Code (세션 캐시만 제외)
 .claude/build-cache/
 
+# Claude workspace (claude-workspace 레포로 별도 관리)
+dev/
+
 # vcpkg installed packages
 vcpkg_installed/
-dev/
 
 # Test log files (E2E 검증용 stdout/stderr 캡처)
 server_*.txt

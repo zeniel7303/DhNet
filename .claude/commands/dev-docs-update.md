@@ -52,13 +52,15 @@ We're approaching context limits. Please update the development documentation to
 문서 업데이트 완료 후 **반드시** 다음을 실행합니다:
 
 ### 코드 아키텍처 리뷰
-이 세션에서 C++/C# 파일(.cpp/.h/.hpp/.cs)을 작성/수정했다면, Agent 도구로 code-architecture-reviewer 에이전트를 실행합니다:
+이 세션에서 C++/C# 파일(.cpp/.h/.hpp/.cs)을 작성/수정했다면, Agent 도구로 code-architecture-reviewer 페르소나를 general-purpose 에이전트에 위임해 실행합니다:
 
 ```
 Agent(
-  subagent_type="code-architecture-reviewer",
-  prompt="이 세션에서 작성/수정된 코드를 리뷰해줘. 활성 작업 문서는 dev/active/ 에 있음."
+  subagent_type="general-purpose",
+  prompt="You are a code-architecture-reviewer. [.claude/agents/code-architecture-reviewer.md의 리뷰 체크리스트 적용] 이 세션에서 작성/수정된 코드를 리뷰해줘. 활성 작업 문서는 dev/active/ 에 있음."
 )
 ```
+
+**주의**: `subagent_type="code-architecture-reviewer"`는 이 환경에 등록되지 않아 실패함 — 반드시 `general-purpose`로 실행.
 
 리뷰 완료 후 주요 발견사항을 확인하고, 필요한 수정이 있으면 사용자에게 보고합니다.

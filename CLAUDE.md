@@ -47,7 +47,7 @@ DhNet/
 
 **항상 이 시스템을 활용하여 작업한다.**
 
-### 에이전트 (Agent 도구로 실행)
+### 에이전트
 - **code-architecture-reviewer** - 코드 리뷰 요청 시 사용
 - **refactor-planner** - 리팩토링 계획 수립 시 사용
 - **documentation-architect** - 문서 생성 시 사용
@@ -79,6 +79,13 @@ dotnet build DhNet_Server/DhNet_Web/DhNet_Web.csproj
 - manifest-mode: `vcpkg install --triplet x64-windows` (repo root에서)
 - 설치 경로: `vcpkg_installed/x64-windows/` (junction → `external/vcpkg/installed/`)
 - protoc: `external/vcpkg/installed/x64-windows/tools/protobuf/protoc.exe`
+
+**새 PC 셋업 시 junction 재생성 필요** (junction은 로컬 전용, git으로 안 따라옴):
+```powershell
+# PowerShell에서 실행 (repo root에서)
+New-Item -ItemType Junction -Path "external/vcpkg/installed" -Target "$PWD/vcpkg_installed"
+```
+`external/vcpkg/installed`가 이미 존재하면 먼저 삭제 후 재생성. git-bash의 `mklink /J`는 오작동하므로 반드시 PowerShell 사용.
 
 ### dhnet.proto 재생성
 `DhNet_Server/DhNet_Ipc/tools/generate_protos.ps1` 실행. `.proto` 수정 시 C++ generated 파일(`dhnet.pb.cc/h`, `dhnet.grpc.pb.cc/h`)도 함께 재생성 필요.
@@ -141,21 +148,11 @@ public class GrpcAdminClient : IAdminClient {
 }
 ```
 
-## 작업 워크플로우 (자동 실행 규칙)
+## 작업 워크플로우
 
-### RULE 1: 새 작업 시작 시 → dev-docs 자동 실행 [필수]
-사용자가 새로운 기능/작업 구현을 요청하면 **코드 작성 전에** 반드시 Skill 도구로 `dev-docs`를 실행한다.
-- 트리거: "~구현해줘", "~만들어줘", "~추가해줘", "새 기능", "시작하자" 등
-- 실행: `Skill("dev-docs", "[작업명]")`
-- **절대로 건너뛰지 않는다.**
+작업 워크플로우 규칙은 `dev/CLAUDE.md` 참고.
 
-### RULE 2: 코드 작업 완료 후 → dev-docs-update + code-architecture-reviewer 자동 실행 [필수]
-C++ (.cpp/.h/.hpp) 또는 C# (.cs) 파일을 하나 이상 작성/수정하고 나면 **응답 마지막에** 반드시 두 가지를 순서대로 실행한다.
-1. `Skill("dev-docs-update")` — 작업 상태 저장
-2. `Agent(subagent_type="code-architecture-reviewer", ...)` — 코드 리뷰
-- **둘 다 반드시 실행. 어느 하나도 생략 불가.**
+## Claude Workspace (다중 PC 동기화)
 
-### 순서
-1. 새 기능 요청 → **즉시 `dev-docs` 실행** → 코드 작성 준비
-2. 코드 작성
-3. 코드 완성 → **즉시 `dev-docs-update` 실행** → **즉시 `code-architecture-reviewer` 에이전트 실행**
+`dev/`와 Claude 메모리는 private `claude-workspace` 레포를 통해 기기 간 동기화된다.  
+새 PC 셋업 시 `README.md` **"Claude Workspace 초기 설정"** 섹션 참고.
