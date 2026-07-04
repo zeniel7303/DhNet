@@ -11,7 +11,7 @@ bool HandleResLoginPacket(PacketHeader* _header, std::shared_ptr<Session>& _sess
 
 bool HandleResLoginFailedPacket(PacketHeader* _header, std::shared_ptr<Session>& _session)
 {
-	std::cout << "[LoginFailed] Server rejected credentials\n";
+	LOG_WARN("[LoginFailed] Server rejected credentials");
 	_session->Disconnect(L"LoginFailed");
 	return true;
 }

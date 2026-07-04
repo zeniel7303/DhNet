@@ -17,6 +17,8 @@ constexpr uint16 SERVER_PORT = 7900;
 
 int main()
 {
+	Logger::SetLogFileName("dhnet-client.log"); // DhNet_Server와 로그 파일을 공유하지 않도록 분리
+
 	std::this_thread::sleep_for(std::chrono::seconds(2));
 
 	Sender::Init(1024);

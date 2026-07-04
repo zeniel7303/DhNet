@@ -177,17 +177,24 @@ void AdvanceScenario(const std::shared_ptr<Session>& _session, Clock::time_point
     case ScenarioAction::SendRoomChat:  SendRoomChat(_session);  break;
     case ScenarioAction::SendRoomExit:  SendRoomExit(_session);  break;
     case ScenarioAction::LogStuckRoomEnter:
-        std::wcerr << L"[부하테스트] RoomEnter 재시도 한도 초과 — 세션이 Stuck 상태로 전환됨 "
-                       L"(서버 응답 누락 또는 race 의심)" << std::endl;
+        MetricsAggregator::Instance().RecordStuck();
+        LOG_WARN("[부하테스트] RoomEnter 재시도 한도 초과 — 세션이 Stuck 상태로 전환됨 "
+                 "(서버 응답 누락 또는 race 의심)");
         break;
     case ScenarioAction::LogStuckRoomExit:
-        std::wcerr << L"[부하테스트] RoomExit 재시도 한도 초과 — 세션이 Stuck 상태로 전환됨 "
-                       L"(서버 응답 누락 또는 race 의심)" << std::endl;
+        MetricsAggregator::Instance().RecordStuck();
+        LOG_WARN("[부하테스트] RoomExit 재시도 한도 초과 — 세션이 Stuck 상태로 전환됨 "
+                 "(서버 응답 누락 또는 race 의심)");
         break;
     case ScenarioAction::None:
     default:
         break;
     }
+}
+
+bool Scenario_HandleIgnoredBroadcastPacket(PacketHeader* _header, std::shared_ptr<Session>& _session)
+{
+    return true;
 }
 
 bool Scenario_HandleResTestPacket(PacketHeader* _header, std::shared_ptr<Session>& _session)

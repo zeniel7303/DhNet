@@ -3,7 +3,7 @@
 
 void ServerSession::OnConnected()
 {
-	std::cout << "Connected To Server" << std::endl;
+	LOG_INFO("Connected To Server");
 
 	m_myPrivKey = EcdhKeyExchange::GenerateKeyPair();
 	if (!m_myPrivKey)
@@ -90,7 +90,7 @@ void ServerSession::HandleResKeyExchange(ResKeyExchange* _pkt)
 	SecureZeroMemory(sessionKey, sizeof(sessionKey));
 	m_handshakeDone.store(true, std::memory_order_release);
 
-	std::cout << "[Crypto] Handshake complete. Session key established.\n";
+	LOG_INFO("[Crypto] Handshake complete. Session key established.");
 
 	// 핸드셰이크 완료 → 첫 번째 암호화 패킷으로 로그인 전송
 	auto [pkt, sender] = Sender::GetSenderAndPacket<ReqLogin>();
@@ -127,7 +127,7 @@ void ServerSession::OnSend(int32 _len)
 
 void ServerSession::OnDisconnected()
 {
-	std::cout << "Disconnected" << std::endl;
+	LOG_INFO("Disconnected");
 
 	if (m_onDisconnectedExtra) m_onDisconnectedExtra();
 }

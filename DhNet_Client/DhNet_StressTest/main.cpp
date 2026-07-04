@@ -6,6 +6,8 @@
 #include "ScenarioConfig.h"
 #include "ScenarioStateRegistry.h"
 #include "ScenarioHandlers.h"
+#include "MetricsAggregator.h"
+#include "ReportManager.h"
 
 #include "../../DhNet_Server/ServerCore/Service.h"
 #include "../../DhUtil/ThreadManager.h"
@@ -22,6 +24,7 @@ DhNet_StressTest 실행 개요
   argv[7] = 로비 채팅 간격(ms) (기본값: 1000)
   argv[8] = 룸 채팅 횟수 (기본값: 5)            -> 룸 입장 후 보낼 Req_RoomChat 횟수
   argv[9] = 룸 채팅 간격(ms) (기본값: 1000)
+  argv[10] = 실행 시간(초) (기본값: 0=무제한)    -> 지정하면 경과 시 Ctrl+C와 동일한 경로로 자동 종료(리포트 저장 포함)
 
 설명:
 - DhNet_Client의 ServerSession 및 패킷 핸들러를 재사용함.
@@ -37,6 +40,7 @@ static ThreadManager* GStressThreadMgr = new ThreadManager();
 ScenarioConfig g_scenarioConfig;
 
 constexpr int kTickIntervalMs = 200; // 시나리오 진행 체크 주기 (내부 스케줄링 해상도)
+constexpr int kReportIntervalSec = 10; // 콘솔 리포트 출력 주기
 
 struct StressConfig
 {
@@ -45,6 +49,7 @@ struct StressConfig
     int services = 10;
     int sessionsPerService = 100;
     int churnIntervalSec = 30;
+    int runDurationSec = 0; // 0 = 무제한 (Ctrl+C로만 종료)
 };
 
 static ClientServiceRef MakeService(const std::wstring& ip, uint16_t port, int sessionsPerService)
@@ -56,11 +61,47 @@ static ClientServiceRef MakeService(const std::wstring& ip, uint16_t port, int s
         {
             auto session = std::make_shared<ServerSession>();
             ServerSession* raw = session.get();
-            session->SetOnConnectedExtra([raw]() { ScenarioStateRegistry::Instance().Register(raw); });
+            session->SetOnConnectedExtra([raw]()
+            {
+                ScenarioStateRegistry::Instance().Register(raw);
+                MetricsAggregator::Instance().RecordConnection();
+            });
             session->SetOnDisconnectedExtra([raw]() { ScenarioStateRegistry::Instance().Unregister(raw); });
             return session;
         },
         sessionsPerService);
+}
+
+// Ctrl+C / 실행시간 만료 등 어느 경로로 종료하든 항상 이 함수를 거쳐야 리포트/로그가
+// 유실되지 않는다. 여러 경로(콘솔 핸들러, 메인 루프의 타임아웃 체크)에서 동시에 호출될
+// 수 있으므로 최초 1회만 실제로 종료 절차를 수행한다.
+static std::atomic<bool> s_shuttingDown{ false };
+
+static void GracefulShutdown()
+{
+    if (s_shuttingDown.exchange(true))
+        return;
+
+    ReportManager::Instance().WriteFinalReport();
+
+    // LoggerShutdown()(async_logger::flush())은 flush "요청"을 워커 스레드 큐에 넣기만
+    // 하고 기다리지 않는 비동기 호출이다(spdlog async_logger-inl.h의 flush_() 참고) —
+    // 바로 ExitProcess를 부르면 워커가 그 요청은커녕 직전에 찍은 로그조차 처리하기 전에
+    // 프로세스가 죽는 레이스가 실측으로 확인됨("최종 리포트 저장 완료" 로그가 파일에서
+    // 누락됨). 워커가 큐를 비울 시간을 잠깐 준 뒤 종료한다.
+    LoggerShutdown();
+    std::this_thread::sleep_for(std::chrono::milliseconds(200));
+    ExitProcess(0);
+}
+
+// Ctrl+C/Ctrl+Break/콘솔 닫기 시 CSV 리포트를 저장하고 종료한다.
+// CTRL_C_EVENT/CTRL_BREAK_EVENT는 핸들러가 TRUE를 반환해도 프로세스가 자동 종료되지
+// 않으므로(기본 동작이 억제됨) 반드시 ExitProcess로 직접 끝내야 한다.
+static BOOL WINAPI ConsoleHandler(DWORD _signal)
+{
+    if (_signal == CTRL_C_EVENT || _signal == CTRL_BREAK_EVENT || _signal == CTRL_CLOSE_EVENT)
+        GracefulShutdown();
+    return TRUE;
 }
 
 static void RegisterHandlers()
@@ -70,10 +111,20 @@ static void RegisterHandlers()
     PacketHandler::Instance().Register(PacketEnum::Res_LobbyEnter, &Scenario_HandleResLobbyEnterPacket);
     PacketHandler::Instance().Register(PacketEnum::Noti_RoomEnter, &Scenario_HandleNotiRoomEnterPacket);
     PacketHandler::Instance().Register(PacketEnum::Test, &Scenario_HandleResTestPacket);
+
+    // 로비/룸 멤버들에게 브로드캐스트되는 알림들 — 시나리오 진행에는 필요 없지만,
+    // 미등록 상태로 두면 세션이 스스로 "OnRead Error"로 끊어진다.
+    PacketHandler::Instance().Register(PacketEnum::Noti_LobbyChat, &Scenario_HandleIgnoredBroadcastPacket);
+    PacketHandler::Instance().Register(PacketEnum::Noti_LobbyPlayerEnter, &Scenario_HandleIgnoredBroadcastPacket);
+    PacketHandler::Instance().Register(PacketEnum::Noti_LobbyPlayerExit, &Scenario_HandleIgnoredBroadcastPacket);
+    PacketHandler::Instance().Register(PacketEnum::Noti_RoomChat, &Scenario_HandleIgnoredBroadcastPacket);
+    PacketHandler::Instance().Register(PacketEnum::Noti_RoomExit, &Scenario_HandleIgnoredBroadcastPacket);
 }
 
 int wmain(int argc, wchar_t* argv[])
 {
+    Logger::SetLogFileName("dhnet-stresstest.log"); // DhNet_Server/DhNet_Client와 로그 파일을 공유하지 않도록 분리
+
     StressConfig cfg;
     if (argc > 1) cfg.ip = argv[1];
     if (argc > 2) cfg.port = static_cast<uint16_t>(_wtoi(argv[2]));
@@ -84,6 +135,9 @@ int wmain(int argc, wchar_t* argv[])
     if (argc > 7) g_scenarioConfig.lobbyChatIntervalMs = _wtoi(argv[7]);
     if (argc > 8) g_scenarioConfig.roomChatCount = _wtoi(argv[8]);
     if (argc > 9) g_scenarioConfig.roomChatIntervalMs = _wtoi(argv[9]);
+    if (argc > 10) cfg.runDurationSec = _wtoi(argv[10]);
+
+    SetConsoleCtrlHandler(ConsoleHandler, TRUE);
 
     // 서버가 준비될 시간을 잠시 대기
     std::this_thread::sleep_for(std::chrono::seconds(2));
@@ -126,6 +180,8 @@ int wmain(int argc, wchar_t* argv[])
 
     // 시나리오 진행과 재생성(churn)을 위한 타이머
     auto lastChurn = std::chrono::steady_clock::now();
+    auto lastReport = std::chrono::steady_clock::now();
+    auto startTime = std::chrono::steady_clock::now();
 
     uint64_t tick = 0;
     while (true)
@@ -167,7 +223,23 @@ int wmain(int argc, wchar_t* argv[])
             }
 
             // 상태 확인 로그
-            std::wcout << L"[부하테스트] 서비스 재생성 완료. 서비스 수: " << services.size() << L", 틱: " << tick << std::endl;
+            LOG_INFO("[부하테스트] 서비스 재생성 완료. 서비스 수: {}, 틱: {}", services.size(), tick);
+        }
+
+        // 주기적 콘솔 리포트 (10초 간격)
+        auto nowReport = std::chrono::steady_clock::now();
+        if (std::chrono::duration_cast<std::chrono::seconds>(nowReport - lastReport).count() >= kReportIntervalSec)
+        {
+            lastReport = nowReport;
+            ReportManager::Instance().ReportInterval();
+        }
+
+        // 지정된 실행 시간이 지나면 Ctrl+C와 동일한 경로(리포트 저장 + 로그 flush)로 자동 종료
+        if (cfg.runDurationSec > 0 &&
+            std::chrono::duration_cast<std::chrono::seconds>(nowReport - startTime).count() >= cfg.runDurationSec)
+        {
+            LOG_INFO("[부하테스트] 지정된 실행 시간({}초) 경과 — 자동 종료", cfg.runDurationSec);
+            GracefulShutdown();
         }
 
         tick++;

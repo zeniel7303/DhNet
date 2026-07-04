@@ -23,6 +23,22 @@ void MetricsAggregator::RecordTimeout()
     m_timeoutCount++;
 }
 
+void MetricsAggregator::RecordStuck()
+{
+    WRITE_LOCK;
+    m_stuckCount++;
+}
+
+void MetricsAggregator::RecordConnection()
+{
+    m_totalConnections.fetch_add(1, std::memory_order_relaxed);
+}
+
+uint64_t MetricsAggregator::GetTotalConnections() const
+{
+    return m_totalConnections.load(std::memory_order_relaxed);
+}
+
 namespace
 {
     double Percentile(std::vector<double>& _sorted, double _p)
@@ -45,8 +61,10 @@ MetricsSnapshot MetricsAggregator::GetSnapshotAndReset()
         samples = std::move(m_rttSamplesMs);
         snapshot.successCount = m_successCount;
         snapshot.timeoutCount = m_timeoutCount;
+        snapshot.stuckCount = m_stuckCount;
         m_successCount = 0;
         m_timeoutCount = 0;
+        m_stuckCount = 0;
     }
 
     snapshot.sampleCount = samples.size();

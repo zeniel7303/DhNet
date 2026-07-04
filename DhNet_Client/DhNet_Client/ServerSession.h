@@ -37,7 +37,7 @@ public:
 	~ServerSession()
 	{
 		if (m_myPrivKey) EVP_PKEY_free(m_myPrivKey);
-		std::cout << "~ServerSession()" << std::endl;
+		LOG_TRACE("~ServerSession()");
 	}
 
 	virtual void OnConnected() override;

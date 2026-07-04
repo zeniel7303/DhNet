@@ -141,6 +141,7 @@
     <ClCompile Include="ScenarioStateRegistry.cpp" />
     <ClCompile Include="ScenarioHandlers.cpp" />
     <ClCompile Include="MetricsAggregator.cpp" />
+    <ClCompile Include="ReportManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -149,6 +150,7 @@
     <ClInclude Include="ScenarioStateRegistry.h" />
     <ClInclude Include="ScenarioHandlers.h" />
     <ClInclude Include="MetricsAggregator.h" />
+    <ClInclude Include="ReportManager.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
