@@ -354,13 +354,13 @@ New-Item -ItemType Junction -Path "external/vcpkg/installed" -Target "$PWD/vcpkg
 
 ### Claude 환경 설정 (선택)
 
-`.claude/`(커스텀 명령·에이전트), `dev/`(작업 문서), AI 메모리를 `claude-workspace` private 레포로 관리한다.  
+`.claude/`(커스텀 명령·에이전트), `dev/`(작업 문서), AI 메모리를 `claude-workspace` 레포로 관리한다.  
 이 파일들은 `.gitignore`에 포함되어 이 레포에는 없고, `claude-workspace`가 진짜 저장소다.
 
 #### 새 기기 초기 설정 (1회)
 
 ```bash
-# 레포 루트에서 실행 (claude-workspace 접근 권한 필요)
+# 레포 루트에서 실행
 bash setup-claude.sh
 ```
 
